@@ -8,6 +8,7 @@ class entity(object):
         self.current_frame = 0
         self.current_animation = 0
         self.animations = []
+        self.sprite_offset = vector(0, 0)
 
     def update(self, delta_time: float):
         super().update(delta_time)

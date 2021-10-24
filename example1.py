@@ -4,20 +4,24 @@ import sys
 
 from Sakuya.vector import vector
 
-WINDOW_SIZE = (500, 500)
+WINDOW_SIZE = vector(500, 500)
+TICKS_PER_SEC = 16
 
 pygame.init()
-screen = pygame.display.set_mode(WINDOW_SIZE)
+screen = pygame.display.set_mode((WINDOW_SIZE.x, WINDOW_SIZE.y))
 pygame.display.set_caption("example")
 clock = pygame.time.Clock()
 delta_time = 0
+ticks_past = 0
 
 world = Sakuya.world()
-entity1 = Sakuya.entity(Sakuya.vector(3, 2), 5)
-entity1.on_destroy(5)
-entity1.velocity = vector(2, 2)
-entity1.acceleration = vector(1, 1)
+entity1 = Sakuya.entity(Sakuya.vector(250, 250), 5)
+entity1.velocity = vector(-10, 50)
+entity2 = Sakuya.entity(Sakuya.vector(250, 250), 5)
+entity2.velocity = vector(10, 50)
+entity2.on_destroy(2000)
 world.objects.append(entity1)
+world.objects.append(entity2)
 
 while(True):
     for event in pygame.event.get():
@@ -25,9 +29,11 @@ while(True):
             sys.exit()
 
     screen.fill((0,0,0))
-    pygame.draw.rect(screen, (255,255,255), pygame.Rect(entity1.position.x, entity1.position.y, 5, 5))
+    for o in world.objects:
+        o_rect = Sakuya.world_to_pygame_rect(o.hitbox, WINDOW_SIZE.y)
+        pygame.draw.rect(screen, (255,255,255), o_rect)
 
-    print(entity1.on_destroy)
+    print(world.current_tick)
 
     pygame.display.update()
     world.advance_frame(delta_time)
