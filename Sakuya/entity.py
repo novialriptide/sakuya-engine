@@ -1,6 +1,7 @@
 import pygame
 from Sakuya.vector import *
 from Sakuya.object import *
+from Sakuya.config import *
 
 class entity(object):
     def __init__(self, position: vector, hitbox_radius: int, has_rigidbody = True, has_box_collider = True):
