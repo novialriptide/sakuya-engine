@@ -10,6 +10,16 @@ class World:
         self.gravity = Vector(0, 10)
         self.current_tick = 1
 
+    def test_collisions(self, object: Object):
+        objects = self.objects[:]
+        objects.remove(object)
+        collided = []
+        for o in objects:
+            if object.hitbox.collidecircle(o.hitbox):
+                collided.append(o)
+
+        return collided
+
     def advance_frame(self, delta_time: float):
         """
         Updates the entities inside the world, such as physics & animation

@@ -5,13 +5,14 @@ from Sakuya.circle import *
 from Sakuya.config import *
 
 class Object:
-    def __init__(self, position: Vector, hitbox_radius: Unit, has_rigidbody: bool = True, has_box_collider: bool = True):
+    def __init__(self, position: Vector, hitbox_radius: Unit, name = None, has_rigidbody: bool = True, has_box_collider: bool = True):
         """
         :param vector(unit, unit) position
         :param unit hitbox_radius
         :param bool has_rigidbody
         :param bool has_box_collider
         """
+        self.name = name
         self.has_rigidbody = has_rigidbody
         self.has_box_collider = has_box_collider
         self.hitbox_radius = hitbox_radius

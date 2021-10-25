@@ -10,6 +10,9 @@ class Event:
 
 class Time:
     def __init__(self):
+        """
+        Initiate the Time module, you should only use this once
+        """
         self._methods = []
 
     def wait(self, event: Event):

@@ -6,8 +6,8 @@ from Sakuya.math import *
 from Sakuya.config import *
 
 class Entity(Object):
-    def __init__(self, position: Vector, hitbox_radius: int, surface: pygame.Surface, has_rigidbody = True, has_box_collider = True):
-        super().__init__(position, hitbox_radius, has_rigidbody=has_rigidbody, has_box_collider=has_box_collider)
+    def __init__(self, position: Vector, hitbox_radius: int, surface: pygame.Surface, name = None, has_rigidbody = True, has_box_collider = True):
+        super().__init__(position, hitbox_radius, name=name, has_rigidbody=has_rigidbody, has_box_collider=has_box_collider)
         self.current_frame = 0
         self.current_animation = 0
         self.animations = []
