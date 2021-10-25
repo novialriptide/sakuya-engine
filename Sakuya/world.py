@@ -4,16 +4,10 @@ from Sakuya.object import *
 from Sakuya.vector import *
 from Sakuya.config import *
 
-def world_to_pygame_vector(point: vector, surface_height: int):
-    return vector(point.x, surface_height - point.y)
-
-def world_to_pygame_rect(rect: pygame.Rect, surface_height: int):
-    return pygame.Rect(rect.x, surface_height - rect.y, rect.width, rect.height)
-
 class world:
     def __init__(self):
         self.objects = []
-        self.gravity = vector(0, -10)
+        self.gravity = vector(0, 10)
         self.current_tick = 1
 
         #pixels per unit

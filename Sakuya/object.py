@@ -1,9 +1,16 @@
 import pygame
 from Sakuya.vector import *
+from Sakuya.math import *
 from Sakuya.config import *
 
 class object:
-    def __init__(self, position: vector, hitbox_radius: int, has_rigidbody: bool = True, has_box_collider: bool = True):
+    def __init__(self, position: vector, hitbox_radius: unit, has_rigidbody: bool = True, has_box_collider: bool = True):
+        """
+        :param vector(unit, unit) position
+        :param unit hitbox_radius
+        :param bool has_rigidbody
+        :param bool has_box_collider
+        """
         self.has_rigidbody = has_rigidbody
         self.has_box_collider = has_box_collider
         self.hitbox_radius = hitbox_radius
@@ -26,8 +33,9 @@ class object:
 
     @property
     def hitbox(self) -> pygame.Rect:
-        hitbox_radius_pixels = self.hitbox_radius * PIXELS_PER_UNIT
-        return pygame.Rect(self.position.x - hitbox_radius_pixels/2, self.position.y - hitbox_radius_pixels/2, hitbox_radius_pixels, hitbox_radius_pixels)
+        hitbox_radius_pixels = to_pixels(self.hitbox_radius)
+        position_pixels = to_pixels(self.position)
+        return pygame.Rect(position_pixels.x - hitbox_radius_pixels/2, position_pixels.y - hitbox_radius_pixels/2, hitbox_radius_pixels, hitbox_radius_pixels)
 
     def is_collided(self, other) -> bool:
         return self.hitbox.colliderect(other.hitbox)
