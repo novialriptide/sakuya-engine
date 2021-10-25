@@ -1,6 +1,6 @@
 import pygame
 
-class event:
+class Event:
     def __init__(self, time: int, method, args=[], kwargs={}):
         self.method = method
         self.args = args
@@ -8,11 +8,11 @@ class event:
         self.time = time
         self.execute_time = time + pygame.time.get_ticks()
 
-class time:
+class Time:
     def __init__(self):
         self._methods = []
 
-    def wait(self, event: event):
+    def wait(self, event: Event):
         self._methods.append(event)
         
     def update(self):

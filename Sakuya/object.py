@@ -1,10 +1,11 @@
 import pygame
 from Sakuya.vector import *
 from Sakuya.math import *
+from Sakuya.circle import *
 from Sakuya.config import *
 
-class object:
-    def __init__(self, position: vector, hitbox_radius: unit, has_rigidbody: bool = True, has_box_collider: bool = True):
+class Object:
+    def __init__(self, position: Vector, hitbox_radius: Unit, has_rigidbody: bool = True, has_box_collider: bool = True):
         """
         :param vector(unit, unit) position
         :param unit hitbox_radius
@@ -16,8 +17,8 @@ class object:
         self.hitbox_radius = hitbox_radius
 
         self.position = position
-        self.velocity = vector(0, 0)
-        self.acceleration = vector(0, 0)
+        self.velocity = Vector(0, 0)
+        self.acceleration = Vector(0, 0)
         self._gravity = None
 
         self._on_destroy_val = 0
@@ -35,7 +36,7 @@ class object:
     def hitbox(self) -> pygame.Rect:
         hitbox_radius_pixels = to_pixels(self.hitbox_radius)
         position_pixels = to_pixels(self.position)
-        return pygame.Rect(position_pixels.x - hitbox_radius_pixels/2, position_pixels.y - hitbox_radius_pixels/2, hitbox_radius_pixels, hitbox_radius_pixels)
+        return Circle(position_pixels, hitbox_radius_pixels)
 
     def is_collided(self, other) -> bool:
         return self.hitbox.colliderect(other.hitbox)

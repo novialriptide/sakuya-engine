@@ -5,13 +5,13 @@ from Sakuya.object import *
 from Sakuya.math import *
 from Sakuya.config import *
 
-class entity(object):
-    def __init__(self, position: vector, hitbox_radius: int, surface: pygame.Surface, has_rigidbody = True, has_box_collider = True):
+class Entity(Object):
+    def __init__(self, position: Vector, hitbox_radius: int, surface: pygame.Surface, has_rigidbody = True, has_box_collider = True):
         super().__init__(position, hitbox_radius, has_rigidbody=has_rigidbody, has_box_collider=has_box_collider)
         self.current_frame = 0
         self.current_animation = 0
         self.animations = []
-        self.surface_offset = vector(0, 0)
+        self.surface_offset = Vector(0, 0)
         self._surface = surface
 
     @property
@@ -21,14 +21,14 @@ class entity(object):
         """
         return pygame.transform.scale(self._surface, [to_pixels(self._surface.get_width()), to_pixels(self._surface.get_height())])
     
-    def shoot(self, offset: vector, projectile, angle: float, speed: unit):
+    def shoot(self, offset: Vector, projectile, angle: float, speed: Unit):
         """
         :param entity projectile
         :param float angle (radian)
         :param unit speed
         """
         projectile = copy.copy(projectile)
-        projectile.velocity = vector(speed * math.cos(angle), speed * math.sin(angle))
+        projectile.velocity = Vector(speed * math.cos(angle), speed * math.sin(angle))
         projectile.position = self.position
         return projectile
 

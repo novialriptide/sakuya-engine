@@ -4,14 +4,11 @@ from Sakuya.object import *
 from Sakuya.vector import *
 from Sakuya.config import *
 
-class world:
+class World:
     def __init__(self):
         self.objects = []
-        self.gravity = vector(0, 10)
+        self.gravity = Vector(0, 10)
         self.current_tick = 1
-
-        #pixels per unit
-        self.ppu = 10
 
     def advance_frame(self, delta_time: float):
         """
