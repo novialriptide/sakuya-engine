@@ -37,9 +37,3 @@ class Replay:
     def update(self, current_tick):
         f = self.search_frame(current_tick)
         for m in f.methods: m()
-
-r = Replay()
-r.frames.append(Frame(10, [1, 2]))
-r.frames.append(Frame(13, [1, 2]))
-r.frames.append(Frame(15, [1, 2]))
-print(r.save("lol"))
