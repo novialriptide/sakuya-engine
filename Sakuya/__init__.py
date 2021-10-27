@@ -1,14 +1,15 @@
 from pygame import __version__ as pg_ver
 
 from .animation import *
+from .bossbar import *
 from .entity import *
 from .math import *
 from .object import *
 from .particles import *
+from .replay import *
 from .text import *
 from .tilemap import *
 from .time import *
-from .vector import *
 from .world import *
 
 __version__ = "1.0"

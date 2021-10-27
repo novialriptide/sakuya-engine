@@ -1,7 +1,7 @@
 import typing
 import pygame
 from Sakuya.object import *
-from Sakuya.vector import *
+from Sakuya.math import *
 from Sakuya.config import *
 
 class World:
@@ -9,6 +9,7 @@ class World:
         self.objects = []
         self.gravity = Vector(0, 10)
         self.current_tick = 1
+        self.time_elapsed = 0
 
     def test_collisions(self, object: Object):
         objects = self.objects[:]
@@ -29,6 +30,7 @@ class World:
             self.current_tick = int(pygame.time.get_ticks() / 1000 * TICKS_PER_SECOND) % TICKS_PER_SECOND + 1
         if self.current_tick > TICKS_PER_SECOND:
             self.current_tick = 1
+            self.time_elapsed += 1
 
         for object in self.objects[:]:
             object._gravity = self.gravity

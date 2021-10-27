@@ -1,4 +1,4 @@
-from Sakuya.vector import *
+from Sakuya.math import *
 import pygame
 import math
 

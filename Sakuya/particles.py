@@ -1,6 +1,6 @@
 from Sakuya.object import *
 from Sakuya.entity import *
-from Sakuya.vector import *
+from Sakuya.math import *
 
 class Particle(Entity):
     def __init__(self, position: Vector):

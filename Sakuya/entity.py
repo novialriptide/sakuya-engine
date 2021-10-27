@@ -1,6 +1,5 @@
 import pygame
 import copy
-from Sakuya.vector import *
 from Sakuya.object import *
 from Sakuya.math import *
 from Sakuya.config import *
@@ -29,7 +28,7 @@ class Entity(Object):
         """
         projectile = copy.copy(projectile)
         projectile.velocity = Vector(speed * math.cos(angle), speed * math.sin(angle))
-        projectile.position = self.position
+        projectile.position = self.position + offset
         return projectile
 
     def update(self, delta_time: float):

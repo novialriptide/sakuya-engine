@@ -1,5 +1,4 @@
 import pygame
-from Sakuya.vector import *
 from Sakuya.math import *
 from Sakuya.circle import *
 from Sakuya.config import *
