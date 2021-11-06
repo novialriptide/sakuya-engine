@@ -1,5 +1,6 @@
 import typing
 import pygame
+from Sakuya.errorhandler import *
 from Sakuya.object import *
 from Sakuya.math import *
 from Sakuya.config import *
@@ -13,7 +14,8 @@ class World:
 
     def test_collisions(self, object: Object):
         objects = self.objects[:]
-        objects.remove(object)
+        try: objects.remove(object)
+        except ValueError: raise ObjectNotInWorld()
         collided = []
         for o in objects:
             if object.hitbox.collidecircle(o.hitbox):
