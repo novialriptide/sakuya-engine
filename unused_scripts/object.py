@@ -36,10 +36,27 @@ class Object:
     def hitbox(self) -> pygame.Rect:
         hitbox_radius_pixels = to_pixels(self.hitbox_radius)
         position_pixels = to_pixels(self.position)
-        return Circle(position_pixels, hitbox_radius_pixels)
+        return pygame.Rect(position_pixels.x - hitbox_radius_pixels, position_pixels.y - hitbox_radius_pixels, hitbox_radius_pixels*2, hitbox_radius_pixels*2)
 
     def is_collided(self, other) -> bool:
         return self.hitbox.colliderect(other.hitbox)
+
+    def move_to(self, movement: Vector, collisions):
+        test_rect = self.hitbox
+        test_rect.x += to_pixels(movement.x)
+        test_rect.y += to_pixels(movement.y)
+
+        collision_types = {"top": False, "bottom": False, "right": False, "left": False}
+        hit_collisions = []
+
+        for c in collisions:
+            if self.is_collided(c):
+                hit_collisions.append(c)
+
+        if self.has_box_collider:
+            for h in hit_collisions:
+                if to_pixels(movement.x) > 0:
+                    pass
 
     def update(self, delta_time: float):
         if self._enable_on_destroy and self._on_destroy_val <= pygame.time.get_ticks():

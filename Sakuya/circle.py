@@ -14,10 +14,6 @@ class Circle:
         
         return distance <= self.radius
 
-
-    def colliderect(self, rect: pygame.Rect):
-        pass
-
     def collidecircle(self, circle):
         dist_x = self.position.x - circle.position.x
         dist_y = self.position.y - circle.position.y

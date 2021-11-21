@@ -8,7 +8,6 @@ from .bossbar import *
 from .button import *
 from .entity import *
 from .math import *
-from .object import *
 from .particles import *
 from .replay import *
 from .text import *
@@ -23,5 +22,5 @@ def init(pixels_per_unit=8, tps=16):
     PIXELS_PER_UNIT = pixels_per_unit
     TICKS_PER_SECOND = tps
 
-__version__ = "1.0"
+__version__ = "1.1"
 print(f"running sakuya {__version__} by novial (using pygame {pg_ver})\nsource code: https://github.com/novialriptide/Sakuya")
