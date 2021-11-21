@@ -16,17 +16,17 @@ A game engine tool, named after a Touhou character, specifically made for bullet
 
 ## Planned Features
 1. Tilemaps
-2. Replays
-3. Entity Animations
-4. World Save
-5. Explosions
-6. Particles
-7. Raycast
-8. Physics Engine Update Optimizations
-9. Physics Engine Collisions
-10. [Tiled](https://www.mapeditor.org/) Support
-11. Object Render Management System
-
+2. Entity Animations
+3. Explosions
+4. Particles
+5. Raycast
+6. Physics Engine Update Optimizations
+7. Physics Engine Collisions
+8. [Tiled](https://www.mapeditor.org/) Support
+9. Object Render Management System
+10. Rework "World" into "Scenes"
+11. Controller Support
+12. Menus
 
 ## Developers
 1. [Andrew Hong](https://github.com/novialriptide)
