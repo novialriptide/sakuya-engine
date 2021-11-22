@@ -13,6 +13,7 @@ A game engine tool, named after a Touhou character, specifically made for bullet
 7. Buttons
 8. Object Destroy
 9. Vectors
+10. Scenes
 
 ## Planned Features
 1. Tilemaps
@@ -24,9 +25,8 @@ A game engine tool, named after a Touhou character, specifically made for bullet
 7. Physics Engine Collisions
 8. [Tiled](https://www.mapeditor.org/) Support
 9. Object Render Management System
-10. Rework "World" into "Scenes"
-11. Controller Support
-12. Menus
+10. Controller Support
+11. Menus
 
 ## Developers
 1. [Andrew Hong](https://github.com/novialriptide)
