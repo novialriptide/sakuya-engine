@@ -1,50 +1,45 @@
-import typing
-import pygame
-from Sakuya.errorhandler import *
-from Sakuya.object import *
+from Sakuya.errors import *
 from Sakuya.math import *
-from Sakuya.config import *
+from Sakuya.entity import Entity
 
 class World:
     def __init__(self):
-        self.objects = []
-        self.gravity = Vector(0, 10)
+        self.entities = []
         self.current_tick = 1
         self.ticks_elapsed = 0
 
-    def test_collisions(self, object: Object):
-        objects = self.objects[:]
-        try: objects.remove(object)
-        except ValueError: raise ObjectNotInWorld()
+    def test_collisions(self, object: Entity):
+        entities = self.entities[:]
+        try:
+            entities.remove(object)
+        except ValueError:
+            raise ObjectNotInWorld
+
         collided = []
-        for o in objects:
+        for o in entities:
             if object.hitbox.collidecircle(o.hitbox):
                 collided.append(o)
 
         return collided
 
-    def find_objects_by_name(self, name):
-        objects = []
-        for o in self.objects:
+    def find_entities_by_name(self, name):
+        entities = []
+        for o in self.entities:
             if o.name == name:
-                objects.append(o)
+                entities.append(o)
 
-        return objects
+        return entities
 
     def advance_frame(self, delta_time: float):
         """
-        Updates the entities inside the world, such as physics & animation
+        Updates the entities inside the world, such as 
+        physics & animation
+        
         Should be added to the end of the main loop
         """
-        if self.current_tick <= TICKS_PER_SECOND:
-            self.current_tick = int(pygame.time.get_ticks() / 1000 * TICKS_PER_SECOND) % TICKS_PER_SECOND + 1
-            self.ticks_elapsed = int(pygame.time.get_ticks() / 1000 * TICKS_PER_SECOND) + 1
-        if self.current_tick > TICKS_PER_SECOND:
-            self.current_tick = 1
-
-        for object in self.objects[:]:
+        for object in self.entities[:]:
             object._gravity = self.gravity
             object.update(delta_time)
 
             if object._is_destroyed:
-                self.objects.remove(object)
+                self.entities.remove(object)

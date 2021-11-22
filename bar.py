@@ -1,6 +1,6 @@
 from Sakuya.math import *
 
-class BossBar:
+class Bar:
     def __init__(self, max_health, update_speed):
         """
         :param float max_health:
