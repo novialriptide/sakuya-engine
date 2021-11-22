@@ -92,7 +92,6 @@ class SceneManager:
         """
         instance = scene(self.client)
         self.registered_scenes[scene.__name__] = instance
-        print(self.registered_scenes)
 
     def get_scene(self, scene_name: str) -> Scene:
         return self.registered_scenes[scene_name]

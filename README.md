@@ -5,15 +5,14 @@ A game engine tool, named after a Touhou character, specifically made for bullet
 
 ## Features
 1. Primitive Physics Engine
-2. Bossbar (or Loading Bar)
-3. Circle Collision Detection
-4. Text
-5. Time
-6. Artificial Intelligence based on TPS
-7. Buttons
-8. Object Destroy
-9. Vectors
-10. Scenes
+2. Progressively Filling Bar
+3. Text
+4. Time
+5. Buttons
+6. Entity
+7. Vectors
+8. Scenes
+9. Controllers for Player & Artificial Intelligence
 
 ## Planned Features
 1. Tilemaps
@@ -25,8 +24,12 @@ A game engine tool, named after a Touhou character, specifically made for bullet
 7. Physics Engine Collisions
 8. [Tiled](https://www.mapeditor.org/) Support
 9. Object Render Management System
-10. Controller Support
-11. Menus
+10. Console Controller Support
+11. Easier Menu Support
+12. Revive Circle Support
+13. Debug Hitbox
+14. Moveable Camera
+15. Load Animations, Entities, Tilemaps, etc using JSON
 
 ## Developers
 1. [Andrew Hong](https://github.com/novialriptide)

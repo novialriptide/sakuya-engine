@@ -22,6 +22,7 @@ class Client:
         self.window_icon = window_icon
         self.running_scenes = {}
         self.scene_manager = None
+        self.pg_clock = pygame.time.Clock()
 
         self.screen = pygame.display.set_mode(
             (self.window_size.x, self.window_size.y)

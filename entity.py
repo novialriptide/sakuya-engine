@@ -3,25 +3,53 @@ from typing import List
 from .math import Vector
 from .animation import Animation
 from .physics import gravity
+from .controllers import BaseController
 
 class Entity:
-    def __init__(self, has_collision: bool = True):
-        self.animations = []
-        self.current_anim = None
+    def __init__(
+        self, 
+        controller: BaseController,
+        position: Vector,
+        has_collision: bool = True,
+        has_rigidbody: bool = False
+    ):
+        """
+        Objects that goes with a scene
+
+        Parameters:
+            controller: type of controller (ai or player)
+            has_collision
+        """
+        self.controller = controller()
+        self.has_collision = has_collision
+        self.animations = {}
+        self.current_anim = None # str
         self.current_anim_key = 0
-        self.position = None
+        self.position = position
         self.velocity = Vector(0, 0)
 
+        self.has_collision = has_collision
+        self.has_rigidbody = has_rigidbody
+
     @property
-    def name(self) -> str:
-        return __class__.__name__
+    def sprite(self) -> pygame.Surface:
+        cur_anim = self.anim_get(self.current_anim)
+        return cur_anim.sprites[self.current_anim_key]
 
     @property
     def rect(self) -> pygame.Rect:
-        cur_anim = self.anim_get(self.current_anim)
-        return cur_anim[self.current_anim_key].get_rect()
+        width, height = self.sprite.get_size()
+        rect = pygame.Rect(
+            self.position.x, 
+            self.position.y, 
+            width, height
+        )
+        return rect
 
-    def get_collisions(self, rects: List[pygame.Rect]) -> List[pygame.Rect]:
+    def get_collisions(
+        self,
+        rects: List[pygame.Rect]
+    ) -> List[pygame.Rect]:
         """
         Get a list of rects that collide with the entity's rect
 
@@ -49,16 +77,11 @@ class Entity:
             If true, the position has been updated
 
         """
-
-        # TODO: add collision support
-        test_rect = self.rect.copy()
-        test_rect.x += movement.x
-        test_rect.y += movement.y
-        tested_collisions = self.get_collisions(collision_rects)
-
+        
+        self.position += movement
 
     def anim_get(self, animation_name: str) -> Animation:
-        pass
+        return self.animations[animation_name]
 
     def anim_set(self, animation_name: str) -> bool:
         """
@@ -71,7 +94,7 @@ class Entity:
             If true, playing the animation was successful
 
         """
-        pass
+        self.current_anim = animation_name
 
     def anim_add(self, animation: Animation) -> None:
         """
@@ -81,7 +104,7 @@ class Entity:
             animation: Animation to be added
 
         """
-        self.animations.append(animation)
+        self.animations[animation.name] = animation
 
     def anim_remove(self, animation_name: str) -> bool:
         """
@@ -104,9 +127,12 @@ class Entity:
             delta_time: the game's delta time
 
         """
+        self.velocity += self.controller.movement * delta_time * self.controller.speed
+
         if self.has_rigidbody:
             self.velocity += (
                 self.acceleration
                 + gravity
             ) * delta_time
-            self.move(self.velocity * delta_time)
+            
+        self.move(self.velocity * delta_time, [])
