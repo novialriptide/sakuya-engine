@@ -13,7 +13,6 @@ from .text import *
 from .tilemap import *
 from .tileset import *
 from .time import *
-from .world import *
 
 __version__ = "1.1"
 print(f"running sakuya {__version__} by novial (using pygame {pg_ver})\nsource code: https://github.com/novialriptide/Sakuya")

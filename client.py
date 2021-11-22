@@ -1,6 +1,5 @@
 import pygame
-from ProjectRespawn.Sakuya.errors import NoActiveScene
-from .scene import Scene
+from .errors import NoActiveScene
 from .math import Vector
 
 class Client:
@@ -8,16 +7,32 @@ class Client:
         self,
         window_name: str,
         window_size: Vector,
+        window_icon: pygame.Surface = None
     ) -> None:
+        """
+        The game's main client
+
+        Parameters:
+            window_name: the window's name
+            window_size: the window size
+        """
         self.is_running = True
         self._window_name = window_name
         self.window_size = window_size
+        self.window_icon = window_icon
         self.running_scenes = {}
+        self.scene_manager = None
 
         self.screen = pygame.display.set_mode(
             (self.window_size.x, self.window_size.y)
         )
         pygame.display.set_caption(self._window_name)
+
+        if self.window_icon is None:
+            pass # add sakuya as a default icon
+
+        if self.window_icon is not None:
+            pygame.display.set_icon(self.window_icon)
 
     @property
     def window_name(self) -> str:
@@ -43,37 +58,41 @@ class Client:
             
             pygame.display.flip()
 
-    def add_scene(self, scene: Scene, **kwargs) -> None:
+    def add_scene(self, scene_name: str, **kwargs) -> None:
         """
         Adds scene to running scene 
 
         Parameters:
-            scene: Scene to be added
+            scene_name: str to be added
         """
-        scene.on_awake(kwargs)
-        self.running_scenes[scene.name] = {"scene": scene(), "kwargs": kwargs}
+        scene = self.scene_manager.get_scene(scene_name)
+        scene.on_awake(**kwargs)
+        self.running_scenes[scene.name] = {"scene": scene, "kwargs": kwargs}
 
-    def remove_scene(self, scene: Scene, **kwargs) -> None:
+    def remove_scene(self, scene_name: str, **kwargs) -> None:
         """
         Removes scene
 
         Parameters:
-            scene: Scene to be removed
+            scene_name: str to be removed
         """
-        scene.on_delete(kwargs)
+        scene = self.scene_manager.get_scene(scene_name)
+        scene.on_delete(**kwargs)
         del self.running_scenes[scene.name]
 
     def replace_scene(
         self,
-        old_scene: Scene,
-        new_scene: Scene, 
+        old_scene_name: str,
+        new_scene_name: str, 
         **kwargs
     ) -> None:
         """
         Removes and adds a scene
 
         Parameters:
-            scene: Scene to be added
+            scene_name: str to be added
         """
+        old_scene = self.scene_manager.get_scene(old_scene_name)
+        new_scene = self.scene_manager.get_scene(new_scene_name)
         self.remove_scene(old_scene)
-        self.add_scene(new_scene, kwargs)
+        self.add_scene(new_scene, **kwargs)
