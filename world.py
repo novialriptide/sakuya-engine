@@ -1,6 +1,6 @@
-from Sakuya.errors import *
-from Sakuya.math import *
-from Sakuya.entity import Entity
+from .errors import *
+from .math import *
+from .entity import Entity
 
 class World:
     def __init__(self):

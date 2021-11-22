@@ -1,10 +1,5 @@
-from Sakuya.config import *
-from Sakuya.errorhandler import *
+from .errors import NegativeSpeedError
 import math
-import typing
-
-Pixel = typing.NewType("Pixel", int)
-Unit = typing.NewType("Unit", float)
 
 class Vector:
     def __init__(self, x: float, y: float):
@@ -39,12 +34,6 @@ class Vector:
 
 def to_vector(point):
     return Vector(point[0], point[1])
-
-def to_pixels(val: Unit):
-    return val * PIXELS_PER_UNIT
-
-def to_units(val: Pixel):
-    return val / PIXELS_PER_UNIT
 
 def get_angle(origin: Vector, direction: Vector) -> float:
     """

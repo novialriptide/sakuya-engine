@@ -4,7 +4,7 @@ class Scene:
 
     @property
     def name(self) -> str:
-        return __name__
+        return __class__.__name__
 
     def on_awake(self) -> None:
         """

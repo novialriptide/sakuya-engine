@@ -12,4 +12,4 @@ class Animation:
     
     @property
     def name() -> str:
-        return __name__
+        return __class__.__name__

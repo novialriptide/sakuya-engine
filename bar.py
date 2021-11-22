@@ -1,4 +1,4 @@
-from Sakuya.math import *
+from .math import move_toward
 
 class Bar:
     def __init__(self, max_health, update_speed):

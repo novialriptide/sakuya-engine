@@ -1,20 +1,18 @@
 import pygame
-from typing import Dictionary
 from ProjectRespawn.Sakuya.errors import NoActiveScene
-from Sakuya.scene import Scene
-from Sakuya.math import Vector
+from .scene import Scene
+from .math import Vector
 
 class Client:
     def __init__(
         self,
         window_name: str,
         window_size: Vector,
-        initial_scenes: Dictionary[Scene],
     ) -> None:
         self.is_running = True
         self._window_name = window_name
         self.window_size = window_size
-        self.running_scenes = initial_scenes
+        self.running_scenes = {}
 
         self.screen = pygame.display.set_mode(
             (self.window_size.x, self.window_size.y)
@@ -39,6 +37,7 @@ class Client:
                 raise NoActiveScene
 
             for s in self.running_scenes:
+                s = self.running_scenes[s]["scene"]
                 if s.is_paused:
                     s.update()
             
@@ -52,7 +51,7 @@ class Client:
             scene: Scene to be added
         """
         scene.on_awake(kwargs)
-        self.running_scenes[scene.name] = {"scene": scene, "kwargs": kwargs}
+        self.running_scenes[scene.name] = {"scene": scene(), "kwargs": kwargs}
 
     def remove_scene(self, scene: Scene, **kwargs) -> None:
         """

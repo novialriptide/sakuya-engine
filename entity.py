@@ -1,8 +1,8 @@
 import pygame
 from typing import List
-from Sakuya.math import Vector
-from Sakuya.animation import Animation
-from Sakuya.physics import gravity
+from .math import Vector
+from .animation import Animation
+from .physics import gravity
 
 class Entity:
     def __init__(self, has_collision: bool = True):
@@ -14,7 +14,7 @@ class Entity:
 
     @property
     def name(self) -> str:
-        return __name__
+        return __class__.__name__
 
     @property
     def rect(self) -> pygame.Rect:

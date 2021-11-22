@@ -7,7 +7,6 @@ from .button import *
 from .entity import *
 from .errors import *
 from .math import *
-from .particles import *
 from .physics import *
 from .scene import *
 from .text import *
