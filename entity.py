@@ -1,4 +1,5 @@
 import pygame
+import json
 from typing import List
 from .math import Vector
 from .animation import Animation
@@ -24,9 +25,13 @@ class Entity:
         self.has_collision = has_collision
         self.animations = {}
         self.current_anim = None # str
-        self.current_anim_key = 0
-        self.position = position
+        self.current_anim_key = 0 # int
+        self.position = position # Vector
         self.velocity = Vector(0, 0)
+        # terminal velocity must be multipled
+        # with delta time in comparision
+        self.terminal_velocity = 10.0 # float
+        self.enable_terminal_velocity = False
 
         self.has_collision = has_collision
         self.has_rigidbody = has_rigidbody
@@ -127,6 +132,18 @@ class Entity:
             delta_time: the game's delta time
 
         """
+        # apply terminal velocity
+        # TODO: find a cleaner way to implement this
+        term_vec = self.terminal_velocity * delta_time
+        if self.velocity.x < 0 and self.enable_terminal_velocity:
+            self.velocity.x = max(self.velocity.x, term_vec)
+        if self.velocity.x > 0 and self.enable_terminal_velocity:
+            self.velocity.x = min(self.velocity.x, term_vec)
+        if self.velocity.y < 0 and self.enable_terminal_velocity:
+            self.velocity.y = max(self.velocity.y, term_vec)
+        if self.velocity.y > 0 and self.enable_terminal_velocity:
+            self.velocity.y = min(self.velocity.y, term_vec)
+
         self.velocity += self.controller.movement * delta_time * self.controller.speed
 
         if self.has_rigidbody:
@@ -134,5 +151,12 @@ class Entity:
                 self.acceleration
                 + gravity
             ) * delta_time
-            
+        
+        print(self.velocity, self.terminal_velocity * delta_time)
         self.move(self.velocity * delta_time, [])
+
+def load_entity(json_path: str) -> Entity:
+    pass
+
+def dump_entity(dump_path: str) -> None:
+    pass
