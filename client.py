@@ -21,24 +21,30 @@ class Client:
             window_name: the window's name
             window_size: the window size
         """
-        self.is_running = True
+        self.is_running = True # bool
         self._window_name = window_name # str
         self.original_window_size = window_size # Vector
         self.window_icon = window_icon
         self.keep_aspect_ratio = keep_aspect_ratio # bool
-        self.original_aspect_ratio = window_size.ratio_xy
+        self.original_aspect_ratio = window_size.ratio_xy # float
+        
         self.running_scenes = {}
-        self.scene_manager = None
+        self.scene_manager = None # SceneManager
+        
         self.pg_clock = pygame.time.Clock()
+        self.max_fps = -1 # int
+        self.delta_time = 0
 
         self.pg_flag = 0
         if resizeable_window:
             self.pg_flag = pygame.RESIZABLE
 
-        self.screen = pygame.display.set_mode(
+        self.window = pygame.display.set_mode(
             (window_size.x, window_size.y),
             self.pg_flag
         )
+        self.screen = pygame.Surface((window_size.x, window_size.y))
+
         pygame.display.set_caption(self._window_name)
 
         if self.window_icon is None:
@@ -58,14 +64,12 @@ class Client:
 
     @property
     def window_size(self) -> Vector:
-        screen_rect = self.screen.get_rect()
-        return Vector(screen_rect.x, screen_rect.y)
+        window_rect = self.window.get_rect()
+        return Vector(window_rect.width, window_rect.height)
 
     @property
-    def adjust_to_screensize(self) -> Vector:
-        raise NotImplementedError
-        
-        return Vector()
+    def current_fps(self) -> float:
+        return self.pg_clock.get_fps()
 
     def main(self) -> None:
         """
@@ -81,7 +85,7 @@ class Client:
                     pump=True
                 )
                 if pg_event != []:
-                    self.screen = pygame.display.set_mode((
+                    self.window = pygame.display.set_mode((
                         pg_event[0].w, 
                         pg_event[0].w * self.original_window_size.ratio_yx),
                         self.pg_flag
@@ -92,6 +96,9 @@ class Client:
                 if s.is_paused:
                     s.update()
             
+            screen = pygame.transform.scale(self.screen, (self.window_size.x, self.window_size.y))
+            self.window.blit(screen, (0,0))
+            self.delta_time = self.pg_clock.tick(self.max_fps) / 1000
             pygame.display.flip()
 
     def add_scene(self, scene_name: str, **kwargs) -> None:
