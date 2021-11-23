@@ -6,6 +6,14 @@ class Vector:
         self.x = x
         self.y = y
 
+    @property
+    def ratio_xy(self):
+        return self.x / self.y
+
+    @property
+    def ratio_yx(self):
+        return self.y / self.x
+
     def __str__(self) -> str:
         return f"({self.x}, {self.y})"
 
@@ -44,7 +52,7 @@ def get_angle(origin: Vector, direction: Vector) -> float:
 
 def move_toward(origin: float, target: float, speed: float):
     if speed < 0:
-        raise NegativeSpeedError()
+         NegativeSpeedError()
 
     if abs(target - origin) <= speed:
         return target
