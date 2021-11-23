@@ -21,6 +21,8 @@ class Entity:
             controller: type of controller (ai or player)
             has_collision
         """
+        self.scale = Vector(1, 1)
+        
         self.controller = controller()
         self.has_collision = has_collision
         self.animations = {}
@@ -152,7 +154,6 @@ class Entity:
                 + gravity
             ) * delta_time
         
-        print(self.velocity, self.terminal_velocity * delta_time)
         self.move(self.velocity * delta_time, [])
 
 def load_entity(json_path: str) -> Entity:
