@@ -1,6 +1,6 @@
 from .client import Client
 from .entity import Entity
-from .errors import ObjectNotInWorld
+from .errors import ObjectNotInWorldError
 
 from typing import List
 
