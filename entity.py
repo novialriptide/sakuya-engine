@@ -30,6 +30,7 @@ class Entity:
         self.current_anim_key = 0 # int
         self.position = position # Vector
         self.velocity = Vector(0, 0)
+        self.acceleration = Vector(0, 0)
         # terminal velocity must be multipled
         # with delta time in comparision
         self.terminal_velocity = 10.0 # float
@@ -146,13 +147,13 @@ class Entity:
         if self.velocity.y > 0 and self.enable_terminal_velocity:
             self.velocity.y = min(self.velocity.y, term_vec)
 
-        self.velocity += self.controller.movement * delta_time * self.controller.speed
+        self.velocity += self.controller.movement * self.controller.speed
 
         if self.has_rigidbody:
             self.velocity += (
                 self.acceleration
                 + gravity
-            ) * delta_time
+            )
         
         self.move(self.velocity * delta_time, [])
 
