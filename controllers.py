@@ -1,6 +1,9 @@
 from .math import Vector
 
 class BaseController:
+    """
+    Base class of a controller for a Player or Artificial Intelligence
+    """
     def __init__(self, speed: int) -> None:
         """
         Used to control player movements
