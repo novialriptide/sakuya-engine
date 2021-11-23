@@ -10,8 +10,7 @@ from .math import *
 from .physics import *
 from .scene import *
 from .text import *
-from .tilemap import *
-from .tileset import *
+from .tile import *
 from .time import *
 
 __version__ = "1.1"
