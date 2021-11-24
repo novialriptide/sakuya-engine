@@ -1,6 +1,12 @@
+from __future__ import annotations
+
 import pygame
 import json
+import math
+
 from typing import List
+from copy import copy
+
 from .math import Vector
 from .animation import Animation
 from .physics import gravity
@@ -27,7 +33,6 @@ class Entity:
         self.has_collision = has_collision
         self.animations = {}
         self.current_anim = None # str
-        self.current_anim_key = 0 # int
         self.position = position # Vector
         self.velocity = Vector(0, 0)
         self.acceleration = Vector(0, 0)
@@ -42,7 +47,7 @@ class Entity:
     @property
     def sprite(self) -> pygame.Surface:
         cur_anim = self.anim_get(self.current_anim)
-        return cur_anim.sprites[self.current_anim_key]
+        return cur_anim.sprite
 
     @property
     def rect(self) -> pygame.Rect:
@@ -59,13 +64,11 @@ class Entity:
         rects: List[pygame.Rect]
     ) -> List[pygame.Rect]:
         """
-        Get a list of rects that collide with the entity's rect
+        Get a list of rects that collide with the entity's rect.
+        It's recommended to use scene.test_collisions() instead.
 
         Parameters:
-            rects: list of pygame rects
-
-        Returns:
-            list of collided rects
+            rects: List of pygame rects.
 
         """
         return pygame.Rect.collidelistall(self.rect, rects)
@@ -87,6 +90,28 @@ class Entity:
         """
         
         self.position += movement
+    
+    def shoot(
+        self,
+        offset: Vector,
+        projectile,
+        angle: float,
+        speed: int
+    ) -> Entity:
+        """
+        Shoot an entity.
+
+        Parameters:
+            offset: The position offset of where the projectile's initial position.
+            projectile: The entity that will be spawned.
+            angle: The angle (radian) of the projectile's velocity
+            speed: Speed of the projectile.
+
+        """
+        projectile = copy(projectile)
+        projectile.velocity = Vector(speed * math.cos(angle), speed * math.sin(angle))
+        projectile.position = self.position + offset
+        return projectile
 
     def anim_get(self, animation_name: str) -> Animation:
         return self.animations[animation_name]
@@ -125,7 +150,7 @@ class Entity:
             If true, removing the animation was successful
 
         """
-        pass
+        raise NotImplementedError
 
     def update(self, delta_time) -> None:
         """
@@ -135,6 +160,9 @@ class Entity:
             delta_time: the game's delta time
 
         """
+        # animations
+        self.anim_get(self.current_anim).update(delta_time)
+
         # apply terminal velocity
         # TODO: find a cleaner way to implement this
         term_vec = self.terminal_velocity * delta_time
@@ -158,7 +186,7 @@ class Entity:
         self.move(self.velocity * delta_time, [])
 
 def load_entity(json_path: str) -> Entity:
-    pass
+    raise NotImplementedError
 
 def dump_entity(dump_path: str) -> None:
-    pass
+    raise NotImplementedError
