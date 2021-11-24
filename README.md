@@ -13,6 +13,7 @@ A game engine tool, named after a Touhou character, specifically made for bullet
 7. Vectors
 8. Scenes
 9. Controllers for Player & Artificial Intelligence
+10. Auto Window Resizing
 
 ## Planned Features
 1. Tilemaps
