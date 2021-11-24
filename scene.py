@@ -1,6 +1,6 @@
 from .client import Client
 from .entity import Entity
-from .errors import ObjectNotInWorldError
+from .errors import EntityNotInScene
 
 from typing import List
 
@@ -43,12 +43,17 @@ class Scene:
         Will be called upon every frame. advance_frame() is recommended.
         
         Must be overrided.
+
         """
         pass
 
-    def find_entities_by_name(self, name) -> List[Entity]:
+    def find_entities_by_name(self, name: str) -> List[Entity]:
         """
         Finds all registered entities in this scene
+
+        Parameters:
+            name: Name of the entity
+
         """
         entities = []
         for o in self.entities:
@@ -57,12 +62,27 @@ class Scene:
 
         return entities
 
+    def test_collisions(self, entity: Entity) -> List[Entity]:
+        entities = self.entities[:] # copies the list
+        try:
+            entities.remove(entity)
+        except:
+            raise EntityNotInScene
+        
+        collided = []
+        for e in entities:
+            if entity.hitbox.colliderect(e.hitbox):
+                collided.append(e)
+
+        return collided
+
     def advance_frame(self, delta_time: float) -> None:
         """
         Updates the entities inside the world, such as 
         physics & animation
         
         Should be added to the end of the main loop
+
         """
         for object in self.entities[:]:
             object._gravity = self.gravity
@@ -78,6 +98,7 @@ class SceneManager:
 
         Parameters:
             client: game client
+
         """
         client.scene_manager = self
         self.client = client
@@ -89,6 +110,7 @@ class SceneManager:
 
         Parameters:
             scene: scene to be registered
+
         """
         instance = scene(self.client)
         self.registered_scenes[scene.__name__] = instance

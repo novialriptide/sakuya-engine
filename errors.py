@@ -3,16 +3,16 @@ class Error(Exception):
 
 class NotImplementedError(Error):
     def __init__(self):
-        self.message = "This feature is not available"
+        self.message = "This feature is not available."
 
 class NegativeSpeedError(Error):
     def __init__(self):
-        self.message = "Speed cannot be negative"
+        self.message = "Speed cannot be negative."
 
-class ObjectNotInWorldError(Error):
+class EntityNotInScene(Error):
     def __init__(self):
-        self.message = "Object is not in the world"
+        self.message = "Entity is not in scene."
 
 class NoActiveSceneError(Error):
     def __init__(self):
-        self.message = "No scene is active"
+        self.message = "No scene is active."
