@@ -1,4 +1,5 @@
 import pygame
+import time
 
 from copy import copy
 
@@ -75,10 +76,16 @@ class Client:
         """
         Main game loop
         """
+        last_time = time.time()
         while(self.is_running):
+            # delta time
+            self.delta_time = (time.time() - last_time) * 60
+            last_time = time.time()
+
             if self.running_scenes == []:
                 raise NoActiveSceneError
 
+            # keep aspect ratio
             if self.keep_aspect_ratio:
                 pg_event = pygame.event.get(
                     eventtype=pygame.VIDEORESIZE,
@@ -90,7 +97,8 @@ class Client:
                         pg_event[0].w * self.original_window_size.ratio_yx),
                         self.pg_flag
                     )
-
+            
+            # update all scenes
             for s in self.running_scenes:
                 s = self.running_scenes[s]["scene"]
                 if s.is_paused:
@@ -98,8 +106,8 @@ class Client:
             
             screen = pygame.transform.scale(self.screen, (self.window_size.x, self.window_size.y))
             self.window.blit(screen, (0,0))
-            self.delta_time = self.pg_clock.tick(self.max_fps) / 1000
             pygame.display.flip()
+            self.pg_clock.tick(self.max_fps)
 
     def add_scene(self, scene_name: str, **kwargs) -> None:
         """
