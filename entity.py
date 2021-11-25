@@ -18,7 +18,8 @@ class Entity:
         controller: BaseController,
         position: Vector,
         has_collision: bool = True,
-        has_rigidbody: bool = False
+        has_rigidbody: bool = False,
+        scale: int = 1
     ):
         """
         Objects that goes with a scene
@@ -27,7 +28,7 @@ class Entity:
             controller: type of controller (ai or player)
             has_collision
         """
-        self.scale = Vector(1, 1)
+        self.scale = Vector(1, 1) * scale
         
         self.controller = controller()
         self.has_collision = has_collision
@@ -47,7 +48,14 @@ class Entity:
     @property
     def sprite(self) -> pygame.Surface:
         cur_anim = self.anim_get(self.current_anim)
-        return cur_anim.sprite
+        width, height = cur_anim.sprite.get_size()
+        scaled_sprite = pygame.transform.scale(
+            cur_anim.sprite, (
+                self.scale.x * width, 
+                self.scale.y * height
+            )
+        )
+        return scaled_sprite
 
     @property
     def rect(self) -> pygame.Rect:
