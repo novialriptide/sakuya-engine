@@ -1,3 +1,3 @@
 from .math import Vector
 
-gravity = Vector(0, 0.5)
+gravity = Vector(0, 0.10)
