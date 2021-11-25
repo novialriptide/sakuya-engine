@@ -27,7 +27,7 @@ def crop_tile_image(
     return tile
 
 def split_image(
-    image_path: str,
+    image: pygame.Surface,
     px_width: int,
     px_height: int,
     px_distance: int = 0
@@ -36,13 +36,29 @@ def split_image(
     Split an image into a tileset.
 
     Parameters:
-        image_path: The image's path.
+        image: A pygame loaded image.
         px_width: The tile's width in pixels.
         px_height: The tile's height in pixels.
         px_distance: The distance between every tile (WIP).
 
     """
-    raise NotImplementedError
+    rect = image.get_rect()
+    columns = int(rect.width / px_width)
+    rows = int(rect.height / px_height)
+    tiles = [] # List[pygame.Surface]
+
+    for r in range(rows):
+        for c in range(columns):
+            tiles.append(
+                crop_tile_image(
+                    image,
+                    c, r, 
+                    px_width,
+                    px_height
+                )
+            )
+
+    return tiles
 
 class TileMap:
     def __init__(self):
