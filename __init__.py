@@ -13,5 +13,5 @@ from .text import *
 from .tile import *
 from .time import *
 
-__version__ = "2.0"
+__version__ = "2.0.1"
 print(f"running sakuya {__version__} by novial (using pygame {pg_ver})\nsource code: https://github.com/novialriptide/Sakuya")
