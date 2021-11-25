@@ -5,8 +5,8 @@ from typing import List
 from .math import Vector
 from .errors import NotImplementedError
 
-def _get_tile_image(
-    image_path: str,
+def crop_tile_image(
+    image: pygame.Surface,
     x: int, y: int,
     width: int, height: int
 ) -> pygame.Surface:
@@ -15,14 +15,16 @@ def _get_tile_image(
     Not intended to be used outside of this file.
 
     Parameters:
-        image_path: The image's path.
+        image: A pygame loaded image.
         x: The tile's x position.
         y: The tile's y position.
         width: The tile's width.
         height: The tile's height.
 
     """
-    raise NotImplementedError
+    tile = image.subsurface((x*width, y*height, width, height))
+
+    return tile
 
 def split_image(
     image_path: str,
