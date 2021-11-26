@@ -32,33 +32,35 @@ class Particle:
             self._is_destroyed = True
 
         self.velocity += gravity
-        self.position = self.velocity * math.pow(delta_time, 2)
+        self.position += self.velocity * math.pow(delta_time, 2)
 
 class Particles:
     def __init__(
         self,
-        position: Vector,
         velocity: Vector,
-        spread: int = 5,
+        spread: int = 3,
         particles_num: int = 2,
         colors: List[Tuple[int, int, int]] = [],
-        lifetime = 5000
+        lifetime: int = 1000,
+        offset: Vector = Vector(0,0)
     ):
         self.particles = []
         self.velocity = velocity
         self.colors = colors
-        self.position = position # Vector
         self.spread = spread # Vector
         self.particles_num = particles_num # int
         self.lifetime = lifetime
+        self.offset = offset
 
-    def update(self, delta_time):
+    def update(self, delta_time, position):
         for p in range(self.particles_num):
             random_color = random.randrange(0, len(self.colors))
+            random_spread_x = random.uniform(-self.spread, self.spread)
+            random_spread_y = random.uniform(-self.spread, self.spread)
             par = Particle(
-                self.position, 
+                position + self.offset,
                 self.colors[random_color],
-                self.velocity * random.uniform(-self.spread, self.spread)
+                Vector(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y)
             )
             par.on_destroy(self.lifetime)
             self.particles.append(par)
