@@ -192,7 +192,6 @@ class Entity:
             )
         
         self.move(self.velocity * math.pow(delta_time, 2), [])
-        print(self.velocity, delta_time)
 
 def load_entity(json_path: str) -> Entity:
     raise NotImplementedError
