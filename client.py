@@ -13,7 +13,8 @@ class Client:
         window_size: Vector,
         window_icon: pygame.Surface = None,
         resizeable_window: bool = True,
-        keep_aspect_ratio: bool = True
+        keep_aspect_ratio: bool = True,
+        scale_upon_startup: float = 1
     ) -> None:
         """
         The game's main client
@@ -40,11 +41,8 @@ class Client:
         if resizeable_window:
             self.pg_flag = pygame.RESIZABLE
 
-        self.window = pygame.display.set_mode(
-            (window_size.x, window_size.y),
-            self.pg_flag
-        )
         self.screen = pygame.Surface((window_size.x, window_size.y))
+        self.window_size = window_size * scale_upon_startup
 
         pygame.display.set_caption(self._window_name)
 
@@ -67,6 +65,13 @@ class Client:
     def window_size(self) -> Vector:
         window_rect = self.window.get_rect()
         return Vector(window_rect.width, window_rect.height)
+
+    @window_size.setter
+    def window_size(self, window_size) -> None:
+        self.window = pygame.display.set_mode(
+            (window_size.x, window_size.y),
+            self.pg_flag
+        )
 
     @property
     def current_fps(self) -> float:

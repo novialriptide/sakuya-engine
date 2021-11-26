@@ -76,9 +76,3 @@ class TileSet:
     @property
     def rows(self):
         raise NotImplementedError
-
-class Tile:
-    def __init__(self):
-        self.sprites = [] # List of pygame.Surfaces
-        self.sprite_key = 0 # int
-        raise NotImplementedError
