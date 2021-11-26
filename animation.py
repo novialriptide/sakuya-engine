@@ -16,14 +16,10 @@ class Animation:
     
     @property
     def sprite(self) -> pygame.Surface:
-        return self.sprites[self.current_frame]
+        return self.sprites[int(self.current_frame)]
     
     def update(self, delta_time):
-        if self.time_elapsed >= self.fps:
-            self.time_elapsed = 0
-            self.current_frame += 1
-        
-        if self.current_frame == len(self.sprites):
+        self.current_frame += delta_time * self.fps / 60
+
+        if self.current_frame >= len(self.sprites):
             self.current_frame = 0
-        
-        self.time_elapsed += delta_time

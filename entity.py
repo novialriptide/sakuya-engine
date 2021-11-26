@@ -183,16 +183,16 @@ class Entity:
         if self.velocity.y > 0 and self.enable_terminal_velocity:
             self.velocity.y = min(self.velocity.y, term_vec)
 
-        self.velocity += self.controller.movement * self.controller.speed * delta_time
+        self.velocity += self.controller.movement * self.controller.speed
 
         if self.has_rigidbody:
             self.velocity += (
                 (self.acceleration
-                + gravity) * delta_time
+                + gravity)
             )
         
-        self.move(self.velocity, [])
-        print(self.velocity)
+        self.move(self.velocity * math.pow(delta_time, 2), [])
+        print(self.velocity, delta_time)
 
 def load_entity(json_path: str) -> Entity:
     raise NotImplementedError
