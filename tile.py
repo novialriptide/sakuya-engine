@@ -47,6 +47,9 @@ def split_image(
     rows = int(rect.height / px_height)
     tiles = [] # List[pygame.Surface]
 
+    if px_distance is not 0:
+        raise NotImplementedError
+
     for r in range(rows):
         for c in range(columns):
             tiles.append(
@@ -70,9 +73,9 @@ class TileSet:
         raise NotImplementedError
 
     @property
-    def columns(self):
+    def columns(self) -> int:
         raise NotImplementedError
 
     @property
-    def rows(self):
+    def rows(self) -> int:
         raise NotImplementedError

@@ -20,14 +20,14 @@ class Particle:
         self._enable_on_destroy = False
         self._is_destroyed = False
         
-    def on_destroy(self, time: int):
+    def on_destroy(self, time: int) -> None:
         """
         :param int time: milliseconds to destruction
         """
         self._enable_on_destroy = True
         self._on_destroy_val = time + pygame.time.get_ticks()
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
         if self._enable_on_destroy and self._on_destroy_val <= pygame.time.get_ticks():
             self._is_destroyed = True
 
@@ -51,8 +51,12 @@ class Particles:
         self.particles_num = particles_num # int
         self.lifetime = lifetime
         self.offset = offset
+    
+    def render(self, surface: pygame.Surface) -> None:
+        for p in self.particles:
+            surface.set_at((int(p.position.x), int(p.position.y)), p.color)
 
-    def update(self, delta_time, position):
+    def update(self, delta_time: float, position: Vector) -> None:
         for p in range(self.particles_num):
             random_color = random.randrange(0, len(self.colors))
             random_spread_x = random.uniform(-self.spread, self.spread)

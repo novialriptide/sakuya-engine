@@ -1,12 +1,9 @@
 from .math import Vector
 
 class BaseController:
-    """
-    Base class of a controller for a Player or Artificial Intelligence
-    """
+    """Base class of a controller for a Player or Artificial Intelligence"""
     def __init__(self, speed: int) -> None:
-        """
-        Used to control player movements
+        """Used to control player movements
 
         Parameters:
             speed: Player movement speed
@@ -18,7 +15,7 @@ class BaseController:
         self.speed = speed
 
     @property
-    def movement(self):
+    def movement(self) -> Vector:
         _movement = Vector(0, 0)
         if self.is_moving_right:
             _movement.x = self.speed
@@ -31,10 +28,8 @@ class BaseController:
 
         return _movement
 
-    def stop_movement(self):
-        """
-        Stops the controller's movement
-        """
+    def stop_movement(self) -> None:
+        """Stops the controller's movement"""
         self.is_moving_right = False
         self.is_moving_left = False
         self.is_moving_down = False

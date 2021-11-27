@@ -8,12 +8,12 @@ from GameDen Engine for Novial's Gravity.
 Therefore, parameters should be the same.
 """
 
-def text(text: str, size: int, sys_font: str, color: str):
+def text(text: str, size: int, sys_font: str, color: str) -> pygame.Surface:
     formatting = pygame.font.SysFont(sys_font,int(size))
     text_surface = formatting.render(text,True,color)
     return text_surface
 
-def text2(text: str, size: int, font: str, color: str):
+def text2(text: str, size: int, font: str, color: str) -> pygame.Surface:
     formatting = pygame.font.Font(font,int(size))
     text_surface = formatting.render(text,True,color)
     return text_surface

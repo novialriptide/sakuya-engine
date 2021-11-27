@@ -11,6 +11,7 @@ from .math import Vector
 from .animation import Animation
 from .physics import gravity
 from .controllers import BaseController
+from .particles import Particles
 
 class Entity:
     def __init__(
@@ -19,10 +20,10 @@ class Entity:
         position: Vector,
         has_collision: bool = True,
         has_rigidbody: bool = False,
-        scale: int = 1
+        scale: int = 1,
+        particle_systems: List[Particles] = []
     ):
-        """
-        Objects that goes with a scene
+        """Objects that goes with a scene
 
         Parameters:
             controller: type of controller (ai or player)
@@ -30,7 +31,11 @@ class Entity:
         """
         self.scale = Vector(1, 1) * scale
         
-        self.controller = controller()
+        if controller is not None:
+            self.controller = controller()
+        if controller is None:
+            self.controller = None
+
         self.has_collision = has_collision
         self.animations = {}
         self.current_anim = None # str
@@ -44,6 +49,8 @@ class Entity:
 
         self.has_collision = has_collision
         self.has_rigidbody = has_rigidbody
+
+        self.particle_systems = particle_systems
 
     @property
     def sprite(self) -> pygame.Surface:
@@ -71,8 +78,8 @@ class Entity:
         self,
         rects: List[pygame.Rect]
     ) -> List[pygame.Rect]:
-        """
-        Get a list of rects that collide with the entity's rect.
+        """Get a list of rects that collide with the entity's rect.
+        
         It's recommended to use scene.test_collisions() instead.
 
         Parameters:
@@ -86,8 +93,7 @@ class Entity:
         movement: Vector, 
         collision_rects: List[pygame.Rect]
     ) -> bool:
-        """
-        Moves the position
+        """Moves the position
 
         Parameters:
             movement: value to add to position
@@ -106,8 +112,7 @@ class Entity:
         angle: float,
         speed: int
     ) -> Entity:
-        """
-        Shoot an entity.
+        """Shoot an entity.
 
         Parameters:
             offset: The position offset of where the projectile's initial position.
@@ -125,8 +130,7 @@ class Entity:
         return self.animations[animation_name]
 
     def anim_set(self, animation_name: str) -> bool:
-        """
-        Assign an animation to be played
+        """Assign an animation to be played
 
         Parameters:
             animation_name: Animation to be played
@@ -138,8 +142,7 @@ class Entity:
         self.current_anim = animation_name
 
     def anim_add(self, animation: Animation) -> None:
-        """
-        Adds an animation
+        """Adds an animation
 
         Parameters:
             animation: Animation to be added
@@ -148,8 +151,7 @@ class Entity:
         self.animations[animation.name] = animation
 
     def anim_remove(self, animation_name: str) -> bool:
-        """
-        Removes an animation
+        """Removes an animation
 
         Parameters:
             animation_name: Animation to be removed
@@ -161,13 +163,16 @@ class Entity:
         raise NotImplementedError
 
     def update(self, delta_time) -> None:
-        """
-        Updates the position, animation, etc
+        """Updates the position, animation, etc
 
         Parameters:
             delta_time: the game's delta time
 
         """
+        # particles
+        for ps in self.particle_systems:
+            ps.update(delta_time, self.position)
+
         # animations
         self.anim_get(self.current_anim).update(delta_time)
 
@@ -183,7 +188,8 @@ class Entity:
         if self.velocity.y > 0 and self.enable_terminal_velocity:
             self.velocity.y = min(self.velocity.y, term_vec)
 
-        self.velocity += self.controller.movement * self.controller.speed
+        if self.controller is not None:
+            self.velocity += self.controller.movement * self.controller.speed
 
         if self.has_rigidbody:
             self.velocity += (
