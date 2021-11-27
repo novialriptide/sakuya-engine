@@ -21,7 +21,8 @@ class Entity:
         has_collision: bool = True,
         has_rigidbody: bool = False,
         scale: int = 1,
-        particle_systems: List[Particles] = []
+        particle_systems: List[Particles] = [],
+        obey_gravity: bool = True
     ):
         """Objects that goes with a scene
 
@@ -42,6 +43,7 @@ class Entity:
         self.position = position # Vector
         self.velocity = Vector(0, 0)
         self.acceleration = Vector(0, 0)
+        self.obey_gravity = obey_gravity # bool
         # terminal velocity must be multipled
         # with delta time in comparision
         self.terminal_velocity = 10.0 # float
@@ -148,7 +150,7 @@ class Entity:
             animation: Animation to be added
 
         """
-        self.animations[animation.name] = animation
+        self.animations[animation.name] = copy(animation)
 
     def anim_remove(self, animation_name: str) -> bool:
         """Removes an animation
@@ -161,6 +163,22 @@ class Entity:
 
         """
         raise NotImplementedError
+
+    def copy(self) -> Entity:
+        """Returns a copy of the entity
+        
+        You should not use Python3's copy.copy() method since
+        it will interfere with the same entities animations
+
+        """
+        e = copy(self)
+        new_anims = {}
+        for a in self.animations.keys():
+            new_anims[a] = copy(self.anim_get(a))
+
+        e.animations = new_anims
+
+        return e
 
     def update(self, delta_time) -> None:
         """Updates the position, animation, etc
@@ -191,10 +209,14 @@ class Entity:
         if self.controller is not None:
             self.velocity += self.controller.movement * self.controller.speed
 
+        g = gravity
+        if not self.obey_gravity:
+            g = Vector(0, 0)
+
         if self.has_rigidbody:
             self.velocity += (
                 (self.acceleration
-                + gravity)
+                + g)
             )
         
         self.move(self.velocity * math.pow(delta_time, 2), [])
