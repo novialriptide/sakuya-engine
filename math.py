@@ -36,9 +36,19 @@ class Vector:
         return [self.x, self.y]
         
     def move_toward(self, target, speed: float):
-        return Vector(
-            move_toward(self.x, target.x, speed), move_toward(self.y, target.y, speed)
-        )
+        magnitude = get_magnitude(target, self)
+        delta = target - self
+
+        if (magnitude <= speed or magnitude == 0):
+            return target
+        
+        return self + delta / magnitude * speed
+
+def get_magnitude(point1: Vector, point2: Vector) -> float:
+    return math.sqrt(
+        math.pow((point1.x - point2.x), 2) 
+        + math.pow((point1.y - point2.y), 2)
+    )
 
 def to_vector(point):
     return Vector(point[0], point[1])
@@ -52,7 +62,7 @@ def get_angle(origin: Vector, direction: Vector) -> float:
 
 def move_toward(origin: float, target: float, speed: float):
     if speed < 0:
-         NegativeSpeedError()
+        raise NegativeSpeedError
 
     if abs(target - origin) <= speed:
         return target
