@@ -74,6 +74,13 @@ class Client:
         )
 
     @property
+    def scale(self) -> Vector:
+        return Vector(
+            self.window_size.x / self.original_window_size.x,
+            self.window_size.y / self.original_window_size.y
+        )
+
+    @property
     def current_fps(self) -> float:
         return self.pg_clock.get_fps()
 
