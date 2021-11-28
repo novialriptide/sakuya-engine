@@ -3,8 +3,9 @@ import time
 
 from copy import copy
 
-from .errors import NoActiveSceneError, NotImplementedError
+from .errors import NoActiveSceneError
 from .math import Vector
+from .events import EventSystem
 
 class Client:
     def __init__(
@@ -17,13 +18,18 @@ class Client:
         scale_upon_startup: float = 1
     ) -> None:
         """
-        The game's main client
+        The game's main client.
+
+        Warning: An event system is already built in to this object, but
+        do not use it for any events related to a scene. Only use it
+        for notifications, client-sided messages, etc.
 
         Parameters:
             window_name: the window's name
             window_size: the window size
         """
         self.is_running = True # bool
+        self.event_system = EventSystem()
         self._window_name = window_name # str
         self.original_window_size = window_size # Vector
         self.window_icon = window_icon
@@ -111,6 +117,8 @@ class Client:
                         pg_event[0].w * self.original_window_size.ratio_yx),
                         self.pg_flag
                     )
+                
+            self.event_system.update(self.delta_time)
             
             # update all scenes
             for s in self.running_scenes:
