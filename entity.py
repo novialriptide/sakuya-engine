@@ -210,13 +210,16 @@ class Entity:
         if self.velocity.y > 0 and self.enable_terminal_velocity:
             self.velocity.y = min(self.velocity.y, term_vec)
 
+        # engine controller movement
         if self.controller is not None:
             self.velocity += self.controller.movement * self.controller.speed
 
+        # apply gravity?
         g = gravity
         if not self.obey_gravity:
             g = Vector(0, 0)
 
+        # apply velocity
         if self.has_rigidbody:
             self.velocity += (
                 (self.acceleration
