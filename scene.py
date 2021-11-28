@@ -1,6 +1,7 @@
 from .client import Client
 from .entity import Entity
 from .errors import EntityNotInScene
+from .events import EventSystem
 
 from typing import List
 
@@ -17,6 +18,8 @@ class Scene:
         self.is_paused = True
         self.client = client
         self.entities = []
+        self.event_system = EventSystem()
+        self.kwargs = kwargs
 
     @property
     def name(self) -> str:
