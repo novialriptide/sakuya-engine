@@ -7,13 +7,13 @@ from .bulletpatterns import *
 from .button import *
 from .entity import *
 from .errors import *
+from .events import *
 from .math import *
 from .particles import *
 from .physics import *
 from .scene import *
 from .text import *
 from .tile import *
-from .time import *
 from .waves import *
 
 __version__ = "2.0.1"
