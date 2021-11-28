@@ -53,6 +53,11 @@ class Entity:
         self.has_rigidbody = has_rigidbody
 
         self.particle_systems = particle_systems
+        
+        # destroy
+        self._on_destroy_val = 0
+        self._enable_on_destroy = False
+        self._is_destroyed = False
 
     @property
     def sprite(self) -> pygame.Surface:
@@ -79,6 +84,13 @@ class Entity:
     @property
     def center_position(self) -> Vector:
         return Vector(self.rect.width/2, self.rect.height/2)
+        
+    def on_destroy(self, time: int) -> None:
+        """
+        :param int time: milliseconds to destruction
+        """
+        self._enable_on_destroy = True
+        self._on_destroy_val = time + pygame.time.get_ticks()
 
     def get_collisions(
         self,
@@ -191,6 +203,10 @@ class Entity:
             delta_time: the game's delta time
 
         """
+        # destroy
+        if self._enable_on_destroy and self._on_destroy_val <= pygame.time.get_ticks():
+            self._is_destroyed = True
+
         # particles
         for ps in self.particle_systems:
             ps.update(delta_time, self.position)
