@@ -50,6 +50,8 @@ class Client:
             pass # add sakuya as a default icon
 
         if self.window_icon is not None:
+            # if you run the program from source, the icon
+            # won't show up until you compile the program.
             pygame.display.set_icon(self.window_icon)
 
     @property
