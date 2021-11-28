@@ -92,6 +92,9 @@ class Client:
     def current_fps(self) -> float:
         return self.pg_clock.get_fps()
 
+    def get_delta_time(self):
+        return self.delta_time
+
     def main(self) -> None:
         """
         Main game loop
