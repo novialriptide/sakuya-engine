@@ -5,6 +5,7 @@ from Helix.Sakuya.scene import Scene
 
 from .entity import Entity
 from .errors import NotImplementedError
+from .events import EventSystem
 
 class Sequence:
     def __init__(self):
@@ -31,7 +32,8 @@ class WaveManager:
         self,
         entity_key: int,
         spawn_key: int,
-        spawn_anim: int
+        spawn_anim: int,
+        events_system: EventSystem
     ) -> Entity:
         """Handles the entity spawning.
 
@@ -41,6 +43,8 @@ class WaveManager:
         Parameters:
             entity_key: ID of the loaded entity.
             spawn_key: ID of the loaded spawn point.
+            spawn_anim: ID of the spawn animation.
+            events_system: The scene's event system.
 
         Returns:
             The spawned entity.
@@ -61,5 +65,5 @@ def load_wave_file(path: str, wave_manager: WaveManager, scene: Scene) -> None:
         line = line.replace("\n", "")
         cmd = line.split(" ")
         if cmd[0] == "spawn":
-            e = wave_manager.spawn(int(cmd[1]), int(cmd[2]), int(cmd[3]))
+            e = wave_manager.spawn(int(cmd[1]), int(cmd[2]), int(cmd[3]), scene.event_system, scene.client.get_delta_time)
             scene.entities.append(e)
