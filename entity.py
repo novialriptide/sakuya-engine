@@ -76,6 +76,10 @@ class Entity:
         )
         return rect
 
+    @property
+    def center_position(self) -> Vector:
+        return Vector(self.rect.width/2, self.rect.height/2)
+
     def get_collisions(
         self,
         rects: List[pygame.Rect]
