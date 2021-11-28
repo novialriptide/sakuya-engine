@@ -43,7 +43,7 @@ class Scene:
 
     def update(self, delta_time, **kwargs) -> None:
         """
-        Will be called upon every frame. advance_frame() is recommended.
+        Will be called upon every frame. Calling advance_frame() is recommended.
         
         Must be overrided.
 
@@ -88,9 +88,7 @@ class Scene:
 
         """
         for object in self.entities[:]:
-            object._gravity = self.gravity
             object.update(delta_time)
-
             if object._is_destroyed:
                 self.entities.remove(object)
 
