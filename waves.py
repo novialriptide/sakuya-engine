@@ -31,12 +31,19 @@ class WaveManager:
         self,
         entity_key: int,
         spawn_key: int,
+        spawn_anim: int
     ) -> Entity:
         """Handles the entity spawning.
+
+        Could be overridden. If not, a premade function
+        is already built-in.
 
         Parameters:
             entity_key: ID of the loaded entity.
             spawn_key: ID of the loaded spawn point.
+
+        Returns:
+            The spawned entity.
 
         """
         e = self.entities[entity_key].copy()
@@ -45,7 +52,7 @@ class WaveManager:
         return e
 
     def load_wave(self, wave: int) -> None:
-        pass
+        raise NotImplementedError
     
 def load_wave_file(path: str, wave_manager: WaveManager, scene: Scene) -> None:
     file = open(path, "r")
@@ -54,5 +61,5 @@ def load_wave_file(path: str, wave_manager: WaveManager, scene: Scene) -> None:
         line = line.replace("\n", "")
         cmd = line.split(" ")
         if cmd[0] == "spawn":
-            e = wave_manager.spawn(int(cmd[1]), int(cmd[2]))
+            e = wave_manager.spawn(int(cmd[1]), int(cmd[2]), int(cmd[3]))
             scene.entities.append(e)
