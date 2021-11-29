@@ -37,6 +37,7 @@ class Client:
         self.original_aspect_ratio = window_size.ratio_xy # float
         
         self.running_scenes = {}
+        self.deleted_scenes_queue = []
         self.scene_manager = None # SceneManager
         
         self.pg_clock = pygame.time.Clock()
@@ -124,10 +125,15 @@ class Client:
             self.event_system.update(self.delta_time)
             
             # update all scenes
-            for s in self.running_scenes:
+            for s in copy(self.running_scenes):
                 s = self.running_scenes[s]["scene"]
-                if s.is_paused:
+                if not s.is_paused:
                     s.update()
+
+            # delete scenes in queue
+            for s in self.deleted_scenes_queue:
+                del self.running_scenes[s]
+                self.deleted_scenes_queue.remove(s)
             
             screen = pygame.transform.scale(self.screen, (self.window_size.x, self.window_size.y))
             self.window.blit(screen, (0,0))
@@ -154,7 +160,7 @@ class Client:
         """
         scene = self.scene_manager.get_scene(scene_name)
         scene.on_delete(**kwargs)
-        del self.running_scenes[scene.name]
+        self.deleted_scenes_queue.append(scene.name)
 
     def replace_scene(
         self,
@@ -168,7 +174,5 @@ class Client:
         Parameters:
             scene_name: str to be added
         """
-        old_scene = self.scene_manager.get_scene(old_scene_name)
-        new_scene = self.scene_manager.get_scene(new_scene_name)
-        self.remove_scene(old_scene)
-        self.add_scene(new_scene, **kwargs)
+        self.remove_scene(old_scene_name)
+        self.add_scene(new_scene_name, **kwargs)

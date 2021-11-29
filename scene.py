@@ -15,7 +15,7 @@ class Scene:
         Parameters:
             client: game client
         """
-        self.is_paused = True
+        self.is_paused = False
         self.client = client
         self.entities = []
         self.event_system = EventSystem()
@@ -23,7 +23,7 @@ class Scene:
 
     @property
     def name(self) -> str:
-        return __class__.__name__
+        return self.__class__.__name__
 
     def on_awake(self, **kwargs) -> None:
         """
@@ -74,7 +74,7 @@ class Scene:
         
         collided = []
         for e in entities:
-            if entity.hitbox.colliderect(e.hitbox):
+            if entity.custom_hitbox.colliderect(e.custom_hitbox):
                 collided.append(e)
 
         return collided
