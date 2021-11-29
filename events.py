@@ -55,3 +55,5 @@ class EventSystem:
                     output["cancelled"].append(m.name)
 
             output["executed"].append(m.name)
+
+        return output
