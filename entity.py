@@ -86,8 +86,11 @@ class Entity:
         return Vector(self.rect.width/2, self.rect.height/2)
         
     def on_destroy(self, time: int) -> None:
-        """
-        :param int time: milliseconds to destruction
+        """Set the destruction time.
+
+        Parameters:
+            time: milliseconds to destruction
+
         """
         self._enable_on_destroy = True
         self._on_destroy_val = time + pygame.time.get_ticks()
@@ -141,7 +144,7 @@ class Entity:
         """
         projectile = copy(projectile)
         projectile.velocity = Vector(speed * math.cos(angle), speed * math.sin(angle))
-        projectile.position = self.position + offset
+        projectile.position = self.position + offset - Vector(projectile.rect.width/2, projectile.rect.height/2)
         return projectile
 
     def anim_get(self, animation_name: str) -> Animation:
