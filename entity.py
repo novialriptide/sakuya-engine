@@ -22,7 +22,9 @@ class Entity:
         has_rigidbody: bool = False,
         scale: int = 1,
         particle_systems: List[Particles] = [],
-        obey_gravity: bool = True
+        obey_gravity: bool = True,
+        fire_rate: int = 0,
+        custom_hitbox_size: Vector = Vector(0, 0)
     ):
         """Objects that goes with a scene
 
@@ -51,6 +53,7 @@ class Entity:
 
         self.has_collision = has_collision
         self.has_rigidbody = has_rigidbody
+        self.custom_hitbox_size = custom_hitbox_size
 
         self.particle_systems = particle_systems
         
@@ -58,6 +61,11 @@ class Entity:
         self._on_destroy_val = 0
         self._enable_on_destroy = False
         self._is_destroyed = False
+
+        # shooting
+        self.fire_rate = fire_rate
+        self.can_shoot = True
+        self.next_fire_ticks = pygame.time.get_ticks()
 
     @property
     def sprite(self) -> pygame.Surface:
@@ -82,9 +90,18 @@ class Entity:
         return rect
 
     @property
+    def custom_hitbox(self) -> pygame.Rect:
+        return pygame.Rect(
+            self.position.x + self.rect.width/2 - self.custom_hitbox_size.x,
+            self.position.y + self.rect.height/2 - self.custom_hitbox_size.y,
+            self.custom_hitbox_size.x*2,
+            self.custom_hitbox_size.y*2
+        )
+
+    @property
     def center_position(self) -> Vector:
         return Vector(self.rect.width/2, self.rect.height/2)
-        
+
     def on_destroy(self, time: int) -> None:
         """Set the destruction time.
 
@@ -142,10 +159,12 @@ class Entity:
             speed: Speed of the projectile.
 
         """
-        projectile = copy(projectile)
-        projectile.velocity = Vector(speed * math.cos(angle), speed * math.sin(angle))
-        projectile.position = self.position + offset - Vector(projectile.rect.width/2, projectile.rect.height/2)
-        return projectile
+        if self.can_shoot and pygame.time.get_ticks() >= self.next_fire_ticks:
+            self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
+            projectile = copy(projectile)
+            projectile.velocity = Vector(speed * math.cos(angle), speed * math.sin(angle))
+            projectile.position = self.position + offset - Vector(projectile.rect.width/2, projectile.rect.height/2)
+            return projectile
 
     def anim_get(self, animation_name: str) -> Animation:
         return self.animations[animation_name]
@@ -231,7 +250,7 @@ class Entity:
 
         # engine controller movement
         if self.controller is not None:
-            self.velocity += self.controller.movement * self.controller.speed
+            self.velocity = self.controller.movement * self.controller.speed
 
         # apply gravity?
         g = gravity
