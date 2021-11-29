@@ -29,7 +29,7 @@ class Vector:
     def __truediv__(self, other: float):
         return Vector(self.x / other, self.y / other)
 
-    def __and__(self, other):
+    def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
     def to_list(self):
