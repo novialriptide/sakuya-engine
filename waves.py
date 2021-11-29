@@ -1,7 +1,7 @@
 from random import randrange
 from typing import List
 
-from Helix.Sakuya.scene import Scene
+from .scene import Scene
 
 from .entity import Entity
 from .errors import NotImplementedError
