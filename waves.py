@@ -1,11 +1,13 @@
 from random import randrange
 from typing import List
 
+from pygame.event import wait
+
 from .scene import Scene
 
 from .entity import Entity
-from .errors import NotImplementedError
-from .events import EventSystem
+from .errors import NotEnoughArgumentsError, NotImplementedError
+from .events import EventSystem, WaitEvent
 
 class Sequence:
     def __init__(self):
@@ -33,6 +35,7 @@ class WaveManager:
         entity_key: int,
         spawn_key: int,
         spawn_anim: int,
+        lifetime: int,
         events_system: EventSystem
     ) -> Entity:
         """Handles the entity spawning.
@@ -65,5 +68,16 @@ def load_wave_file(path: str, wave_manager: WaveManager, scene: Scene) -> None:
         line = line.replace("\n", "")
         cmd = line.split(" ")
         if cmd[0] == "spawn":
-            e = wave_manager.spawn(int(cmd[1]), int(cmd[2]), int(cmd[3]), scene.event_system, scene.client.get_delta_time)
-            scene.entities.append(e)
+            try:
+                def spawn_func(arg0, arg1, arg2, arg3, arg4, arg5):
+                    entity = wave_manager.spawn(arg0, arg1, arg2, arg3, arg4, arg5)
+                    scene.entities.append(entity)
+                spawn_event = WaitEvent("spawn_enemy", wait_time, spawn_func, args=[
+                    int(cmd[1]), int(cmd[2]), int(cmd[3]), int(cmd[4]),
+                    scene.event_system, scene.client.get_delta_time
+                ])
+                scene.event_system._methods.append(spawn_event)
+            except IndexError:
+                raise NotEnoughArgumentsError
+        if cmd[0] == "wait":
+            wait_time += int(cmd[1])
