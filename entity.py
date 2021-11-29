@@ -148,7 +148,7 @@ class Entity:
         offset: Vector,
         projectile,
         angle: float,
-        speed: int
+        speed: float
     ) -> Entity:
         """Shoot an entity.
 
@@ -218,7 +218,7 @@ class Entity:
 
         return e
 
-    def update(self, delta_time) -> None:
+    def update(self, delta_time: float) -> None:
         """Updates the position, animation, etc
 
         Parameters:
@@ -264,7 +264,8 @@ class Entity:
                 + g)
             )
         
-        self.move(self.velocity * math.pow(delta_time, 2), [])
+        velocity = self.velocity * math.pow(delta_time, 2)
+        self.move(velocity, [])
 
 def load_entity(json_path: str) -> Entity:
     raise NotImplementedError
