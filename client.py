@@ -3,7 +3,7 @@ import time
 
 from copy import copy
 
-from .errors import NoActiveSceneError
+from .errors import NoActiveSceneError, SceneNotActiveError
 from .math import Vector
 from .events import EventSystem
 
@@ -132,9 +132,12 @@ class Client:
 
             # delete scenes in queue
             for s in self.deleted_scenes_queue:
-                del self.running_scenes[s]
-                self.deleted_scenes_queue.remove(s)
-            
+                try:
+                    del self.running_scenes[s]
+                    self.deleted_scenes_queue.remove(s)
+                except KeyError:
+                    pass
+
             screen = pygame.transform.scale(self.screen, (self.window_size.x, self.window_size.y))
             self.window.blit(screen, (0,0))
             pygame.display.flip()
@@ -158,9 +161,12 @@ class Client:
         Parameters:
             scene_name: str to be removed
         """
-        scene = self.scene_manager.get_scene(scene_name)
-        scene.on_delete(**kwargs)
-        self.deleted_scenes_queue.append(scene.name)
+        try:
+            scene = self.scene_manager.get_scene(scene_name)
+            scene.on_delete(**kwargs)
+            self.deleted_scenes_queue.append(scene.name)
+        except KeyError:
+            raise SceneNotActiveError
 
     def replace_scene(
         self,
@@ -174,5 +180,8 @@ class Client:
         Parameters:
             scene_name: str to be added
         """
-        self.remove_scene(old_scene_name)
-        self.add_scene(new_scene_name, **kwargs)
+        try:
+            self.remove_scene(old_scene_name)
+            self.add_scene(new_scene_name, **kwargs)
+        except KeyError:
+            raise SceneNotActiveError
