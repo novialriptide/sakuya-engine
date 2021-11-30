@@ -26,8 +26,7 @@ class Entity:
         fire_rate: int = 0,
         custom_hitbox_size: Vector = Vector(0, 0),
         max_health: float = 100,
-        name: str = None,
-        tags: List[str] = []
+        name: str = None
     ):
         """Objects that goes with a scene
 
@@ -37,7 +36,6 @@ class Entity:
         """
         self.name = name
         self.scale = Vector(1, 1) * scale
-        self.tags = tags # List[str]
         
         if controller is not None:
             self.controller = controller()
@@ -226,20 +224,6 @@ class Entity:
         e.animations = new_anims
 
         return e
-
-    def test_tags(self, tags: List[str]) -> bool:
-        """Returns True if a tag matches
-
-        Parameters:
-            tags: The list of tags to check.
-
-        """
-        print(self.tags)
-        for tag in self.tags:
-            if tag in tags:
-                return True
-
-        return False
 
     def update(self, delta_time: float) -> None:
         """Updates the position, animation, etc

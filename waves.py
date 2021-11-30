@@ -72,6 +72,7 @@ def load_wave_file(path: str, wave_manager: WaveManager, scene: Scene) -> None:
                 def spawn_func(arg0, arg1, arg2, arg3, arg4, arg5):
                     entity = wave_manager.spawn(arg0, arg1, arg2, arg3, arg4, arg5)
                     scene.entities.append(entity)
+                    scene.enemies.append(entity)
                 spawn_event = WaitEvent("spawn_enemy", wait_time, spawn_func, args=[
                     int(cmd[1]), int(cmd[2]), int(cmd[3]), int(cmd[4]),
                     scene.event_system, scene.client.get_delta_time
