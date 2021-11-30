@@ -24,7 +24,10 @@ class Entity:
         particle_systems: List[Particles] = [],
         obey_gravity: bool = True,
         fire_rate: int = 0,
-        custom_hitbox_size: Vector = Vector(0, 0)
+        custom_hitbox_size: Vector = Vector(0, 0),
+        max_health: float = 100,
+        name: str = None,
+        tags: List[str] = []
     ):
         """Objects that goes with a scene
 
@@ -32,7 +35,9 @@ class Entity:
             controller: type of controller (ai or player)
             has_collision
         """
+        self.name = name
         self.scale = Vector(1, 1) * scale
+        self.tags = tags # List[str]
         
         if controller is not None:
             self.controller = controller()
@@ -66,6 +71,9 @@ class Entity:
         self.fire_rate = fire_rate
         self.can_shoot = True
         self.next_fire_ticks = pygame.time.get_ticks()
+
+        self.current_health = max_health
+        self.max_health = max_health
 
     @property
     def sprite(self) -> pygame.Surface:
@@ -162,6 +170,7 @@ class Entity:
         if self.can_shoot and pygame.time.get_ticks() >= self.next_fire_ticks:
             self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
             projectile = copy(projectile)
+            projectile.owner = self
             projectile.velocity = Vector(speed * math.cos(angle), speed * math.sin(angle))
             projectile.position = self.position + offset - Vector(projectile.rect.width/2, projectile.rect.height/2)
             return projectile

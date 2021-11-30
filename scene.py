@@ -65,7 +65,9 @@ class Scene:
 
         return entities
 
-    def test_collisions(self, entity: Entity) -> List[Entity]:
+    def test_collisions(self, entity: Entity, ignore_tags = []) -> List[Entity]:
+        # TODO: Sets are slowing down the main game loop, fix this.
+
         entities = self.entities[:] # copies the list
         try:
             entities.remove(entity)
@@ -74,7 +76,7 @@ class Scene:
         
         collided = []
         for e in entities:
-            if entity.custom_hitbox.colliderect(e.custom_hitbox):
+            if entity.custom_hitbox.colliderect(e.custom_hitbox) and not set(e.tags).intersection(set(ignore_tags)):
                 collided.append(e)
 
         return collided
