@@ -7,8 +7,7 @@ from typing import List
 
 class Scene:
     def __init__(self, client: Client, **kwargs) -> None:
-        """
-        The base class for a scene
+        """The base class for a scene
 
         This class must be inherited by another class in order to work properly.
 
@@ -26,33 +25,40 @@ class Scene:
         return self.__class__.__name__
 
     def on_awake(self, **kwargs) -> None:
-        """
-        Will be called upon startup.
+        """Will be called upon startup.
         
         Must be overrided
+
+        Parameters:
+            kwargs: Kwargs to pass onto the event.
+
         """
         pass
 
     def on_delete(self, **kwargs) -> None:
-        """
-        Will be called upon destruction.
+        """Will be called upon destruction.
         
         Must be overrided
+
+        Parameters:
+            kwargs: Kwargs to pass onto the event.
+
         """
         pass
 
     def update(self, delta_time, **kwargs) -> None:
-        """
-        Will be called upon every frame. Calling advance_frame() is recommended.
+        """Will be called upon every frame. Calling advance_frame() is recommended.
         
         Must be overrided.
+
+        Parameters:
+            kwargs: Kwargs to pass onto the event.
 
         """
         pass
 
     def find_entities_by_name(self, name: str) -> List[Entity]:
-        """
-        Finds all registered entities in this scene
+        """Finds all registered entities in this scene
 
         Parameters:
             name: Name of the entity
@@ -73,7 +79,7 @@ class Scene:
             ignore_tags: Tags to ignore when comparing.
 
         """
-        entities = self.entities[:] # copies the list
+        entities = self.entities[:]
         try:
             entities.remove(entity)
         except:
@@ -81,17 +87,20 @@ class Scene:
         
         collided = []
         for e in entities:
-            if entity.custom_hitbox.colliderect(e.custom_hitbox) and len(entity.test_tags(ignore_tags)) == 0:
+            tags_detected = entity.test_tags(ignore_tags)
+            if entity.custom_hitbox.colliderect(e.custom_hitbox) and tags_detected:
                 collided.append(e)
 
         return collided
 
     def advance_frame(self, delta_time: float) -> None:
-        """
-        Updates the entities inside the world, such as 
+        """Updates the entities inside the world, such as 
         physics & animation
         
         Should be added to the end of the main loop
+
+        Parameters:
+            delta_time: The game's delta time
 
         """
         for object in self.entities[:]:
@@ -101,8 +110,7 @@ class Scene:
 
 class SceneManager:
     def __init__(self, client: Client) -> None:
-        """
-        The scene manager which is used to register scenes
+        """The scene manager which is used to register scenes
 
         Parameters:
             client: game client
@@ -113,8 +121,7 @@ class SceneManager:
         self.registered_scenes = {}
 
     def register_scene(self, scene: Scene) -> bool:
-        """
-        Registers a scene into the scene manager
+        """Registers a scene into the scene manager
 
         Parameters:
             scene: scene to be registered

@@ -16,19 +16,19 @@ class Particle:
         self.position = position
         self.color = color
         self.velocity = velocity
-        self._on_destroy_val = 0
-        self._enable_on_destroy = False
+        self._destroy_val = 0
+        self._enable_destroy = False
         self._is_destroyed = False
         
-    def on_destroy(self, time: int) -> None:
+    def destroy(self, time: int) -> None:
         """
         :param int time: milliseconds to destruction
         """
-        self._enable_on_destroy = True
-        self._on_destroy_val = time + pygame.time.get_ticks()
+        self._enable_destroy = True
+        self._destroy_val = time + pygame.time.get_ticks()
 
     def update(self, delta_time: float) -> None:
-        if self._enable_on_destroy and self._on_destroy_val <= pygame.time.get_ticks():
+        if self._enable_destroy and self._destroy_val <= pygame.time.get_ticks():
             self._is_destroyed = True
 
         self.velocity += gravity
@@ -66,7 +66,7 @@ class Particles:
                 self.colors[random_color],
                 Vector(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y)
             )
-            par.on_destroy(self.lifetime)
+            par.destroy(self.lifetime)
             self.particles.append(par)
 
         for p in self.particles:

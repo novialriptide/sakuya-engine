@@ -10,8 +10,7 @@ def crop_tile_image(
     x: int, y: int,
     width: int, height: int
 ) -> pygame.Surface:
-    """
-    Crop a tile out.
+    """Crop a tile out.
     Not intended to be used outside of this file.
 
     Parameters:
@@ -32,8 +31,7 @@ def split_image(
     px_height: int,
     px_distance: int = 0
 ) -> List[pygame.Surface]:
-    """
-    Split an image into a tileset.
+    """Split an image into a tileset.
 
     Parameters:
         image: A pygame loaded image.

@@ -63,8 +63,8 @@ class Entity:
         self.particle_systems = particle_systems
         
         # destroy
-        self._on_destroy_val = 0
-        self._enable_on_destroy = False
+        self._destroy_val = 0
+        self._enable_destroy = False
         self._is_destroyed = False
 
         # shooting
@@ -110,15 +110,15 @@ class Entity:
     def center_position(self) -> Vector:
         return Vector(self.rect.width/2, self.rect.height/2)
 
-    def on_destroy(self, time: int) -> None:
+    def destroy(self, time: int) -> None:
         """Set the destruction time.
 
         Parameters:
             time: milliseconds to destruction
 
         """
-        self._enable_on_destroy = True
-        self._on_destroy_val = time + pygame.time.get_ticks()
+        self._enable_destroy = True
+        self._destroy_val = time + pygame.time.get_ticks()
 
     def get_collisions(
         self,
@@ -227,19 +227,19 @@ class Entity:
 
         return e
 
-    def test_tags(self, tags: List[str]) -> List[str]:
-        """Returns a list of valid tags that were asked.
+    def test_tags(self, tags: List[str]) -> bool:
+        """Returns True if a tag matches
 
         Parameters:
             tags: The list of tags to check.
 
         """
-        detected_tags = []
-        for tag in tags:
-            if tag in self.tags:
-                detected_tags.append(tag)
+        print(self.tags)
+        for tag in self.tags:
+            if tag in tags:
+                return True
 
-        return detected_tags
+        return False
 
     def update(self, delta_time: float) -> None:
         """Updates the position, animation, etc
@@ -249,7 +249,7 @@ class Entity:
 
         """
         # destroy
-        if self._enable_on_destroy and self._on_destroy_val <= pygame.time.get_ticks():
+        if self._enable_destroy and self._destroy_val <= pygame.time.get_ticks():
             self._is_destroyed = True
 
         # particles
