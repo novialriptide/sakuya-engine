@@ -227,6 +227,20 @@ class Entity:
 
         return e
 
+    def test_tags(self, tags: List[str]) -> List[str]:
+        """Returns a list of valid tags that were asked.
+
+        Parameters:
+            tags: The list of tags to check.
+
+        """
+        detected_tags = []
+        for tag in tags:
+            if tag in self.tags:
+                detected_tags.append(tag)
+
+        return detected_tags
+
     def update(self, delta_time: float) -> None:
         """Updates the position, animation, etc
 
