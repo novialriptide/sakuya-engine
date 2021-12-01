@@ -112,8 +112,7 @@ class Client:
             # keep aspect ratio
             if self.keep_aspect_ratio:
                 pg_event = pygame.event.get(
-                    eventtype=pygame.VIDEORESIZE,
-                    pump=True
+                    eventtype=pygame.VIDEORESIZE
                 )
                 if pg_event != []:
                     self.window = pygame.display.set_mode((
@@ -121,8 +120,6 @@ class Client:
                         pg_event[0].w * self.original_window_size.ratio_yx),
                         self.pg_flag
                     )
-                
-            self.event_system.update(self.delta_time)
             
             # update all scenes
             for s in copy(self.running_scenes):
@@ -140,7 +137,8 @@ class Client:
 
             screen = pygame.transform.scale(self.screen, (self.window_size.x, self.window_size.y))
             self.window.blit(screen, (0,0))
-            pygame.display.flip()
+            self.event_system.update(self.delta_time)
+            pygame.display.update()
             self.pg_clock.tick(self.max_fps)
 
     def add_scene(self, scene_name: str, **kwargs) -> None:
