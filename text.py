@@ -1,3 +1,7 @@
+"""
+SakuyaEngine // GameDen (c) 2020-2021 Andrew Hong
+This code is licensed under MIT license (see LICENSE for details)
+"""
 import pygame
 pygame.font.init()
 

@@ -1,5 +1,8 @@
+"""
+SakuyaEngine (c) 2020-2021 Andrew Hong
+This code is licensed under MIT license (see LICENSE for details)
+"""
 import pygame
-import sys
 from math import *
 
 class Button:
