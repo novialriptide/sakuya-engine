@@ -16,5 +16,5 @@ from .text import *
 from .tile import *
 from .waves import *
 
-__version__ = "2.0.1"
+__version__ = "2.2.1"
 print(f"sakuya engine {__version__} by novial (using pygame {pg_ver})\nsource code: https://github.com/novialriptide/Sakuya")
