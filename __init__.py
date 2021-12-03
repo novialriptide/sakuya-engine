@@ -7,7 +7,7 @@ from pygame import __version__ as pg_ver
 from .ai import *
 from .animation import *
 from .bar import *
-from .bulletpatterns import *
+from .bullets import *
 from .button import *
 from .entity import *
 from .errors import *
