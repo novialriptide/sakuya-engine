@@ -28,3 +28,8 @@ class SceneNotActiveError(Error):
 class NotEnoughArgumentsError(Error):
     def __init__(self):
         self.message = "Not enough arguments."
+
+class LineSegmentLinesError(Error):
+    def __init__(self):
+        # Coincident means "same line"
+        self.message = "Two lines inputted are parallel or coincident"
