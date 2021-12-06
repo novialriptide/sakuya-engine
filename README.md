@@ -1,3 +1,5 @@
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/novialriptide/SakuyaEngine/alerts/)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/novialriptide/SakuyaEngine/alerts/)
 ![sakuya-img](https://c4.wallpaperflare.com/wallpaper/802/75/784/anime-anime-girls-izayoi-sakuya-touhou-wallpaper-preview.jpg)
 
 # Sakuya
