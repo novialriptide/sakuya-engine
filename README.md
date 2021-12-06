@@ -21,21 +21,21 @@ A game engine tool, named after a Touhou character, specifically made for bullet
 12. Particles
 13. Delta Time
 14. Client Management
+15. Bullet Pattern Engine
+16. Raycasting
 
 ## Planned Features
 1. Tilemaps
 2. Explosions
-3. Raycast
-4. Physics Engine Update Optimizations
-5. Physics Engine Collisions
-6. [Tiled](https://www.mapeditor.org/) Support
-7. Object Render Management System
-8. Console Controller Support
-9. Easier Menu Support
-10. Revive Circle Support
-11. Debug Hitbox
-12. Moveable Camera
-13. Load Animations, Entities, Tilemaps, etc using JSON
+3. Physics Engine Update Optimizations
+4. Physics Engine Collisions
+5. [Tiled](https://www.mapeditor.org/) Support
+6. Object Render Management System
+7. Easier Menu Support
+8. Revive Circle Support
+9. Debug Hitbox
+10. Moveable Camera
+11. Load Animations, Entities, Tilemaps, etc using JSON
 
 ## Developers
 1. [Andrew Hong](https://github.com/novialriptide)
