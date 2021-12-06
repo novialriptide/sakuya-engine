@@ -272,9 +272,9 @@ class Entity:
             self.velocity += (
                 (self.acceleration
                 + g)
-            )
+            )   
         
-        velocity = self.velocity * math.pow(delta_time, 2)
+        velocity = self.velocity * delta_time
         self.move(velocity, [])
 
 def load_entity(json_path: str) -> Entity:
