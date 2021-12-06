@@ -79,24 +79,30 @@ class Entity:
     @property
     def sprite(self) -> pygame.Surface:
         cur_anim = self.anim_get(self.current_anim)
-        width, height = cur_anim.sprite.get_size()
-        scaled_sprite = pygame.transform.scale(
-            cur_anim.sprite, (
-                self.scale.x * width, 
-                self.scale.y * height
+        if cur_anim is not None:
+            width, height = cur_anim.sprite.get_size()
+            scaled_sprite = pygame.transform.scale(
+                cur_anim.sprite, (
+                    self.scale.x * width, 
+                    self.scale.y * height
+                )
             )
-        )
-        return scaled_sprite
+            return scaled_sprite
+        if cur_anim is None:
+            return None
 
     @property
     def rect(self) -> pygame.Rect:
-        width, height = self.sprite.get_size()
-        rect = pygame.Rect(
-            self.position.x, 
-            self.position.y, 
-            width, height
-        )
-        return rect
+        if self.sprite is not None:
+            width, height = self.sprite.get_size()
+            rect = pygame.Rect(
+                self.position.x, 
+                self.position.y, 
+                width, height
+            )
+            return rect
+        if self.sprite is None:
+            return pygame.Rect(self.position.x, self.position.y, 1, 1)
 
     @property
     def custom_hitbox(self) -> pygame.Rect:
@@ -177,7 +183,10 @@ class Entity:
             return projectile
 
     def anim_get(self, animation_name: str) -> Animation:
-        return self.animations[animation_name]
+        if animation_name is not None:
+            return self.animations[animation_name]
+        if animation_name is None:
+            return None
 
     def anim_set(self, animation_name: str) -> bool:
         """Assign an animation to be played

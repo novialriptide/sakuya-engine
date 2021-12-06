@@ -188,7 +188,7 @@ class BulletSpawner:
         bullet.curve = self.bullet_curve
         self.entity_list.append(bullet)
 
-        return self.can_shoot
+        return bullet
 
     def update(self, delta_time: float) -> None:
         iter_bullet = 0
