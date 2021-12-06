@@ -3,9 +3,6 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 from random import randrange
-from typing import List
-
-from pygame.event import wait
 
 from .scene import Scene
 

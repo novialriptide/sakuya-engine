@@ -5,7 +5,6 @@ This code is licensed under MIT license (see LICENSE for details)
 from __future__ import annotations
 
 import pygame
-import json
 import math
 
 from typing import List
