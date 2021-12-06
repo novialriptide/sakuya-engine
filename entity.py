@@ -253,7 +253,8 @@ class Entity:
             ps.update(delta_time, self.position)
 
         # animations
-        self.anim_get(self.current_anim).update(delta_time)
+        if self.current_anim is not None:
+            self.anim_get(self.current_anim).update(delta_time)
 
         # apply terminal velocity
         # TODO: find a cleaner way to implement this

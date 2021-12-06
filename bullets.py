@@ -182,7 +182,7 @@ class BulletSpawner:
         bullet = copy(self.bullet)
         bullet.speed = self.bullet_speed
         bullet.angle = angle
-        bullet.position = self.entity.position
+        bullet.position = self.entity.position + self.position_offset
         bullet.acceleration = self.bullet_acceleration
         bullet.destroy(self.bullet_lifetime)
         bullet.curve = self.bullet_curve
