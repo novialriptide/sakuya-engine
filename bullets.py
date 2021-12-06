@@ -190,6 +190,11 @@ class BulletSpawner:
 
         return bullet
 
+    def shoot_with_firerate(self, angle: float) -> None:
+        if self.can_shoot:
+            self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
+            self.shoot(angle)
+
     def update(self, delta_time: float) -> None:
         iter_bullet = 0
         if self.can_shoot:
