@@ -21,7 +21,8 @@ class Bullet(Entity):
         position: Vector = Vector(0, 0),
         obey_gravity: bool = False,
         custom_hitbox_size: Vector = Vector(0, 0),
-        name: str = None
+        name: str = None,
+        curve: float = 0
     ) -> None:
         super().__init__(
             None,
@@ -35,8 +36,11 @@ class Bullet(Entity):
         self.color = color
         self.damage = damage
 
+        self.curve = curve
+
     def update(self, delta_time: float) -> None:
         angle = math.radians(self.angle)
+        self.angle += self.curve * delta_time
         self.velocity = Vector(self.speed * math.cos(angle), self.speed * math.sin(angle))
         return super().update(delta_time)
 
@@ -53,7 +57,7 @@ class BulletSpawner:
         spread_between_bullet_arrays: float = 1,
         spread_within_bullet_arrays: float = 1,
         starting_angle: float = 0,
-        spin_rate: float = 1,
+        spin_rate: float = 0,
         spin_modificator: float = 0,
         invert_spin: bool = False,
         max_spin_rate: float = 1,
@@ -103,6 +107,8 @@ class BulletSpawner:
                 Nothing will happen if set to False, but if set to True, 
                 the spin rate will invert once the spin rate has reached
                 the max_spin_rate
+            spin_modificator:
+                The value that will be added to the spin_rate overtime.
             bullet_speed:
                 The bullet's speed
             bullet_acceleration:
@@ -163,19 +169,20 @@ class BulletSpawner:
             More specifically, this returns BulletSpawner.can_shoot
 
         """
-        if self.can_shoot:
-            self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
-            bullet = copy(self.bullet)
-            bullet.angle = angle
-            bullet.position = self.entity.position
-            bullet.destroy(self.bullet_lifetime)
-            self.entity_list.append(bullet)
-            # print(self.current_bullet, self.current_iteration)
+        bullet = copy(self.bullet)
+        bullet.angle = angle
+        bullet.position = self.entity.position
+        bullet.acceleration = self.bullet_acceleration
+        bullet.destroy(self.bullet_lifetime)
+        bullet.curve = self.bullet_curve
+        self.entity_list.append(bullet)
 
         return self.can_shoot
 
     def update(self, delta_time: float) -> None:
         if self.can_shoot:
+            self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
+
             spread_between_each_array = (self.spread_within_bullet_arrays 
             / self.total_bullet_arrays)
             spread_between_each_bullets = self.spread_between_bullet_arrays
@@ -183,20 +190,28 @@ class BulletSpawner:
             iter_bullet = 0
             for a in range(self.total_bullet_arrays):
                 for b in range(self.bullets_per_array):
-                    if iter_bullet == self.current_bullet:
-                        # angles are not accurate
-                        angle = self.angle + spread_between_each_array * b + spread_between_each_bullets * a
-                        # print(angle, a, b)
-                        self.shoot(angle)
+                    angle = self.angle + spread_between_each_array * b + spread_between_each_bullets * a
+                    self.shoot(angle)
 
                     iter_bullet += 1
 
             self.current_bullet += 1
 
+            self.angle += self.spin_rate * delta_time
+            self.spin_rate += self.spin_modificator
+
         if self.current_bullet >= self.total_bullets:
-            self.angle = self.starting_angle
             self.current_bullet = 0
             self.current_iteration += 1
+
+        if self.invert_spin:
+            if self.spin_rate < -self.max_spin_rate:
+                self.spin_rate = -self.max_spin_rate
+                self.spin_modificator *= -1
+            
+            if self.spin_rate > self.max_spin_rate:
+                self.spin_rate = self.max_spin_rate
+                self.spin_modificator *= -1
 
     def draw_debug_angle(self, surface: pygame.Surface) -> None:
         """Draws a green or red line on surface to indicate 
