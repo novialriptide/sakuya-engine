@@ -2,7 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from typing import Tuple
+from typing import Tuple, List
 from copy import copy
 
 import pygame
@@ -14,11 +14,11 @@ from .math import Vector
 class Bullet(Entity):
     def __init__(
         self,
-        position: Vector,
         angle: float,
         speed: float,
         color: Tuple[int, int, int],
         damage: float,
+        position: Vector = Vector(0, 0),
         obey_gravity: bool = False,
         custom_hitbox_size: Vector = Vector(0, 0),
         name: str = None
@@ -35,14 +35,9 @@ class Bullet(Entity):
         self.color = color
         self.damage = damage
 
-    @property
-    def sprite(self):
-        """Returns a circle with a hole at its end to indicate its direction and angle.
-        """
-        pass
-
     def update(self, delta_time: float) -> None:
-        self.velocity = Vector(self.speed * math.cos(self.angle), self.speed * math.sin(self.angle))
+        angle = math.radians(self.angle)
+        self.velocity = Vector(self.speed * math.cos(angle), self.speed * math.sin(angle))
         return super().update(delta_time)
 
 class BulletSpawner:
@@ -51,6 +46,7 @@ class BulletSpawner:
         assigned_entity: Entity,
         position_offset: Vector,
         bullet: Bullet,
+        entity_list: List[Entity],
         iterations: int = 1,
         total_bullet_arrays: int = 1,
         bullets_per_array: int = 1,
@@ -72,10 +68,17 @@ class BulletSpawner:
         This follows the Danmaku (弾幕) Theory.
 
         Parameters:
-            starting_angle: The spawner's starting angle in radians.
-            assigned_entity: The entity that will fire these bullets.
-            position_offset: The position offset based on the assigned entity's position.
-            bullet: The bullet the spawner will fire.
+            starting_angle:
+                The spawner's starting angle in radians.
+            assigned_entity:
+                The entity that will fire these bullets.
+            position_offset:
+                The position offset based on the assigned entity's position.
+            bullet:
+                The bullet the spawner will fire.
+            entity_list:
+                The list that the bullet will be added to.
+
 
             iterations:
                 Total amount of iterations the spawner will go through. If set to 0, it will be infinite.
@@ -84,15 +87,15 @@ class BulletSpawner:
             bullets_per_array:
                 Sets the amount of bullets within each array.
             spread_between_bullet_arrays:
-                Sets the spread between individual bullet arrays. (in radians)
+                Sets the spread between individual bullet arrays. (in degrees)
             spread_within_bullet_arrays:
                 Sets the spread within the bullet arrays.
                 More specifically, it sets the spread between the 
-                first and last bullet of each array. (in radians)
+                first and last bullet of each array. (in degrees)
             fire_rate:
                 Set the bullet spawner's fire rate for each individual bullet.
             starting_angle:
-                The starting angle (in radians)
+                The starting angle (in degrees)
             spin_rate:
                 This parameter sets the rate at which the
                 bullet arrays will rotate around their origin.
@@ -116,11 +119,13 @@ class BulletSpawner:
         self.current_iteration = 0
         self.current_bullet = 0
         self.is_active = True
+        self.angle = starting_angle
         # Args
         self.angle = starting_angle
         self.entity = assigned_entity
         self.position_offset = position_offset
         self.bullet = copy(bullet)
+        self.entity_list = entity_list
 
         # Kwargs
         self.iterations = iterations
@@ -147,8 +152,11 @@ class BulletSpawner:
     def can_shoot(self) -> bool:
         return self.is_active and pygame.time.get_ticks() >= self.next_fire_ticks
 
-    def shoot(self) -> bool:
+    def shoot(self, angle: float) -> bool:
         """Shoot a bullet
+
+        Parameters:
+            angle: Angle to shoot the bullet.
 
         Returns:
             If True, a bullet has successfully been fired.
@@ -157,28 +165,38 @@ class BulletSpawner:
         """
         if self.can_shoot:
             self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
-            print(self.next_fire_ticks)
+            bullet = copy(self.bullet)
+            bullet.angle = angle
+            bullet.position = self.entity.position
+            bullet.destroy(self.bullet_lifetime)
+            self.entity_list.append(bullet)
+            # print(self.current_bullet, self.current_iteration)
 
         return self.can_shoot
 
     def update(self, delta_time: float) -> None:
-        # it will keep trying to shoot the current_bullet
-        # keep checking if can_shoot is valid and if it is then it will update the current_bullet.
         if self.can_shoot:
-            spread_between_each_array = self.spread_within_bullet_arrays / self.total_bullet_arrays
-            spread_between_each_bullets = self.spread_between_bullet_arrays / self.bullets_per_array
+            spread_between_each_array = (self.spread_within_bullet_arrays 
+            / self.total_bullet_arrays)
+            spread_between_each_bullets = self.spread_between_bullet_arrays
 
             iter_bullet = 0
             for a in range(self.total_bullet_arrays):
                 for b in range(self.bullets_per_array):
-                    iter_bullet += 1
                     if iter_bullet == self.current_bullet:
-                        self.shoot()
+                        # angles are not accurate
+                        angle = self.angle + spread_between_each_array * b + spread_between_each_bullets * a
+                        # print(angle, a, b)
+                        self.shoot(angle)
+
+                    iter_bullet += 1
 
             self.current_bullet += 1
 
         if self.current_bullet >= self.total_bullets:
+            self.angle = self.starting_angle
             self.current_bullet = 0
+            self.current_iteration += 1
 
     def draw_debug_angle(self, surface: pygame.Surface) -> None:
         """Draws a green or red line on surface to indicate 
