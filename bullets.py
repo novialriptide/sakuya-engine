@@ -65,6 +65,9 @@ class BulletSpawner:
         bullet_speed: float = 3,
         bullet_acceleration: float = 0,
         bullet_curve: float = 0,
+        bullet_curve_change_rate: float = 0,
+        invert_curve: bool = False,
+        max_bullet_curve_rate: float = 1,
         bullet_lifetime: float = 3000
     ) -> None:
         """Constructor for BulletSpawner.
@@ -82,7 +85,6 @@ class BulletSpawner:
                 The bullet the spawner will fire.
             entity_list:
                 The list that the bullet will be added to.
-
 
             iterations:
                 Total amount of iterations the spawner will go through. If set to 0, it will be infinite.
@@ -117,13 +119,18 @@ class BulletSpawner:
             bullet_curve:
                 This parameter sets the curve at which
                 the bullet will move along.
+            bullet_curve_change_rate:
+                This parameter sets the 
+            invert_curve / max_bullet_curve_rate:
+                Nothing will happen if set to False, but if set to True, 
+                the curve rate will invert once the curve rate has reached
+                the max_bullet_curve_rate
             bullet_lifetime:
                 The bullet's lifetime in milliseconds.
 
         """
         self.next_fire_ticks = pygame.time.get_ticks()
         self.current_iteration = 0
-        self.current_bullet = 0
         self.is_active = True
         self.angle = starting_angle
         # Args
@@ -148,6 +155,9 @@ class BulletSpawner:
         self.bullet_speed = bullet_speed
         self.bullet_acceleration = bullet_acceleration
         self.bullet_curve = bullet_curve
+        self.bullet_curve_change_rate = bullet_curve_change_rate # wip
+        self.invert_curve = invert_curve # wip
+        self.max_bullet_curve_rate = max_bullet_curve_rate # wip
         self.bullet_lifetime = bullet_lifetime
 
     @property
@@ -170,6 +180,7 @@ class BulletSpawner:
 
         """
         bullet = copy(self.bullet)
+        bullet.speed = self.bullet_speed
         bullet.angle = angle
         bullet.position = self.entity.position
         bullet.acceleration = self.bullet_acceleration
@@ -180,6 +191,7 @@ class BulletSpawner:
         return self.can_shoot
 
     def update(self, delta_time: float) -> None:
+        iter_bullet = 0
         if self.can_shoot:
             self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
 
@@ -187,7 +199,6 @@ class BulletSpawner:
             / self.total_bullet_arrays)
             spread_between_each_bullets = self.spread_between_bullet_arrays
 
-            iter_bullet = 0
             for a in range(self.total_bullet_arrays):
                 for b in range(self.bullets_per_array):
                     angle = self.angle + spread_between_each_array * b + spread_between_each_bullets * a
@@ -195,14 +206,14 @@ class BulletSpawner:
 
                     iter_bullet += 1
 
-            self.current_bullet += 1
-
             self.angle += self.spin_rate * delta_time
-            self.spin_rate += self.spin_modificator
+            self.spin_rate += self.spin_modificator * delta_time
 
-        if self.current_bullet >= self.total_bullets:
-            self.current_bullet = 0
+        if iter_bullet >= self.total_bullets:
             self.current_iteration += 1
+
+        if self.current_iteration >= self.iterations and self.iterations != 0:
+            self.is_active = False
 
         if self.invert_spin:
             if self.spin_rate < -self.max_spin_rate:
