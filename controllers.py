@@ -6,7 +6,7 @@ from .math import Vector
 
 class BaseController:
     """Base class of a controller for a Player or Artificial Intelligence"""
-    def __init__(self, speed: int) -> None:
+    def __init__(self) -> None:
         """Used to control player movements
 
         Parameters:
@@ -16,19 +16,18 @@ class BaseController:
         self.is_moving_left = False
         self.is_moving_down = False
         self.is_moving_up = False
-        self.speed = speed
 
     @property
     def movement(self) -> Vector:
         _movement = Vector(0, 0)
         if self.is_moving_right:
-            _movement.x = self.speed
+            _movement.x = 1
         if self.is_moving_left:
-            _movement.x = -self.speed
+            _movement.x = -1
         if self.is_moving_down:
-            _movement.y = self.speed
+            _movement.y = 1
         if self.is_moving_up:
-            _movement.y = -self.speed
+            _movement.y = -1
 
         return _movement
 
