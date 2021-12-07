@@ -3,41 +3,43 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 from __future__ import annotations
+from Helix.SakuyaEngine.tile import split_image
 
 import pygame
 import math
+import json
 
 from typing import List
 from copy import copy
 
 from .math import Vector
-from .animation import Animation
+from .animation import Animation, load_anim_dict
 from .physics import gravity
 from .controllers import BaseController
 from .particles import Particles
 
 class Entity:
     def __init__(
-        self, 
-        controller: BaseController,
-        position: Vector,
+        self,
+        name: str = None,
+        tags: List[str] = [],
+        scale: int = 1,
+        max_health: float = 100,
+        position: Vector = Vector(0, 0),
+        controller: BaseController = None,
+        fire_rate: int = 0,
         has_collision: bool = True,
         has_rigidbody: bool = False,
-        scale: int = 1,
-        particle_systems: List[Particles] = [],
         obey_gravity: bool = True,
-        fire_rate: int = 0,
+        speed: float = 0,
         custom_hitbox_size: Vector = Vector(0, 0),
-        max_health: float = 100,
-        name: str = None
+        particle_systems: List[Particles] = [],
+        bullet_spawners: List[BulletSpawner] = [],
     ):
         """Objects that goes with a scene
-
-        Parameters:
-            controller: type of controller (ai or player)
-            has_collision
         """
         self.name = name
+        self.tags = tags
         self.scale = Vector(1, 1) * scale
         
         if controller is not None:
@@ -50,6 +52,7 @@ class Entity:
         self.current_anim = None # str
         self.position = position # Vector
         self.velocity = Vector(0, 0)
+        self.speed = speed
         self.acceleration = Vector(0, 0)
         self.obey_gravity = obey_gravity # bool
         # terminal velocity must be multipled
@@ -62,6 +65,7 @@ class Entity:
         self.custom_hitbox_size = custom_hitbox_size
 
         self.particle_systems = particle_systems
+        self.bullet_spawners = bullet_spawners
         
         # destroy
         self._destroy_val = 0
@@ -216,7 +220,7 @@ class Entity:
             animation_name: Animation to be removed
 
         Returns:
-            If true, removing the animation was successful
+            If True, removing the animation was successful
 
         """
         raise NotImplementedError
@@ -244,19 +248,19 @@ class Entity:
             delta_time: the game's delta time
 
         """
-        # destroy
+        # Destroy
         if self._enable_destroy and self._destroy_val <= pygame.time.get_ticks():
             self._is_destroyed = True
 
-        # particles
+        # Update Particles
         for ps in self.particle_systems:
             ps.update(delta_time, self.position)
 
-        # animations
+        # Update Animation
         if self.current_anim is not None:
             self.anim_get(self.current_anim).update(delta_time)
 
-        # apply terminal velocity
+        # Apply terminal velocity
         # TODO: find a cleaner way to implement this
         term_vec = self.terminal_velocity * delta_time
         if self.velocity.x < 0 and self.enable_terminal_velocity:
@@ -268,27 +272,54 @@ class Entity:
         if self.velocity.y > 0 and self.enable_terminal_velocity:
             self.velocity.y = min(self.velocity.y, term_vec)
 
-        # engine controller movement
+        # Controller movement
         if self.controller is not None:
-            self.velocity = self.controller.movement * self.controller.speed
+            self.velocity = self.controller.movement * self.speed
 
-        # apply gravity?
+        # Apply gravity?
         g = gravity
         if not self.obey_gravity:
             g = Vector(0, 0)
 
-        # apply velocity
+        # Apply velocity
         if self.has_rigidbody:
-            self.velocity += (
-                (self.acceleration
-                + g)
-            )   
+            self.velocity += self.acceleration + g
         
         velocity = self.velocity * delta_time
         self.move(velocity, [])
 
-def load_entity(json_path: str) -> Entity:
-    raise NotImplementedError
+def load_entity_json(json_path: str) -> Entity:
+    data = json.load(open(json_path))
+    return_entity = Entity()
 
-def dump_entity(dump_path: str) -> None:
-    raise NotImplementedError
+    # Position
+    if "position" in data.keys():
+        data["position"] = Vector(
+            data["position"][0],
+            data["position"][1]
+        )
+
+    # Custom Hitbox Size
+    if "custom_hitbox_size" in data.keys():
+        data["custom_hitbox_size"] = Vector(
+            data["custom_hitbox_size"][0],
+            data["custom_hitbox_size"][1]
+        )
+
+    # Animations
+    if "animations" in data.keys():
+        for a in data["animations"][:]:
+            anim = load_anim_dict(a)
+            return_entity.anim_add(anim)
+        return_entity.anim_set(list(return_entity.animations.keys())[0])
+        del data["animations"]
+
+    # Particle Systems
+
+    # Bullet Spawners
+
+    for key in data:
+        if hasattr(return_entity, key):
+            setattr(return_entity, key, data[key])
+    
+    return return_entity
