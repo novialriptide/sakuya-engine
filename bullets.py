@@ -25,8 +25,7 @@ class Bullet(Entity):
         curve: float = 0
     ) -> None:
         super().__init__(
-            None,
-            position,
+            position = position,
             obey_gravity = obey_gravity,
             custom_hitbox_size = custom_hitbox_size,
             name = name
@@ -134,8 +133,9 @@ class BulletSpawner:
         self.is_active = True
         self.angle = starting_angle
         # Args
-        self.angle = starting_angle
         self.entity = assigned_entity
+        self.entity.bullet_spawners.append(self)
+
         self.position_offset = position_offset
         self.bullet = copy(bullet)
         self.entity_list = entity_list
