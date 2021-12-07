@@ -23,6 +23,7 @@ A game engine tool, named after a Touhou character, specifically made for bullet
 14. Client Management
 15. Bullet Pattern Engine
 16. Raycasting
+17. Load Animations & Entities (partially) using JSON
 
 ## Planned Features
 1. Tilemaps
@@ -35,7 +36,6 @@ A game engine tool, named after a Touhou character, specifically made for bullet
 8. Revive Circle Support
 9. Debug Hitbox
 10. Moveable Camera
-11. Load Animations, Entities, Tilemaps, etc using JSON
 
 ## Developers
 1. [Andrew Hong](https://github.com/novialriptide)

@@ -2,8 +2,13 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
+from Helix.SakuyaEngine.tile import split_image
+
 import pygame
 import typing
+import json
+
+
 
 class Animation:
     def __init__(
@@ -29,3 +34,19 @@ class Animation:
 
             if self.current_frame >= len(self.sprites):
                 self.current_frame = 0
+
+def load_anim_dict(data: dict) -> Animation:
+    return Animation(
+        data["name"],
+        sprites = split_image(
+            pygame.image.load(data["sprites"]["image"]),
+            px_width = data["sprites"]["width"],
+            px_height = data["sprites"]["height"]
+        ),
+        fps = data["fps"]
+    )
+
+def load_anim_json(json_path: str) -> Animation:
+    data = json.load(open(json_path))
+
+    return load_anim_dict(data)
