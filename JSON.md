@@ -12,13 +12,7 @@ For `event_animations`, refer to the animation's `name (string)`.
 ```json
 {
     "animations": [anim_data, ...],
-    "bullet_movesets": [
-        {
-            "spawn_chance": null,
-            "bullet": bullet_data
-            "bullet_spawner": bullet_spawner_data
-        }
-    ],
+    "bullet_spawners": [bullet_spawner_data, ...],
     "event_sounds": {
         "on_shoot": [...],
         "on_death": [...],

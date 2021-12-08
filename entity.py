@@ -257,21 +257,25 @@ class Entity:
             ps.position = self.position
             ps.update(delta_time)
 
+        # Update Bullet Spawners
+        for bs in self.bullet_spawners:
+            bs.update(delta_time)
+        
         # Update Animation
         if self.current_anim is not None:
             self.anim_get(self.current_anim).update(delta_time)
 
         # Apply terminal velocity
-        # TODO: find a cleaner way to implement this
         term_vec = self.terminal_velocity * delta_time
-        if self.velocity.x < 0 and self.enable_terminal_velocity:
-            self.velocity.x = max(self.velocity.x, term_vec)
-        if self.velocity.x > 0 and self.enable_terminal_velocity:
-            self.velocity.x = min(self.velocity.x, term_vec)
-        if self.velocity.y < 0 and self.enable_terminal_velocity:
-            self.velocity.y = max(self.velocity.y, term_vec)
-        if self.velocity.y > 0 and self.enable_terminal_velocity:
-            self.velocity.y = min(self.velocity.y, term_vec)
+        if self.enable_terminal_velocity:
+            if self.velocity.x < 0:
+                self.velocity.x = max(self.velocity.x, term_vec)
+            if self.velocity.x > 0:
+                self.velocity.x = min(self.velocity.x, term_vec)
+            if self.velocity.y < 0:
+                self.velocity.y = max(self.velocity.y, term_vec)
+            if self.velocity.y > 0:
+                self.velocity.y = min(self.velocity.y, term_vec)
 
         # Controller movement
         if self.controller is not None:
@@ -289,7 +293,9 @@ class Entity:
         velocity = self.velocity * delta_time
         self.move(velocity, [])
 
-def load_entity_json(json_path: str) -> Entity:
+def load_entity_json(json_path: str, entity_list: List[Entity]) -> Entity:
+    from .bullets import load_bulletspawner_dict
+
     data = json.load(open(json_path))
     return_entity = Entity()
 
@@ -317,10 +323,17 @@ def load_entity_json(json_path: str) -> Entity:
 
     # Particle Systems
 
-    # Bullet Spawners
-
     for key in data:
         if hasattr(return_entity, key):
             setattr(return_entity, key, data[key])
-    
+
+    # Bullet Spawners
+    if "bullet_spawners" in data.keys():
+        spawners = data["bullet_spawners"][:]
+        return_entity.bullet_spawners = []
+        for bs in spawners:
+            return_entity.bullet_spawners.append(load_bulletspawner_dict(
+                return_entity, entity_list, bs
+            ))
+
     return return_entity

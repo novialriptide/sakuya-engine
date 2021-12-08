@@ -14,10 +14,10 @@ from .math import Vector
 class Bullet(Entity):
     def __init__(
         self,
-        angle: float,
-        speed: float,
-        color: Tuple[int, int, int],
-        damage: float,
+        angle: float = 0,
+        speed: float = 4,
+        color: Tuple[int, int, int] = (255, 255, 255),
+        damage: float = 5,
         position: Vector = Vector(0, 0),
         obey_gravity: bool = False,
         custom_hitbox_size: Vector = Vector(0, 0),
@@ -47,9 +47,9 @@ class BulletSpawner:
     def __init__(
         self,
         assigned_entity: Entity,
-        position_offset: Vector,
         bullet: Bullet,
         entity_list: List[Entity],
+        position_offset: Vector = Vector(0, 0),
         iterations: int = 1,
         total_bullet_arrays: int = 1,
         bullets_per_array: int = 1,
@@ -135,12 +135,11 @@ class BulletSpawner:
         # Args
         self.entity = assigned_entity
         self.entity.bullet_spawners.append(self)
-
-        self.position_offset = position_offset
         self.bullet = copy(bullet)
         self.entity_list = entity_list
 
         # Kwargs
+        self.position_offset = position_offset
         self.iterations = iterations
         self.total_bullet_arrays = total_bullet_arrays
         self.bullets_per_array = bullets_per_array
@@ -238,3 +237,30 @@ class BulletSpawner:
 
         """
         pass
+
+def load_bullet_dict(data: dict) -> Bullet:
+    if "custom_hitbox_size" in data.keys():
+        data["custom_hitbox_size"] = Vector(
+            data["custom_hitbox_size"][0],
+            data["custom_hitbox_size"][1]
+        )
+
+    if "position" in data.keys():
+        data["position"] = Vector(
+            data["position"][0],
+            data["position"][1]
+        )
+    
+    return Bullet(**data)
+
+def load_bulletspawner_dict(entity: Entity, entity_list: List[Entity], data: dict) -> BulletSpawner:
+    bullet = load_bullet_dict(data["bullet"])
+    del data["bullet"]
+
+    if "position_offset" in data.keys():
+        data["position_offset"] = Vector(
+            data["position_offset"][0],
+            data["position_offset"][1]
+        )
+
+    return BulletSpawner(entity, bullet, entity_list, **data)
