@@ -46,7 +46,8 @@ class Particles:
         particles_num: int = 2,
         colors: List[Tuple[int, int, int]] = [],
         lifetime: int = 1000,
-        offset: Vector = Vector(0,0)
+        offset: Vector = Vector(0, 0),
+        position: Vector = Vector(0, 0)
     ):
         self.particles = []
         self.velocity = velocity
@@ -55,18 +56,19 @@ class Particles:
         self.particles_num = particles_num # int
         self.lifetime = lifetime
         self.offset = offset
+        self.position = position
     
     def render(self, surface: pygame.Surface) -> None:
         for p in self.particles:
             surface.set_at((int(p.position.x), int(p.position.y)), p.color)
 
-    def update(self, delta_time: float, position: Vector) -> None:
+    def update(self, delta_time: float) -> None:
         for p in range(self.particles_num):
             random_color = random.randrange(0, len(self.colors))
             random_spread_x = random.uniform(-self.spread, self.spread)
             random_spread_y = random.uniform(-self.spread, self.spread)
             par = Particle(
-                position + self.offset,
+                self.position + self.offset,
                 self.colors[random_color],
                 Vector(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y)
             )

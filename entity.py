@@ -254,7 +254,8 @@ class Entity:
 
         # Update Particles
         for ps in self.particle_systems:
-            ps.update(delta_time, self.position)
+            ps.position = self.position
+            ps.update(delta_time)
 
         # Update Animation
         if self.current_anim is not None:
