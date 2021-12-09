@@ -35,6 +35,7 @@ class Entity:
         custom_hitbox_size: Vector = Vector(0, 0),
         particle_systems: List[Particles] = [],
         bullet_spawners: List[BulletSpawner] = [],
+        update_bullet_spawners: bool = True
     ):
         """Objects that goes with a scene
         """
@@ -66,6 +67,7 @@ class Entity:
 
         self.particle_systems = particle_systems
         self.bullet_spawners = bullet_spawners
+        self.update_bullet_spawners = update_bullet_spawners
         
         # destroy
         self._destroy_val = 0
@@ -256,10 +258,6 @@ class Entity:
         for ps in self.particle_systems:
             ps.position = self.position
             ps.update(delta_time)
-
-        # Update Bullet Spawners
-        for bs in self.bullet_spawners:
-            bs.update(delta_time)
         
         # Update Animation
         if self.current_anim is not None:
@@ -332,8 +330,6 @@ def load_entity_json(json_path: str, entity_list: List[Entity]) -> Entity:
         spawners = data["bullet_spawners"][:]
         return_entity.bullet_spawners = []
         for bs in spawners:
-            return_entity.bullet_spawners.append(load_bulletspawner_dict(
-                return_entity, entity_list, bs
-            ))
+            return_entity.bullet_spawners.append(load_bulletspawner_dict(bs))
 
     return return_entity

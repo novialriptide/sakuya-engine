@@ -46,9 +46,8 @@ class Bullet(Entity):
 class BulletSpawner:
     def __init__(
         self,
-        assigned_entity: Entity,
         bullet: Bullet,
-        entity_list: List[Entity],
+        position: Vector = Vector(0, 0),
         position_offset: Vector = Vector(0, 0),
         iterations: int = 1,
         total_bullet_arrays: int = 1,
@@ -133,12 +132,10 @@ class BulletSpawner:
         self.is_active = True
         self.angle = starting_angle
         # Args
-        self.entity = assigned_entity
-        self.entity.bullet_spawners.append(self)
         self.bullet = copy(bullet)
-        self.entity_list = entity_list
 
         # Kwargs
+        self.position = position
         self.position_offset = position_offset
         self.iterations = iterations
         self.total_bullet_arrays = total_bullet_arrays
@@ -167,7 +164,7 @@ class BulletSpawner:
     def can_shoot(self) -> bool:
         return self.is_active and pygame.time.get_ticks() >= self.next_fire_ticks
 
-    def shoot(self, angle: float) -> bool:
+    def shoot(self, angle: float) -> Bullet:
         """Shoot a bullet
 
         Parameters:
@@ -181,21 +178,21 @@ class BulletSpawner:
         bullet = copy(self.bullet)
         bullet.speed = self.bullet_speed
         bullet.angle = angle
-        bullet.position = self.entity.position + self.position_offset
+        bullet.position = self.position + self.position_offset
         bullet.acceleration = self.bullet_acceleration
-        bullet.destroy(self.bullet_lifetime)
         bullet.curve = self.bullet_curve
-        self.entity_list.append(bullet)
+        bullet.destroy(self.bullet_lifetime)
 
         return bullet
 
-    def shoot_with_firerate(self, angle: float) -> None:
+    def shoot_with_firerate(self, angle: float) -> Bullet:
         if self.can_shoot:
             self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
-            self.shoot(angle)
+            return self.shoot(angle)
 
-    def update(self, delta_time: float) -> None:
+    def update(self, delta_time: float) -> List[Bullet]:
         iter_bullet = 0
+        bullets = []
         if self.can_shoot:
             self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
 
@@ -206,7 +203,7 @@ class BulletSpawner:
             for a in range(self.total_bullet_arrays):
                 for b in range(self.bullets_per_array):
                     angle = self.angle + spread_between_each_array * b + spread_between_each_bullets * a
-                    self.shoot(angle)
+                    bullets.append(self.shoot(angle))
 
                     iter_bullet += 1
 
@@ -227,6 +224,8 @@ class BulletSpawner:
             if self.spin_rate > self.max_spin_rate:
                 self.spin_rate = self.max_spin_rate
                 self.spin_modificator *= -1
+        
+        return bullets
 
     def draw_debug_angle(self, surface: pygame.Surface) -> None:
         """Draws a green or red line on surface to indicate 
@@ -253,7 +252,7 @@ def load_bullet_dict(data: dict) -> Bullet:
     
     return Bullet(**data)
 
-def load_bulletspawner_dict(entity: Entity, entity_list: List[Entity], data: dict) -> BulletSpawner:
+def load_bulletspawner_dict(data: dict) -> BulletSpawner:
     bullet = load_bullet_dict(data["bullet"])
     del data["bullet"]
 
@@ -263,4 +262,4 @@ def load_bulletspawner_dict(entity: Entity, entity_list: List[Entity], data: dic
             data["position_offset"][1]
         )
 
-    return BulletSpawner(entity, bullet, entity_list, **data)
+    return BulletSpawner(bullet, **data)
