@@ -1,5 +1,5 @@
 """
-SakuyaEngine (c) 2020-2021 Andrew Hong
+SakuyaEngine // GameDen // GameDen Rewrite (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 from .errors import NegativeSpeedError, LineSegmentLinesError
