@@ -291,7 +291,7 @@ class Entity:
         velocity = self.velocity * delta_time
         self.move(velocity, [])
 
-def load_entity_json(json_path: str, entity_list: List[Entity]) -> Entity:
+def load_entity_json(json_path: str) -> Entity:
     from .bullets import load_bulletspawner_dict
 
     data = json.load(open(json_path))
