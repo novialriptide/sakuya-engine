@@ -21,6 +21,7 @@ class Scene:
         self.is_paused = False
         self.client = client
         self.entities = []
+        self.bullets = []
         self.event_system = EventSystem()
         self.kwargs = kwargs
 
