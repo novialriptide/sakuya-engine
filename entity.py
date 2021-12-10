@@ -244,10 +244,20 @@ class Entity:
         """
         e = copy(self)
         new_anims = {}
+        new_particles = []
+        new_bullet_spawners = []
         for a in self.animations.keys():
             new_anims[a] = copy(self.anim_get(a))
 
+        for p in self.particle_systems:
+            new_particles.append(copy(p))
+
+        for bs in self.bullet_spawners:
+            new_bullet_spawners.append(copy(bs))
+
         e.animations = new_anims
+        e.particle_systems = new_particles
+        e.bullet_spawners = new_bullet_spawners
 
         return e
 
