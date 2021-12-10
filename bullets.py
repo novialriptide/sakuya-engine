@@ -248,16 +248,10 @@ class BulletSpawner:
 
 def load_bullet_dict(data: dict) -> Bullet:
     if "custom_hitbox_size" in data.keys():
-        data["custom_hitbox_size"] = Vector(
-            data["custom_hitbox_size"][0],
-            data["custom_hitbox_size"][1]
-        )
+        data["custom_hitbox_size"] = Vector(data["custom_hitbox_size"])
 
     if "position" in data.keys():
-        data["position"] = Vector(
-            data["position"][0],
-            data["position"][1]
-        )
+        data["position"] = Vector(data["position"])
 
     if "static_sprite" in data.keys():
         sprites = split_image(
@@ -275,9 +269,6 @@ def load_bulletspawner_dict(data: dict) -> BulletSpawner:
     del data["bullet"]
 
     if "position_offset" in data.keys():
-        data["position_offset"] = Vector(
-            data["position_offset"][0],
-            data["position_offset"][1]
-        )
+        data["position_offset"] = Vector(data["position_offset"])
 
     return BulletSpawner(bullet, **data)

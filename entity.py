@@ -307,17 +307,11 @@ def load_entity_json(json_path: str) -> Entity:
 
     # Position
     if "position" in data.keys():
-        data["position"] = Vector(
-            data["position"][0],
-            data["position"][1]
-        )
+        data["position"] = Vector(data["position"])
 
     # Custom Hitbox Size
     if "custom_hitbox_size" in data.keys():
-        data["custom_hitbox_size"] = Vector(
-            data["custom_hitbox_size"][0],
-            data["custom_hitbox_size"][1]
-        )
+        data["custom_hitbox_size"] = Vector(data["custom_hitbox_size"])
 
     # Animations
     if "animations" in data.keys() and "static_sprite" not in data.keys():
