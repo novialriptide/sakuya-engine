@@ -39,7 +39,8 @@ class Entity:
         update_bullet_spawners: bool = True,
         static_sprite: pygame.Surface = None,
         healthbar_update_speed: float = 0.5,
-        healthbar_position_offset: Vector = Vector(0, 0)
+        healthbar_position_offset: Vector = Vector(0, 0),
+        draw_healthbar: bool = True
     ):
         """Objects that goes with a scene
         """
@@ -86,6 +87,7 @@ class Entity:
 
         self.healthbar = Bar(max_health, healthbar_update_speed)
         self.healthbar_position_offset = healthbar_position_offset
+        self.draw_healthbar = draw_healthbar
 
         self.static_sprite = static_sprite
 
@@ -331,6 +333,9 @@ def load_entity_json(json_path: str) -> Entity:
     # Custom Hitbox Size
     if "custom_hitbox_size" in data.keys():
         data["custom_hitbox_size"] = Vector(data["custom_hitbox_size"])
+
+    if "healthbar_position_offset" in data.keys():
+        data["healthbar_position_offset"] = Vector(data["healthbar_position_offset"])
 
     # Animations
     if "animations" in data.keys() and "static_sprite" not in data.keys():
