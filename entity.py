@@ -3,7 +3,6 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 from __future__ import annotations
-from Helix.SakuyaEngine.tile import split_image
 
 import pygame
 import math
@@ -13,7 +12,7 @@ from typing import List
 from copy import copy
 
 from .math import Vector
-from .animation import Animation, load_anim_dict
+from .animation import Animation, load_anim_dict, split_image
 from .physics import gravity
 from .controllers import BaseController
 from .particles import Particles
@@ -30,12 +29,14 @@ class Entity:
         fire_rate: int = 0,
         has_collision: bool = True,
         has_rigidbody: bool = False,
+        enable_terminal_velocity: bool = False,
         obey_gravity: bool = True,
         speed: float = 0,
         custom_hitbox_size: Vector = Vector(0, 0),
         particle_systems: List[Particles] = [],
         bullet_spawners: List[BulletSpawner] = [],
-        update_bullet_spawners: bool = True
+        update_bullet_spawners: bool = True,
+        static_sprite: pygame.Surface = None
     ):
         """Objects that goes with a scene
         """
@@ -50,16 +51,14 @@ class Entity:
 
         self.has_collision = has_collision
         self.animations = {}
-        self.current_anim = None # str
-        self.position = position # Vector
+        self.current_anim = None
+        self.position = position
         self.velocity = Vector(0, 0)
         self.speed = speed
         self.acceleration = Vector(0, 0)
-        self.obey_gravity = obey_gravity # bool
-        # terminal velocity must be multipled
-        # with delta time in comparision
-        self.terminal_velocity = 10.0 # float
-        self.enable_terminal_velocity = False
+        self.obey_gravity = obey_gravity
+        self.terminal_velocity = 10.0
+        self.enable_terminal_velocity = enable_terminal_velocity
 
         self.has_collision = has_collision
         self.has_rigidbody = has_rigidbody
@@ -82,9 +81,20 @@ class Entity:
         self.current_health = max_health
         self.max_health = max_health
 
+        self.static_sprite = static_sprite
+
     @property
     def sprite(self) -> pygame.Surface:
         cur_anim = self.anim_get(self.current_anim)
+        if self.static_sprite is not None:
+            width, height = self.static_sprite.get_size()
+            scaled_sprite = pygame.transform.scale(
+                self.static_sprite, (
+                    self.scale.x * width, 
+                    self.scale.y * height
+                )
+            )
+            return scaled_sprite
         if cur_anim is not None:
             width, height = cur_anim.sprite.get_size()
             scaled_sprite = pygame.transform.scale(
@@ -94,8 +104,6 @@ class Entity:
                 )
             )
             return scaled_sprite
-        if cur_anim is None:
-            return None
 
     @property
     def rect(self) -> pygame.Rect:
@@ -120,7 +128,7 @@ class Entity:
         )
 
     @property
-    def center_position(self) -> Vector:
+    def center_offset(self) -> Vector:
         return Vector(self.rect.width/2, self.rect.height/2)
 
     def destroy(self, time: int) -> None:
@@ -312,12 +320,20 @@ def load_entity_json(json_path: str) -> Entity:
         )
 
     # Animations
-    if "animations" in data.keys():
+    if "animations" in data.keys() and "static_sprite" not in data.keys():
         for a in data["animations"][:]:
             anim = load_anim_dict(a)
             return_entity.anim_add(anim)
         return_entity.anim_set(list(return_entity.animations.keys())[0])
         del data["animations"]
+
+    if "static_sprite" in data.keys():
+        sprite = split_image(
+            pygame.image.load(data["static_sprite"]["path"]),
+            px_width = data["static_sprite"]["width"],
+            px_height = data["static_sprite"]["height"]
+        )
+        data["static_sprite"] = pygame.image.load(sprite[data["static_sprite"]["index"]])
 
     # Particle Systems
 
