@@ -244,12 +244,13 @@ def load_bullet_dict(data: dict) -> Bullet:
         data["position"] = Vector(data["position"])
 
     if "static_sprite" in data.keys():
+        ss_data = data["static_sprite"]
         sprites = split_image(
-            pygame.image.load(data["static_sprite"]["path"]),
-            px_width = data["static_sprite"]["width"],
-            px_height = data["static_sprite"]["height"]
+            pygame.image.load(ss_data["path"]),
+            px_width = ss_data["width"],
+            px_height = ss_data["height"]
         )
-        index = data["static_sprite"]["index"]
+        index = ss_data["index"]
         data["static_sprite"] = sprites[index]
     
     return Bullet(**data)
