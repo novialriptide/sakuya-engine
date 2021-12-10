@@ -10,6 +10,8 @@ import math
 
 from .entity import Entity
 from .math import Vector
+from .animation import split_image
+from .core import rotate_by_center
 
 class Bullet(Entity):
     def __init__(
@@ -22,13 +24,15 @@ class Bullet(Entity):
         obey_gravity: bool = False,
         custom_hitbox_size: Vector = Vector(0, 0),
         name: str = None,
+        static_sprite: pygame.Surface = None,
         curve: float = 0
     ) -> None:
         super().__init__(
             position = position,
             obey_gravity = obey_gravity,
             custom_hitbox_size = custom_hitbox_size,
-            name = name
+            name = name,
+            static_sprite = static_sprite
         )
         self.angle = angle
         self.speed = speed
@@ -36,6 +40,11 @@ class Bullet(Entity):
         self.damage = damage
 
         self.curve = curve
+
+    @property
+    def sprite(self) -> pygame.Surface:
+        # This isn't precise.
+        return rotate_by_center(super().sprite, self.angle)
 
     def update(self, delta_time: float) -> None:
         angle = math.radians(self.angle)
@@ -178,7 +187,7 @@ class BulletSpawner:
         bullet = copy(self.bullet)
         bullet.speed = self.bullet_speed
         bullet.angle = angle
-        bullet.position = self.position + self.position_offset
+        bullet.position = self.position + self.position_offset - bullet.center_offset
         bullet.acceleration = self.bullet_acceleration
         bullet.curve = self.bullet_curve
         bullet.destroy(self.bullet_lifetime)
@@ -249,6 +258,15 @@ def load_bullet_dict(data: dict) -> Bullet:
             data["position"][0],
             data["position"][1]
         )
+
+    if "static_sprite" in data.keys():
+        sprites = split_image(
+            pygame.image.load(data["static_sprite"]["path"]),
+            px_width = data["static_sprite"]["width"],
+            px_height = data["static_sprite"]["height"]
+        )
+        index = data["static_sprite"]["index"]
+        data["static_sprite"] = sprites[index]
     
     return Bullet(**data)
 
