@@ -3,6 +3,7 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 from __future__ import annotations
+from Helix.SakuyaEngine.bar import Bar
 
 import pygame
 import math
@@ -36,7 +37,9 @@ class Entity:
         particle_systems: List[Particles] = [],
         bullet_spawners: List[BulletSpawner] = [],
         update_bullet_spawners: bool = True,
-        static_sprite: pygame.Surface = None
+        static_sprite: pygame.Surface = None,
+        healthbar_update_speed: float = 0.5,
+        healthbar_position_offset: Vector = Vector(0, 0)
     ):
         """Objects that goes with a scene
         """
@@ -79,7 +82,10 @@ class Entity:
         self.next_fire_ticks = pygame.time.get_ticks()
 
         self.current_health = max_health
-        self.max_health = max_health
+        self._max_health = max_health
+
+        self.healthbar = Bar(max_health, healthbar_update_speed)
+        self.healthbar_position_offset = healthbar_position_offset
 
         self.static_sprite = static_sprite
 
@@ -280,6 +286,9 @@ class Entity:
         # Update Animation
         if self.current_anim is not None:
             self.anim_get(self.current_anim).update(delta_time)
+
+        # Update HealthBar
+        self.healthbar.update(delta_time)
 
         # Apply terminal velocity
         term_vec = self.terminal_velocity * delta_time
