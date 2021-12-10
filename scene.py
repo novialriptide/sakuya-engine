@@ -22,6 +22,7 @@ class Scene:
         self.client = client
         self.entities = []
         self.bullets = []
+        self.particle_systems = []
         self.event_system = EventSystem()
         self.kwargs = kwargs
 
@@ -107,10 +108,22 @@ class Scene:
             delta_time: The game's delta time
 
         """
-        for object in self.entities[:]:
-            object.update(delta_time)
-            if object._is_destroyed:
-                self.entities.remove(object)
+        for entity in self.entities[:]:
+            entity.update(delta_time)
+            if entity._is_destroyed:
+                self.entities.remove(entity)
+
+            # Update Bullet Spawners
+            for bs in entity.bullet_spawners:
+                bs.position = entity.position + entity.center_offset
+                if entity.update_bullet_spawners:
+                    self.bullets.extend(bs.update(delta_time))
+
+        for bullet in self.bullets[:]:
+            bullet.update(delta_time)
+            if bullet._is_destroyed:
+                self.bullets.remove(bullet)
+
 
 class SceneManager:
     def __init__(self, client: Client) -> None:
