@@ -174,14 +174,10 @@ class BulletSpawner:
         return self.is_active and pygame.time.get_ticks() >= self.next_fire_ticks
 
     def shoot(self, angle: float) -> Bullet:
-        """Shoot a bullet
+        """Shoot a bullet.
 
         Parameters:
             angle: Angle to shoot the bullet.
-
-        Returns:
-            If True, a bullet has successfully been fired.
-            More specifically, this returns BulletSpawner.can_shoot
 
         """
         bullet = copy(self.bullet)
@@ -195,6 +191,12 @@ class BulletSpawner:
         return bullet
 
     def shoot_with_firerate(self, angle: float) -> Bullet:
+        """Shoot a bullet with a fire rate limit.
+
+        Parameters:
+            angle: Angle to shoot the bullet.
+
+        """
         if self.can_shoot:
             self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
             return self.shoot(angle)
@@ -205,8 +207,7 @@ class BulletSpawner:
         if self.can_shoot:
             self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
 
-            spread_between_each_array = (self.spread_within_bullet_arrays 
-            / self.total_bullet_arrays)
+            spread_between_each_array = (self.spread_within_bullet_arrays / self.total_bullet_arrays)
             spread_between_each_bullets = self.spread_between_bullet_arrays
 
             for a in range(self.total_bullet_arrays):

@@ -70,4 +70,4 @@ def text3(
 ) -> pygame.Surface:
     transparent_background_color = (255, 43, 243)
     separate_color = (255, 43, 243)
-    
+    raise NotImplementedError()
