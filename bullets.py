@@ -236,16 +236,6 @@ class BulletSpawner:
         
         return bullets
 
-    def draw_debug_angle(self, surface: pygame.Surface) -> None:
-        """Draws a green or red line on surface to indicate 
-        status and angle.
-
-        Parameters:
-            surface: Surface to draw on.
-
-        """
-        pass
-
 def load_bullet_dict(data: dict) -> Bullet:
     if "custom_hitbox_size" in data.keys():
         data["custom_hitbox_size"] = Vector(data["custom_hitbox_size"])
