@@ -21,5 +21,5 @@ class Bar:
     def display_health(self):
         return self._display_health
 
-    def update(self):
-        self._display_health = move_toward(self._display_health, self.current_health, self.update_speed)
+    def update(self, delta_time: float):
+        self._display_health = move_toward(self._display_health, self.current_health, self.update_speed * delta_time)
