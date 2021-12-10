@@ -9,6 +9,7 @@ from .animation import *
 from .bar import *
 from .bullets import *
 from .button import *
+from .core import *
 from .entity import *
 from .errors import *
 from .events import *

@@ -1,3 +1,4 @@
+from typing import Tuple
 import pygame
 
 def rotate_by_center(image: pygame.Surface, angle: float) -> pygame.Surface:
