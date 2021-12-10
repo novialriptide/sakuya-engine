@@ -205,6 +205,8 @@ class BulletSpawner:
         iter_bullet = 0
         bullets = []
         if self.can_shoot:
+            # Unique variants of the entity holding a bullet spawner
+            # can't shoot because apparently they share the self.can_shoot
             self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
 
             spread_between_each_array = (self.spread_within_bullet_arrays / self.total_bullet_arrays)

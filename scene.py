@@ -2,6 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
+from types import new_class
 from .client import Client
 from .entity import Entity
 from .errors import EntityNotInScene
@@ -117,13 +118,13 @@ class Scene:
             for bs in entity.bullet_spawners:
                 bs.position = entity.position + entity.center_offset
                 if entity.update_bullet_spawners:
-                    self.bullets.extend(bs.update(delta_time))
+                    new_bullets = bs.update(delta_time)
+                    self.bullets.extend(new_bullets)
 
         for bullet in self.bullets[:]:
             bullet.update(delta_time)
             if bullet._is_destroyed:
                 self.bullets.remove(bullet)
-
 
 class SceneManager:
     def __init__(self, client: Client) -> None:
