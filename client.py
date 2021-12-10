@@ -47,6 +47,7 @@ class Client:
         self.pg_clock = pygame.time.Clock()
         self.max_fps = -1 # int
         self.delta_time = 0
+        self.ticks_elapsed = 0
 
         self.pg_flag = 0
         if resizeable_window:
@@ -108,7 +109,7 @@ class Client:
         while(self.is_running):
             # delta time
             try:
-                self.delta_time = 1 / ((time.time() - last_time) * 60)
+                self.delta_time = (time.time() - last_time) * 60
             except ZeroDivisionError:
                 self.delta_time = 0
             last_time = time.time()
@@ -147,6 +148,7 @@ class Client:
             self.event_system.update(self.delta_time)
             pygame.display.update()
             self.pg_clock.tick(self.max_fps)
+            self.ticks_elapsed += 1
 
     def add_scene(self, scene_name: str, **kwargs) -> None:
         """
