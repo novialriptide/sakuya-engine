@@ -9,13 +9,24 @@ import math
 from .errors import NegativeSpeedError, LineSegmentLinesError
 
 class Vector:
-    def __init__(self, x: float, y: float):
-        self.x = x
-        self.y = y
+    def __init__(self, *args):
+        """Creates a Vector2
 
-    def __init__(self, coords: Tuple[float, float]) -> None:
-        self.x = coords[0]
-        self.y = coords[1]
+        Parameters:
+            x (float): The x coordinate
+            y (float): The y coordinate
+        
+        Parameters:
+            coords (Tuple[float, float]): The coordinates in a tuple or list.
+
+        """
+        if len(args) == 2:
+            self.x = args[0]
+            self.y = args[1]
+
+        if len(args) == 1:
+            self.x = args[0][0]
+            self.y = args[0][1]
 
     @property
     def ratio_xy(self) -> float:
