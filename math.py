@@ -2,44 +2,60 @@
 SakuyaEngine // GameDen // GameDen Rewrite (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from .errors import NegativeSpeedError, LineSegmentLinesError
+from __future__ import annotations
+from typing import Tuple
 import math
+
+from .errors import NegativeSpeedError, LineSegmentLinesError
 
 class Vector:
     def __init__(self, x: float, y: float):
         self.x = x
         self.y = y
 
+    def __init__(self, coords: Tuple[float, float]) -> None:
+        self.x = coords[0]
+        self.y = coords[1]
+
     @property
-    def ratio_xy(self):
+    def ratio_xy(self) -> float:
         return self.x / self.y
 
     @property
-    def ratio_yx(self):
+    def ratio_yx(self) -> float:
         return self.y / self.x
 
     def __str__(self) -> str:
         return f"({self.x}, {self.y})"
 
-    def __add__(self, other):
+    def __add__(self, other) -> Vector:
         return Vector(self.x + other.x, self.y + other.y)
     
-    def __sub__(self, other):
+    def __sub__(self, other) -> Vector:
         return Vector(self.x - other.x, self.y - other.y)
     
-    def __mul__(self, other: float):
+    def __mul__(self, other: float) -> Vector:
         return Vector(self.x * other, self.y * other)
 
-    def __truediv__(self, other: float):
+    def __truediv__(self, other: float) -> Vector:
         return Vector(self.x / other, self.y / other)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.x == other.x and self.y == other.y
 
-    def to_list(self):
-        return [self.x, self.y]
+    def to_list(self) -> Tuple[float, float]:
+        return (self.x, self.y)
         
-    def move_toward(self, target, speed: float):
+    def move_toward(self, target, speed: float) -> Vector:
+        """Moves towards the target Vector by the movement speed.
+
+        Must be put in a loop until its reached its target.
+
+        Parameters:
+            target: The target Vector.
+            speed: The movement speed.
+        
+        """
         magnitude = get_magnitude(target, self)
         delta = target - self
 
@@ -49,22 +65,40 @@ class Vector:
         return self + delta / magnitude * speed
 
 def get_magnitude(point1: Vector, point2: Vector) -> float:
+    """Returns the magnitude of 2 points
+
+    Parameters:
+        point1: First point.
+        point2: Second point.
+
+    """
     return math.sqrt(
         math.pow((point1.x - point2.x), 2) 
         + math.pow((point1.y - point2.y), 2)
     )
 
-def to_vector(point):
-    return Vector(point[0], point[1])
-
 def get_angle(origin: Vector, direction: Vector) -> float:
-    """
-    Returns an angle in radians of the object to look at from the origin point
+    """Returns an angle in radians of the object to look at from the origin point
+
+    Parameters:
+        origin: The original point.
+        direction: The direction from origin point.
+
     """
     distance = direction - origin
     return math.atan2(distance.y, distance.x)
 
-def move_toward(origin: float, target: float, speed: float):
+def move_toward(origin: float, target: float, speed: float) -> float:
+    """Moves towards the origin to the target by speed.
+
+    Must put in a loop until it's reach its goal.
+
+    Parameters:
+        origin: The first point.
+        target: The target point.
+        speed: The movement speed.
+
+    """
     if speed < 0:
         raise NegativeSpeedError
 
