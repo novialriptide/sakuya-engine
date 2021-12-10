@@ -8,8 +8,6 @@ import pygame
 import typing
 import json
 
-
-
 class Animation:
     def __init__(
         self,
