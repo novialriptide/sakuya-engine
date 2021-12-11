@@ -25,7 +25,8 @@ class Bullet(Entity):
         custom_hitbox_size: Vector = Vector(0, 0),
         name: str = None,
         static_sprite: pygame.Surface = None,
-        curve: float = 0
+        curve: float = 0,
+        tags: List[str] = []
     ) -> None:
         super().__init__(
             position = position,
@@ -38,8 +39,8 @@ class Bullet(Entity):
         self.speed = speed
         self.color = color
         self.damage = damage
-
         self.curve = curve
+        self.tags = tags
 
     @property
     def sprite(self) -> pygame.Surface:
