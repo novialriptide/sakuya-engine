@@ -145,7 +145,7 @@ class Client:
 
             screen = pygame.transform.scale(self.screen, (self.window_size.x, self.window_size.y))
             self.window.blit(screen, (0,0))
-            self.event_system.update(self.delta_time)
+            self.event_system.update()
             pygame.display.update()
             self.pg_clock.tick(self.max_fps)
             self.ticks_elapsed += 1

@@ -35,11 +35,8 @@ class EventSystem:
     def add(self, event: BaseEvent):
         self._methods.append(event)
         
-    def update(self, delta_time):
+    def update(self):
         """Updates the event system.
-        
-        Parameters:
-            delta_time: The game's delta time.
         
         Returns:
             A dictionary with names of events that were executed and cancelled.
