@@ -36,7 +36,7 @@ class Particle:
             self._is_destroyed = True
 
         self.velocity += gravity
-        self.position += self.velocity * math.pow(delta_time, 2)
+        self.position += self.velocity * delta_time
 
 class Particles:
     def __init__(

@@ -13,6 +13,7 @@ from .core import *
 from .entity import *
 from .errors import *
 from .events import *
+from .lights import *
 from .math import *
 from .particles import *
 from .physics import *
