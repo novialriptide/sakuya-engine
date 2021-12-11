@@ -77,15 +77,16 @@ class Scene:
 
         return entities
 
-    def test_collisions(self, entity: Entity, ignore_names: List[str] = []) -> List[Entity]:
+    def test_collisions(self, entity: Entity, ignore_tag: str = None) -> List[Entity]:
         """Returns a list of entities that collides with an entity.
 
         Parameters:
             entity: The entity to compare with.
-            ignore_names: Name to ignore.
+            ignore_tag: Tag to ignore.
 
         """
         entities = self.entities[:]
+        entities.extend(self.bullets[:])
         try:
             entities.remove(entity)
         except:
@@ -93,7 +94,7 @@ class Scene:
         
         collided = []
         for e in entities:
-            if entity.custom_hitbox.colliderect(e.custom_hitbox) and e.name not in ignore_names:
+            if entity.custom_hitbox.colliderect(e.custom_hitbox) and ignore_tag not in e.tags:
                 collided.append(e)
 
         return collided
