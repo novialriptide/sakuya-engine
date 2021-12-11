@@ -38,7 +38,7 @@ class Entity:
         bullet_spawners: List[BulletSpawner] = [],
         update_bullet_spawners: bool = True,
         static_sprite: pygame.Surface = None,
-        healthbar_update_speed: float = 0.5,
+        healthbar_update_speed: float = 1000,
         healthbar_position_offset: Vector = Vector(0, 0),
         draw_healthbar: bool = True
     ):
@@ -290,6 +290,7 @@ class Entity:
             self.anim_get(self.current_anim).update(delta_time)
 
         # Update HealthBar
+        self.healthbar.current_health = self.current_health
         self.healthbar.update(delta_time)
 
         # Apply terminal velocity
