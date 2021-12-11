@@ -53,7 +53,7 @@ class Client:
         if resizeable_window:
             self.pg_flag = pygame.RESIZABLE
 
-        self.screen = pygame.Surface((window_size.x, window_size.y))
+        self.screen = pygame.Surface(window_size.to_list())
         self.window_size = window_size * scale_upon_startup
 
         pygame.display.set_caption(self._window_name)

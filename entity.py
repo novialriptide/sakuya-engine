@@ -362,8 +362,10 @@ def load_entity_json(json_path: str) -> Entity:
     # Bullet Spawners
     if "bullet_spawners" in data.keys():
         spawners = data["bullet_spawners"][:]
-        return_entity.bullet_spawners = []
+        new_bullet_spawners = []
         for bs in spawners:
-            return_entity.bullet_spawners.append(load_bulletspawner_dict(bs))
+            new_bullet_spawners.append(load_bulletspawner_dict(bs))
+
+        return_entity.bullet_spawners = new_bullet_spawners
 
     return return_entity

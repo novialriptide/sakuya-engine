@@ -2,7 +2,6 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from types import new_class
 from .client import Client
 from .entity import Entity
 from .errors import EntityNotInScene
