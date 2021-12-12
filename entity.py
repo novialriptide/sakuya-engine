@@ -256,6 +256,7 @@ class Entity:
         new_anims = {}
         new_particles = []
         new_bullet_spawners = []
+        new_healthbar = copy(e.healthbar)
         for a in self.animations.keys():
             new_anims[a] = copy(self.anim_get(a))
 
@@ -268,6 +269,7 @@ class Entity:
         e.animations = new_anims
         e.particle_systems = new_particles
         e.bullet_spawners = new_bullet_spawners
+        e.healthbar = new_healthbar
 
         return e
 
