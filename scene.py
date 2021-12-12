@@ -77,8 +77,8 @@ class Scene:
 
         return entities
 
-    def test_collisions(self, entity: Entity, ignore_tag: str = None) -> List[Entity]:
-        """Returns a list of entities that collides with an entity.
+    def test_collisions_rect(self, entity: Entity, ignore_tag: str = None) -> List[Entity]:
+        """Returns a list of entities that collides with an entity using pygame.Rect(s).
 
         Parameters:
             entity: The entity to compare with.
@@ -95,6 +95,29 @@ class Scene:
         collided = []
         for e in entities:
             if entity.custom_hitbox.colliderect(e.custom_hitbox) and ignore_tag not in e.tags:
+                collided.append(e)
+
+        return collided
+
+    def test_collisions_point(self, entity: Entity, ignore_tag: str = None) -> List[Entity]:
+        """Returns a list of entities that collides with 
+        an entity using points. The entity's hitbox will
+        still be a pygame.Rect.
+
+        Parameters:
+            entity: The entity to compare with.
+            ignore_tag: Tag to ignore.
+        """
+        entities = self.entities[:]
+        entities.extend(self.bullets[:])
+        try:
+            entities.remove(entity)
+        except:
+            raise EntityNotInScene
+        
+        collided = []
+        for e in entities:
+            if entity.custom_hitbox.collidepoint(e.position + e.center_offset) and ignore_tag not in e.tags:
                 collided.append(e)
 
         return collided
