@@ -2,7 +2,6 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from .math import Vector
 from .physics import gravity
 from typing import Tuple, List
 
@@ -13,9 +12,9 @@ import pygame
 class Particle:
     def __init__(
         self,
-        position: Vector,
+        position: pygame.math.Vector2,
         color: Tuple[int, int, int],
-        velocity: Vector
+        velocity: pygame.math.Vector2
     ):
         self.position = position
         self.color = color
@@ -41,18 +40,18 @@ class Particle:
 class Particles:
     def __init__(
         self,
-        velocity: Vector,
+        velocity: pygame.math.Vector2,
         spread: int = 3,
         particles_num: int = 2,
         colors: List[Tuple[int, int, int]] = [],
         lifetime: int = 1000,
-        offset: Vector = Vector(0, 0),
-        position: Vector = Vector(0, 0)
+        offset: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        position: pygame.math.Vector2 = pygame.math.Vector2(0, 0)
     ):
         self.particles = []
         self.velocity = velocity
         self.colors = colors
-        self.spread = spread # Vector
+        self.spread = spread # pygame.math.Vector2
         self.particles_num = particles_num # int
         self.lifetime = lifetime
         self.offset = offset
@@ -70,7 +69,7 @@ class Particles:
             par = Particle(
                 self.position + self.offset,
                 self.colors[random_color],
-                Vector(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y)
+                pygame.math.Vector2(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y)
             )
             par.destroy(self.lifetime)
             self.particles.append(par)

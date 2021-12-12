@@ -5,8 +5,6 @@ This code is licensed under MIT license (see LICENSE for details)
 import pygame
 
 from typing import List
-
-from .math import Vector
 from .errors import NotImplementedError
 
 def crop_tile_image(
