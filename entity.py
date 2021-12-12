@@ -3,7 +3,7 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 from __future__ import annotations
-from Helix.SakuyaEngine.bar import Bar
+from typing import TypeVar
 
 import pygame
 import math
@@ -16,6 +16,9 @@ from .animation import Animation, load_anim_dict, split_image
 from .physics import gravity
 from .controllers import BaseController
 from .particles import Particles
+from .bar import Bar
+
+pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
 
 class Entity:
     def __init__(
@@ -24,7 +27,7 @@ class Entity:
         tags: List[str] = [],
         scale: int = 1,
         max_health: float = 100,
-        position: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        position: pygame_vector2 = pygame.math.Vector2(0, 0),
         controller: BaseController = None,
         fire_rate: int = 0,
         has_collision: bool = True,
@@ -32,13 +35,13 @@ class Entity:
         enable_terminal_velocity: bool = False,
         obey_gravity: bool = True,
         speed: float = 0,
-        custom_hitbox_size: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        custom_hitbox_size: pygame_vector2 = pygame.math.Vector2(0, 0),
         particle_systems: List[Particles] = [],
         bullet_spawners: List[BulletSpawner] = [],
         update_bullet_spawners: bool = True,
         static_sprite: pygame.Surface = None,
         healthbar_update_speed: float = 1000,
-        healthbar_position_offset: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        healthbar_position_offset: pygame_vector2 = pygame.math.Vector2(0, 0),
         draw_healthbar: bool = True
     ):
         """Objects that goes with a scene
@@ -164,7 +167,7 @@ class Entity:
 
     def move(
         self,
-        movement: pygame.math.Vector2, 
+        movement: pygame_vector2, 
         collision_rects: List[pygame.Rect]
     ) -> bool:
         """Moves the position
@@ -181,7 +184,7 @@ class Entity:
     
     def shoot(
         self,
-        offset: pygame.math.Vector2,
+        offset: pygame_vector2,
         projectile,
         angle: float,
         speed: float

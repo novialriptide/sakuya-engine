@@ -2,20 +2,23 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from .physics import gravity
-from typing import Tuple, List
+from typing import Tuple, List, TypeVar
 
 import random
 import math
 import pygame
 
+from .physics import gravity
+
+pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
+
 class Particle:
     def __init__(
         self,
-        position: pygame.math.Vector2,
+        position: pygame_vector2,
         color: Tuple[int, int, int],
-        velocity: pygame.math.Vector2
-    ):
+        velocity: pygame_vector2
+    ) -> None:
         self.position = position
         self.color = color
         self.velocity = velocity
@@ -40,14 +43,14 @@ class Particle:
 class Particles:
     def __init__(
         self,
-        velocity: pygame.math.Vector2,
+        velocity: pygame_vector2,
         spread: int = 3,
         particles_num: int = 2,
         colors: List[Tuple[int, int, int]] = [],
         lifetime: int = 1000,
-        offset: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
-        position: pygame.math.Vector2 = pygame.math.Vector2(0, 0)
-    ):
+        offset: pygame_vector2 = pygame.math.Vector2(0, 0),
+        position: pygame_vector2 = pygame.math.Vector2(0, 0)
+    ) -> None:
         self.particles = []
         self.velocity = velocity
         self.colors = colors

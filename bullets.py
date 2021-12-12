@@ -2,7 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from typing import Tuple, List
+from typing import Tuple, List, TypeVar
 from copy import copy
 
 import pygame
@@ -12,6 +12,8 @@ from .entity import Entity
 from .animation import split_image
 from .core import rotate_by_center
 
+pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
+
 class Bullet(Entity):
     def __init__(
         self,
@@ -19,9 +21,9 @@ class Bullet(Entity):
         speed: float = 4,
         color: Tuple[int, int, int] = (255, 255, 255),
         damage: float = 5,
-        position: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        position: pygame_vector2 = pygame.math.Vector2(0, 0),
         obey_gravity: bool = False,
-        custom_hitbox_size: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        custom_hitbox_size: pygame_vector2 = pygame.math.Vector2(0, 0),
         name: str = None,
         static_sprite: pygame.Surface = None,
         curve: float = 0,
@@ -56,8 +58,8 @@ class BulletSpawner:
     def __init__(
         self,
         bullet: Bullet,
-        position: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
-        position_offset: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        position: pygame_vector2 = pygame.math.Vector2(0, 0),
+        position_offset: pygame_vector2 = pygame.math.Vector2(0, 0),
         iterations: int = 1,
         total_bullet_arrays: int = 1,
         bullets_per_array: int = 1,

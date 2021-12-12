@@ -2,19 +2,22 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
+from copy import copy
+from typing import TypeVar
+
 import pygame
 import time
 
-from copy import copy
-
 from .errors import NoActiveSceneError, SceneNotActiveError
 from .events import EventSystem
+
+pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
 
 class Client:
     def __init__(
         self,
         window_name: str,
-        window_size: pygame.math.Vector2,
+        window_size: pygame_vector2,
         window_icon: pygame.Surface = None,
         resizeable_window: bool = True,
         keep_aspect_ratio: bool = True,
