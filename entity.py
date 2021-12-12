@@ -12,6 +12,7 @@ import json
 from typing import List
 from copy import copy
 
+from .math import Vector
 from .animation import Animation, load_anim_dict, split_image
 from .physics import gravity
 from .controllers import BaseController
@@ -24,7 +25,7 @@ class Entity:
         tags: List[str] = [],
         scale: int = 1,
         max_health: float = 100,
-        position: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        position: Vector = Vector(0, 0),
         controller: BaseController = None,
         fire_rate: int = 0,
         has_collision: bool = True,
@@ -32,20 +33,20 @@ class Entity:
         enable_terminal_velocity: bool = False,
         obey_gravity: bool = True,
         speed: float = 0,
-        custom_hitbox_size: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        custom_hitbox_size: Vector = Vector(0, 0),
         particle_systems: List[Particles] = [],
         bullet_spawners: List[BulletSpawner] = [],
         update_bullet_spawners: bool = True,
         static_sprite: pygame.Surface = None,
         healthbar_update_speed: float = 1000,
-        healthbar_position_offset: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        healthbar_position_offset: Vector = Vector(0, 0),
         draw_healthbar: bool = True
     ):
         """Objects that goes with a scene
         """
         self.name = name
         self.tags = tags
-        self.scale = pygame.math.Vector2(1, 1) * scale
+        self.scale = Vector(1, 1) * scale
         
         if controller is not None:
             self.controller = controller()
@@ -56,9 +57,9 @@ class Entity:
         self.animations = {}
         self.current_anim = None
         self.position = position
-        self.velocity = pygame.math.Vector2(0, 0)
+        self.velocity = Vector(0, 0)
         self.speed = speed
-        self.acceleration = pygame.math.Vector2(0, 0)
+        self.acceleration = Vector(0, 0)
         self.obey_gravity = obey_gravity
         self.terminal_velocity = 10.0
         self.enable_terminal_velocity = enable_terminal_velocity
@@ -135,8 +136,8 @@ class Entity:
         )
 
     @property
-    def center_offset(self) -> pygame.math.Vector2:
-        return pygame.math.Vector2(self.rect.width/2, self.rect.height/2)
+    def center_offset(self) -> Vector:
+        return Vector(self.rect.width/2, self.rect.height/2)
 
     def destroy(self, time: int) -> None:
         """Set the destruction time.
@@ -164,7 +165,7 @@ class Entity:
 
     def move(
         self,
-        movement: pygame.math.Vector2, 
+        movement: Vector, 
         collision_rects: List[pygame.Rect]
     ) -> bool:
         """Moves the position
@@ -181,7 +182,7 @@ class Entity:
     
     def shoot(
         self,
-        offset: pygame.math.Vector2,
+        offset: Vector,
         projectile,
         angle: float,
         speed: float
@@ -199,8 +200,8 @@ class Entity:
             self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
             projectile = copy(projectile)
             projectile.owner = self
-            projectile.velocity = pygame.math.Vector2(speed * math.cos(angle), speed * math.sin(angle))
-            projectile.position = self.position + offset - pygame.math.Vector2(projectile.rect.width/2, projectile.rect.height/2)
+            projectile.velocity = Vector(speed * math.cos(angle), speed * math.sin(angle))
+            projectile.position = self.position + offset - Vector(projectile.rect.width/2, projectile.rect.height/2)
             return projectile
 
     def anim_get(self, animation_name: str) -> Animation:
@@ -311,7 +312,7 @@ class Entity:
         # Apply gravity?
         g = gravity
         if not self.obey_gravity:
-            g = pygame.math.Vector2(0, 0)
+            g = Vector(0, 0)
 
         # Apply velocity
         if self.has_rigidbody:
@@ -328,14 +329,14 @@ def load_entity_json(json_path: str) -> Entity:
 
     # Position
     if "position" in data.keys():
-        data["position"] = pygame.math.Vector2(data["position"])
+        data["position"] = Vector(data["position"])
 
     # Custom Hitbox Size
     if "custom_hitbox_size" in data.keys():
-        data["custom_hitbox_size"] = pygame.math.Vector2(data["custom_hitbox_size"])
+        data["custom_hitbox_size"] = Vector(data["custom_hitbox_size"])
 
     if "healthbar_position_offset" in data.keys():
-        data["healthbar_position_offset"] = pygame.math.Vector2(data["healthbar_position_offset"])
+        data["healthbar_position_offset"] = Vector(data["healthbar_position_offset"])
 
     # Animations
     if "animations" in data.keys() and "static_sprite" not in data.keys():
