@@ -2,7 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from typing import Tuple, List, TypeVar
+from typing import Tuple, List, TypeVar, Callable
 
 import random
 import math
@@ -10,7 +10,7 @@ import pygame
 
 from .physics import gravity
 
-pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
 class Particle:
     def __init__(

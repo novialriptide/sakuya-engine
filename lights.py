@@ -2,13 +2,13 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from typing import Tuple, TypeVar
+from typing import Tuple, TypeVar, Callable
 
 import pygame
 
 from .errors import NotImplementedError
 
-pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
 def spotlight(surface: pygame.Surface, position: pygame_vector2, color: Tuple[int, int, int], radius: int):
     circle_surf = pygame.Surface((radius*2, radius*2))

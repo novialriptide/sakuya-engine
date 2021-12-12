@@ -3,14 +3,14 @@ SakuyaEngine // GameDen // GameDen Rewrite (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 from __future__ import annotations
-from typing import TypeVar
+from typing import TypeVar, Callable
 
 import math
 import pygame
 
 from .errors import NegativeSpeedError, LineSegmentLinesError
 
-pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
 def vector2_ratio_xy(vector: pygame_vector2) -> float:
     return vector.x / vector.y

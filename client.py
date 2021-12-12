@@ -3,7 +3,7 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 from copy import copy
-from typing import TypeVar
+from typing import TypeVar, Callable
 
 import pygame
 import time
@@ -11,7 +11,7 @@ import time
 from .errors import NoActiveSceneError, SceneNotActiveError
 from .events import EventSystem
 
-pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
 class Client:
     def __init__(

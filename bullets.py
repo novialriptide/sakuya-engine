@@ -2,7 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from typing import Tuple, List, TypeVar
+from typing import Tuple, List, TypeVar, Callable
 from copy import copy
 
 import pygame
@@ -12,7 +12,7 @@ from .entity import Entity
 from .animation import split_image
 from .core import rotate_by_center
 
-pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
 class Bullet(Entity):
     def __init__(

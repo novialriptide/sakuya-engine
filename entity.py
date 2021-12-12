@@ -3,7 +3,7 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 from __future__ import annotations
-from typing import TypeVar
+from typing import TypeVar, Callable
 
 import pygame
 import math
@@ -18,7 +18,7 @@ from .controllers import BaseController
 from .particles import Particles
 from .bar import Bar
 
-pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
 class Entity:
     def __init__(
