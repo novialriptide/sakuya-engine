@@ -3,24 +3,27 @@ SakuyaEngine // GameDen // GameDen Rewrite (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 from __future__ import annotations
-from typing import Tuple
+from typing import TypeVar
+
 import math
 import pygame
 
 from .errors import NegativeSpeedError, LineSegmentLinesError
 
-def vector2_ratio_xy(vector: pygame.math.Vector2) -> float:
+pygame_vector2 = TypeVar("pygame_vector2", pygame.math.Vector2)
+
+def vector2_ratio_xy(vector: pygame_vector2) -> float:
     return vector.x / vector.y
 
-def vector2_ratio_yx(vector: pygame.math.Vector2) -> float:
+def vector2_ratio_yx(vector: pygame_vector2) -> float:
     return vector.y / vector.x
         
 def vector2_move_toward(
-    origin: pygame.math.Vector2,
-    target: pygame.math.Vector2,
+    origin: pygame_vector2,
+    target: pygame_vector2,
     speed: float
-) -> pygame.math.Vector2:
-    """Moves towards the target pygame.math.Vector2 by the movement speed.
+) -> pygame_vector2:
+    """Moves towards the target Vector2 by the movement speed.
 
     Must be put in a loop until its reached its target.
 
@@ -38,7 +41,7 @@ def vector2_move_toward(
     
     return origin + delta / mag * speed
 
-def get_angle(origin: pygame.math.Vector2, direction: pygame.math.Vector2) -> float:
+def get_angle(origin: pygame_vector2, direction: pygame_vector2) -> float:
     """Returns an angle in radians of the object to look at from the origin point
 
     Parameters:
@@ -73,19 +76,19 @@ def move_toward(origin: float, target: float, speed: float) -> float:
         return origin - speed
 
 def eval_segment_intersection(
-    point1: pygame.math.Vector2, point2: pygame.math.Vector2, 
-    point3: pygame.math.Vector2, point4: pygame.math.Vector2
+    point1: pygame_vector2, point2: pygame_vector2, 
+    point3: pygame_vector2, point4: pygame_vector2
 ) -> pygame.math.Vector2:
     """Evaluates if 2 line segments collide with each other.
 
     Parameters:
-        point1: The starting pygame.math.Vector2 of line 1.
-        point2: The ending pygame.math.Vector2 of line 1.
-        point3: The starting pygame.math.Vector2 of line 2.
-        point4: The ending pygame.math.Vector2 of line 2.
-    
+        point1: The starting point of line 1.
+        point2: The ending point of line 1.
+        point3: The starting point of line 2.
+        point4: The ending point of line 2.
+
     Returns:
-        Line 1's intersecting pygame.math.Vector2 on line 2.
+        Line 1's intersecting point on line 2.
 
     """
     # NOTE: This function is a variant 
