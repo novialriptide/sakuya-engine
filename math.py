@@ -31,11 +31,12 @@ def vector2_move_toward(
     
     """
     delta = target - origin
+    mag = target.magnitude()
 
-    if (target.magnitude() <= speed or target.magnitude() == 0):
+    if (mag <= speed or mag == 0):
         return target
     
-    return origin + delta / target.magnitude() * speed
+    return origin + delta / mag * speed
 
 def get_angle(origin: pygame.math.Vector2, direction: pygame.math.Vector2) -> float:
     """Returns an angle in radians of the object to look at from the origin point
