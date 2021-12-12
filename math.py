@@ -15,13 +15,18 @@ def vector2_ratio_xy(vector: pygame.math.Vector2) -> float:
 def vector2_ratio_yx(vector: pygame.math.Vector2) -> float:
     return vector.y / vector.x
         
-def vector2_move_toward(origin: pygame.math.Vector2, target: pygame.math.Vector2, speed: float) -> pygame.math.Vector2:
+def vector2_move_toward(
+    origin: pygame.math.Vector2,
+    target: pygame.math.Vector2,
+    speed: float
+) -> pygame.math.Vector2:
     """Moves towards the target pygame.math.Vector2 by the movement speed.
 
     Must be put in a loop until its reached its target.
 
     Parameters:
-        target: The target pygame.math.Vector2.
+        origin: The original position
+        target: The target position.
         speed: The movement speed.
     
     """
@@ -31,19 +36,6 @@ def vector2_move_toward(origin: pygame.math.Vector2, target: pygame.math.Vector2
         return target
     
     return origin + delta / target.magnitude() * speed
-
-def get_magnitude(point1: pygame.math.Vector2, point2: pygame.math.Vector2) -> float:
-    """Returns the magnitude of 2 points
-
-    Parameters:
-        point1: First point.
-        point2: Second point.
-
-    """
-    return math.sqrt(
-        math.pow((point1.x - point2.x), 2) 
-        + math.pow((point1.y - point2.y), 2)
-    )
 
 def get_angle(origin: pygame.math.Vector2, direction: pygame.math.Vector2) -> float:
     """Returns an angle in radians of the object to look at from the origin point
