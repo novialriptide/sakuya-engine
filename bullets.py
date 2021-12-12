@@ -9,7 +9,6 @@ import pygame
 import math
 
 from .entity import Entity
-from .math import Vector
 from .animation import split_image
 from .core import rotate_by_center
 
@@ -20,9 +19,9 @@ class Bullet(Entity):
         speed: float = 4,
         color: Tuple[int, int, int] = (255, 255, 255),
         damage: float = 5,
-        position: Vector = Vector(0, 0),
+        position: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
         obey_gravity: bool = False,
-        custom_hitbox_size: Vector = Vector(0, 0),
+        custom_hitbox_size: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
         name: str = None,
         static_sprite: pygame.Surface = None,
         curve: float = 0,
@@ -50,15 +49,15 @@ class Bullet(Entity):
     def update(self, delta_time: float) -> None:
         angle = math.radians(self.angle)
         self.angle += self.curve * delta_time
-        self.velocity = Vector(self.speed * math.cos(angle), self.speed * math.sin(angle))
+        self.velocity = pygame.math.Vector2(self.speed * math.cos(angle), self.speed * math.sin(angle))
         return super().update(delta_time)
 
 class BulletSpawner:
     def __init__(
         self,
         bullet: Bullet,
-        position: Vector = Vector(0, 0),
-        position_offset: Vector = Vector(0, 0),
+        position: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
+        position_offset: pygame.math.Vector2 = pygame.math.Vector2(0, 0),
         iterations: int = 1,
         total_bullet_arrays: int = 1,
         bullets_per_array: int = 1,
@@ -242,10 +241,10 @@ class BulletSpawner:
 
 def load_bullet_dict(data: dict) -> Bullet:
     if "custom_hitbox_size" in data.keys():
-        data["custom_hitbox_size"] = Vector(data["custom_hitbox_size"])
+        data["custom_hitbox_size"] = pygame.math.Vector2(data["custom_hitbox_size"])
 
     if "position" in data.keys():
-        data["position"] = Vector(data["position"])
+        data["position"] = pygame.math.Vector2(data["position"])
 
     if "static_sprite" in data.keys():
         ss_data = data["static_sprite"]
@@ -264,6 +263,6 @@ def load_bulletspawner_dict(data: dict) -> BulletSpawner:
     del data["bullet"]
 
     if "position_offset" in data.keys():
-        data["position_offset"] = Vector(data["position_offset"])
+        data["position_offset"] = pygame.math.Vector2(data["position_offset"])
 
     return BulletSpawner(bullet, **data)

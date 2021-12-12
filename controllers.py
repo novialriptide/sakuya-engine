@@ -2,7 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from .math import Vector
+import pygame
 
 class BaseController:
     """Base class of a controller for a Player or Artificial Intelligence"""
@@ -18,8 +18,8 @@ class BaseController:
         self.is_moving_up = False
 
     @property
-    def movement(self) -> Vector:
-        _movement = Vector(0, 0)
+    def movement(self) -> pygame.math.Vector2:
+        _movement = pygame.math.Vector2(0, 0)
         if self.is_moving_right:
             _movement.x = 1
         if self.is_moving_left:

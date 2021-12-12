@@ -8,14 +8,13 @@ import time
 from copy import copy
 
 from .errors import NoActiveSceneError, SceneNotActiveError
-from .math import Vector
 from .events import EventSystem
 
 class Client:
     def __init__(
         self,
         window_name: str,
-        window_size: Vector,
+        window_size: pygame.math.Vector2,
         window_icon: pygame.Surface = None,
         resizeable_window: bool = True,
         keep_aspect_ratio: bool = True,
@@ -35,10 +34,10 @@ class Client:
         self.is_running = True # bool
         self.event_system = EventSystem()
         self._window_name = window_name # str
-        self.original_window_size = window_size # Vector
+        self.original_window_size = window_size # pygame.math.Vector2
         self.window_icon = window_icon
         self.keep_aspect_ratio = keep_aspect_ratio # bool
-        self.original_aspect_ratio = window_size.ratio_xy # float
+        self.original_aspect_ratio = window_size.x / window_size.y # float
         
         self.running_scenes = {}
         self.deleted_scenes_queue = []
@@ -53,7 +52,7 @@ class Client:
         if resizeable_window:
             self.pg_flag = pygame.RESIZABLE
 
-        self.screen = pygame.Surface(window_size.to_list())
+        self.screen = pygame.Surface(window_size)
         self.window_size = window_size * scale_upon_startup
 
         pygame.display.set_caption(self._window_name)
@@ -76,9 +75,9 @@ class Client:
         pygame.display.set_caption(self._window_name)
 
     @property
-    def window_size(self) -> Vector:
+    def window_size(self) -> pygame.math.Vector2:
         window_rect = self.window.get_rect()
-        return Vector(window_rect.width, window_rect.height)
+        return pygame.math.Vector2(window_rect.width, window_rect.height)
 
     @window_size.setter
     def window_size(self, window_size) -> None:
@@ -88,8 +87,8 @@ class Client:
         )
 
     @property
-    def scale(self) -> Vector:
-        return Vector(
+    def scale(self) -> pygame.math.Vector2:
+        return pygame.math.Vector2(
             self.window_size.x / self.original_window_size.x,
             self.window_size.y / self.original_window_size.y
         )

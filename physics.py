@@ -2,6 +2,6 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from .math import Vector
+import pygame
 
-gravity = Vector(0, 0.05)
+gravity = pygame.math.Vector2(0, 0.05)
