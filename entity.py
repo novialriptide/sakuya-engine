@@ -100,23 +100,29 @@ class Entity:
     def sprite(self) -> pygame.Surface:
         cur_anim = self.anim_get(self.current_anim)
         if self.static_sprite is not None:
-            width, height = self.static_sprite.get_size()
-            scaled_sprite = pygame.transform.scale(
-                self.static_sprite, (
-                    self.scale.x * width, 
-                    self.scale.y * height
+            if self.scale.x != 1 or self.scale.y != 1:
+                width, height = self.static_sprite.get_size()
+                scaled_sprite = pygame.transform.scale(
+                    self.static_sprite, (
+                        self.scale.x * width, 
+                        self.scale.y * height
+                    )
                 )
-            )
-            return scaled_sprite
+                return scaled_sprite
+            else:
+                return self.static_sprite
         if cur_anim is not None:
-            width, height = cur_anim.sprite.get_size()
-            scaled_sprite = pygame.transform.scale(
-                cur_anim.sprite, (
-                    self.scale.x * width, 
-                    self.scale.y * height
+            if self.scale.x != 1 or self.scale.y != 1:
+                width, height = cur_anim.sprite.get_size()
+                scaled_sprite = pygame.transform.scale(
+                    cur_anim.sprite, (
+                        self.scale.x * width, 
+                        self.scale.y * height
+                    )
                 )
-            )
-            return scaled_sprite
+                return scaled_sprite
+            else:
+                return cur_anim.sprite
 
     @property
     def rect(self) -> pygame.Rect:
