@@ -14,6 +14,7 @@ from copy import copy
 
 from .animation import Animation, load_anim_dict, split_image
 from .physics import gravity
+from .particles import load_particles_dict
 from .controllers import BaseController
 from .particles import Particles
 from .bar import Bar
@@ -373,5 +374,13 @@ def load_entity_json(json_path: str) -> Entity:
             new_bullet_spawners.append(load_bulletspawner_dict(bs))
 
         return_entity.bullet_spawners = new_bullet_spawners
+
+    if "particle_systems" in data.keys():
+        particle_systems = data["particle_systems"][:]
+        new_particle_systems = []
+        for ps in particle_systems:
+            new_particle_systems.append(load_particles_dict(ps))
+        
+        return_entity.particle_systems = new_particle_systems
 
     return return_entity

@@ -5,7 +5,6 @@ This code is licensed under MIT license (see LICENSE for details)
 from typing import Tuple, List, TypeVar, Callable
 
 import random
-import math
 import pygame
 
 from .physics import gravity
@@ -86,3 +85,18 @@ class Particles:
                 destroy_time   
             )
             self.particles.append(par)
+
+def load_particles_dict(data: dict) -> Particles:
+    velocity = pygame.math.Vector2(data["velocity"])
+    del data["velocity"]
+
+    if "offset" in data.keys():
+        data["offset"] = pygame.math.Vector2(data["offset"])
+
+    if "position" in data.keys():
+        data["position"] = pygame.math.Vector2(data["position"])
+
+    return Particles(
+        velocity,
+        **data
+    )
