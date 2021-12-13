@@ -75,7 +75,8 @@ class BulletSpawner:
         max_bullet_curve_rate: float = 1,
         bullet_lifetime: float = 3000,
         aim: bool = False,
-        target: Entity = None
+        target: Entity = None,
+        is_active: bool = False
     ) -> None:
         """Constructor for BulletSpawner.
 
@@ -138,7 +139,6 @@ class BulletSpawner:
         """
         self.next_fire_ticks = pygame.time.get_ticks()
         self.current_iteration = 0
-        self.is_active = True
         self.angle = starting_angle
         # Args
         self.bullet = copy(bullet)
@@ -166,6 +166,7 @@ class BulletSpawner:
         self.bullet_lifetime = bullet_lifetime
         self.aim = aim
         self.target = target
+        self.is_active = is_active
 
     @property
     def total_bullets(self) -> int:
@@ -227,7 +228,8 @@ class BulletSpawner:
         if iter_bullet >= self.total_bullets:
             self.current_iteration += 1
 
-        if self.current_iteration >= self.iterations and self.iterations != 0:
+        if self.current_iteration > self.iterations and self.iterations != 0:
+            self.current_iteration = 0
             self.is_active = False
 
         if self.invert_spin:
