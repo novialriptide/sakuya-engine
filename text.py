@@ -3,8 +3,11 @@ SakuyaEngine // GameDen // GameDen Rewrite (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
 import pygame
+import pygame.freetype
 
 from typing import Tuple
+
+pygame.freetype.init()
 
 def text(
     text: str,
@@ -26,12 +29,9 @@ def text(
         A pygame Surface with text.
 
     """
-    # NOTE: This function is a variant 
-    # from GameDen REWRITE for Novial's Gravity
-    pygame.font.init()
-    formatting = pygame.font.SysFont(sys_font, int(size))
-    text_surface = formatting.render(text, antialias, color)
-    return text_surface
+    formatting = pygame.freetype.SysFont(sys_font)
+    text_surface = formatting.render(text, fgcolor=color, size = size)
+    return text_surface[0]
 
 def text2(
     text: str,
@@ -53,12 +53,9 @@ def text2(
         A pygame Surface with text.
 
     """
-    # NOTE: This function is a variant 
-    # from GameDen REWRITE for Novial's Gravity
-    pygame.font.init()
-    formatting = pygame.font.Font(font, int(size))
-    text_surface = formatting.render(text, antialias, color)
-    return text_surface
+    formatting = pygame.freetype.Font(font)
+    text_surface = formatting.render(text, fgcolor=color, size = size)
+    return text_surface[0]
 
 alphabetchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 specialchars = ",./;'[]\\-=<>?:\"{}|!@#$%^&*()"

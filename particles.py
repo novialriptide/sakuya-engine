@@ -17,28 +17,26 @@ class Particle:
         self,
         position: pygame_vector2,
         color: Tuple[int, int, int],
-        velocity: pygame_vector2
+        velocity: pygame_vector2,
+        destroy_time: int
     ) -> None:
+        
         self.position = position
         self.color = color
         self.velocity = velocity
-        self._destroy_val = 0
-        self._enable_destroy = False
-        self._is_destroyed = False
         
-    def destroy(self, time: int) -> None:
-        """
-        :param int time: milliseconds to destruction
-        """
         self._enable_destroy = True
-        self._destroy_val = time + pygame.time.get_ticks()
+        self._destroy_val = destroy_time
+        
+        self._is_destroyed = False
 
-    def update(self, delta_time: float) -> None:
-        if self._enable_destroy and self._destroy_val <= pygame.time.get_ticks():
+    def update(self, delta_time: float, current_time: int) -> None:
+        if self._enable_destroy and self._destroy_val <= current_time:
             self._is_destroyed = True
 
         self.velocity += gravity
         self.position += self.velocity * delta_time
+
 
 class Particles:
     def __init__(
@@ -53,7 +51,11 @@ class Particles:
     ) -> None:
         self.particles = []
         self.velocity = velocity
-        self.colors = colors
+
+        screen = pygame.display.get_surface()
+        self.colors = [screen.map_rgb(col) for col in colors]
+        
+        #self.colors = colors
         self.spread = spread # pygame.math.Vector2
         self.particles_num = particles_num # int
         self.lifetime = lifetime
@@ -65,19 +67,22 @@ class Particles:
             surface.set_at((int(p.position.x), int(p.position.y)), p.color)
 
     def update(self, delta_time: float) -> None:
-        for p in range(self.particles_num):
-            random_color = random.randrange(0, len(self.colors))
-            random_spread_x = random.uniform(-self.spread, self.spread)
-            random_spread_y = random.uniform(-self.spread, self.spread)
-            par = Particle(
-                self.position + self.offset,
-                self.colors[random_color],
-                pygame.math.Vector2(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y)
-            )
-            par.destroy(self.lifetime)
-            self.particles.append(par)
+        current_time = pygame.time.get_ticks()
 
         for p in self.particles:
             if p._is_destroyed:
                 self.particles.remove(p)
-            p.update(delta_time)
+            p.update(delta_time, current_time)
+        
+        destroy_time = self.lifetime + current_time
+        for p in range(self.particles_num):
+            random_color = random.choice(self.colors)
+            random_spread_x = random.uniform(-self.spread, self.spread)
+            random_spread_y = random.uniform(-self.spread, self.spread)
+            par = Particle(
+                self.position + self.offset,
+                random_color,
+                pygame.math.Vector2(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y),
+                destroy_time   
+            )
+            self.particles.append(par)

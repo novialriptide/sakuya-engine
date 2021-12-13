@@ -69,6 +69,8 @@ class Entity:
         self.has_collision = has_collision
         self.has_rigidbody = has_rigidbody
         self.custom_hitbox_size = custom_hitbox_size
+        self._rect = pygame.Rect(0, 0, 0, 0)
+        self._custom_hitbox_rect = pygame.Rect(0, 0, 0, 0)
 
         self.particle_systems = particle_systems
         self.bullet_spawners = bullet_spawners
@@ -119,23 +121,22 @@ class Entity:
     def rect(self) -> pygame.Rect:
         if self.sprite is not None:
             width, height = self.sprite.get_size()
-            rect = pygame.Rect(
-                self.position.x, 
-                self.position.y, 
-                width, height
-            )
-            return rect
+            self._rect.x = self.position.x
+            self._rect.y = self.position.y
+            self._rect.width = width
+            self._rect.height = height
+            return self._rect
         if self.sprite is None:
             return pygame.Rect(self.position.x, self.position.y, 1, 1)
 
     @property
     def custom_hitbox(self) -> pygame.Rect:
-        return pygame.Rect(
-            self.position.x + self.rect.width/2 - self.custom_hitbox_size.x,
-            self.position.y + self.rect.height/2 - self.custom_hitbox_size.y,
-            self.custom_hitbox_size.x*2,
-            self.custom_hitbox_size.y*2
-        )
+        rect = self.rect
+        self._custom_hitbox_rect.x = self.position.x + rect.width/2 - self.custom_hitbox_size.x
+        self._custom_hitbox_rect.y = self.position.y + rect.height/2 - self.custom_hitbox_size.y
+        self._custom_hitbox_rect.width = self.custom_hitbox_size.x*2
+        self._custom_hitbox_rect.height = self.custom_hitbox_size.y*2
+        return self._custom_hitbox_rect
 
     @property
     def center_offset(self) -> pygame.math.Vector2:
