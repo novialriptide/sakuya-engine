@@ -43,11 +43,6 @@ class Bullet(Entity):
         self.curve = curve
         self.tags = tags
 
-    @property
-    def sprite(self) -> pygame.Surface:
-        # This isn't precise.
-        return rotate_by_center(super().sprite, self.angle)
-
     def update(self, delta_time: float) -> None:
         angle = math.radians(self.angle)
         self.angle += self.curve * delta_time
