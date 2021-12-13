@@ -11,6 +11,7 @@ import math
 from .entity import Entity
 from .animation import split_image
 from .core import rotate_by_center
+from .math import get_angle
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
@@ -72,7 +73,9 @@ class BulletSpawner:
         bullet_curve_change_rate: float = 0,
         invert_curve: bool = False,
         max_bullet_curve_rate: float = 1,
-        bullet_lifetime: float = 3000
+        bullet_lifetime: float = 3000,
+        aim: bool = False,
+        target: Entity = None
     ) -> None:
         """Constructor for BulletSpawner.
 
@@ -161,6 +164,8 @@ class BulletSpawner:
         self.invert_curve = invert_curve # wip
         self.max_bullet_curve_rate = max_bullet_curve_rate # wip
         self.bullet_lifetime = bullet_lifetime
+        self.aim = aim
+        self.target = target
 
     @property
     def total_bullets(self) -> int:
@@ -202,16 +207,16 @@ class BulletSpawner:
         iter_bullet = 0
         bullets = []
         if self.can_shoot:
-            # Unique variants of the entity holding a bullet spawner
-            # can't shoot because apparently they share the self.can_shoot
             self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
-
             spread_between_each_array = (self.spread_within_bullet_arrays / self.total_bullet_arrays)
             spread_between_each_bullets = self.spread_between_bullet_arrays
 
             for a in range(self.total_bullet_arrays):
                 for b in range(self.bullets_per_array):
                     angle = self.angle + spread_between_each_array * b + spread_between_each_bullets * a
+                    if self.target is not None and self.aim:
+                        target_angle = math.degrees(get_angle(self.position, self.target.position))
+                        angle += target_angle
                     bullets.append(self.shoot(angle))
 
                     iter_bullet += 1

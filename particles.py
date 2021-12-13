@@ -36,7 +36,6 @@ class Particle:
         self.velocity += gravity
         self.position += self.velocity * delta_time
 
-
 class Particles:
     def __init__(
         self,

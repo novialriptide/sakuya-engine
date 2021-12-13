@@ -327,7 +327,7 @@ class Entity:
         velocity = self.velocity * delta_time
         self.move(velocity, [])
 
-def load_entity_json(json_path: str) -> Entity:
+def load_entity_json(json_path: str, bullet_target: Entity = None) -> Entity:
     from .bullets import load_bulletspawner_dict
 
     data = json.load(open(json_path))
@@ -341,6 +341,7 @@ def load_entity_json(json_path: str) -> Entity:
     if "custom_hitbox_size" in data.keys():
         data["custom_hitbox_size"] = pygame.math.Vector2(data["custom_hitbox_size"])
 
+    # Healthbar
     if "healthbar_position_offset" in data.keys():
         data["healthbar_position_offset"] = pygame.math.Vector2(data["healthbar_position_offset"])
 
@@ -360,8 +361,6 @@ def load_entity_json(json_path: str) -> Entity:
         )
         data["static_sprite"] = pygame.image.load(sprite[data["static_sprite"]["index"]])
 
-    # Particle Systems
-
     for key in data:
         if hasattr(return_entity, key):
             setattr(return_entity, key, data[key])
@@ -371,15 +370,19 @@ def load_entity_json(json_path: str) -> Entity:
         spawners = data["bullet_spawners"][:]
         new_bullet_spawners = []
         for bs in spawners:
-            new_bullet_spawners.append(load_bulletspawner_dict(bs))
+            new_bs = load_bulletspawner_dict(bs)
+            new_bs.target = bullet_target
+            new_bullet_spawners.append(new_bs)
 
         return_entity.bullet_spawners = new_bullet_spawners
 
+    # Particle Systems
     if "particle_systems" in data.keys():
         particle_systems = data["particle_systems"][:]
         new_particle_systems = []
         for ps in particle_systems:
-            new_particle_systems.append(load_particles_dict(ps))
+            new_ps = load_particles_dict(ps)
+            new_particle_systems.append(new_ps)
         
         return_entity.particle_systems = new_particle_systems
 
