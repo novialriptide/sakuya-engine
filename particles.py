@@ -81,7 +81,7 @@ class Particles:
                 self.position + self.offset,
                 random_color,
                 pygame.math.Vector2(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y),
-                destroy_time   
+                destroy_time
             )
             self.particles.append(par)
 
