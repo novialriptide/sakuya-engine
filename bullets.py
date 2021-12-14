@@ -42,20 +42,12 @@ class Bullet(Entity):
         self.damage = damage
         self.curve = curve
         self.tags = tags
-        self.direction = 0
-        self._sprite = None
 
     @property
     def sprite(self) -> pygame.Surface:
-        if self._sprite is None:
-            return None
-
         direction = pygame.math.Vector2().angle_to(pygame.math.Vector2(1, 0).rotate(-self.angle))
-        if self.direction != direction:
-            self._sprite = pygame.transform.rotate(super().sprite, direction)
-        
-        self.direction = direction
-        return self._sprite
+        new_surf = pygame.transform.rotate(super().sprite, direction)
+        return new_surf
 
     def update(self, delta_time: float) -> None:
         angle = math.radians(self.angle)
@@ -229,8 +221,7 @@ class BulletSpawner:
                 for b in range(self.bullets_per_array):
                     angle = self.angle + spread_between_each_array * b + spread_between_each_bullets * a
                     if self.target is not None and self.aim:
-                        # Responsible for making the bullet arrays aim from their center.
-                        angle_offset = -self.spread_within_bullet_arrays / self.bullets_per_array # + (self.total_bullet_arrays * (self.spread_between_bullet_arrays + self.spread_within_bullet_arrays)) / 2
+                        angle_offset = (self.total_bullet_arrays * (self.spread_between_bullet_arrays + self.spread_within_bullet_arrays)) / 2 + 180
                         target_angle = math.degrees(get_angle(self.position, self.target.position)) + angle_offset
                         angle += target_angle
                     bullets.append(self.shoot(angle))
