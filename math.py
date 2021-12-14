@@ -41,15 +41,15 @@ def vector2_move_toward(
     
     return origin + delta / dist * speed
 
-def get_angle(origin: pygame_vector2, direction: pygame_vector2) -> float:
+def get_angle(origin: pygame_vector2, target: pygame_vector2) -> float:
     """Returns an angle in radians of the object to look at from the origin point
 
     Parameters:
         origin: The original point.
-        direction: The direction from origin point.
+        target: The target point.
 
     """
-    distance = direction - origin
+    distance = target - origin
     return math.atan2(distance.y, distance.x)
 
 def move_toward(origin: float, target: float, speed: float) -> float:
