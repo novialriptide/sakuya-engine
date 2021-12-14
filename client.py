@@ -95,6 +95,12 @@ class Client:
             self.window_size.x / self.original_window_size.x,
             self.window_size.y / self.original_window_size.y
         )
+    
+    @property
+    def mouse_position(self) -> pygame.math.Vector2:
+        mouse_pos = pygame.math.Vector2(pygame.mouse.get_pos())
+        sca = self.scale
+        return pygame.math.Vector2(mouse_pos.x / sca.x, mouse_pos.y / sca.y)
 
     @property
     def current_fps(self) -> float:
