@@ -4,6 +4,8 @@ This code is licensed under MIT license (see LICENSE for details)
 """
 from typing import List
 
+import pygame
+
 from .client import Client
 from .entity import Entity
 from .errors import EntityNotInScene

@@ -159,20 +159,6 @@ class Entity:
         self._enable_destroy = True
         self._destroy_val = time + pygame.time.get_ticks()
 
-    def get_collisions(
-        self,
-        rects: List[pygame.Rect]
-    ) -> List[pygame.Rect]:
-        """Get a list of rects that collide with the entity's rect.
-        
-        It's recommended to use scene.test_collisions() instead.
-
-        Parameters:
-            rects: List of pygame rects.
-
-        """
-        return pygame.Rect.collidelistall(self.rect, rects)
-
     def move(
         self,
         movement: pygame_vector2, 
@@ -187,28 +173,41 @@ class Entity:
             If true, the position has been updated
 
         """
-        test_rect = self.rect.copy()
         directions = {"top": False, "bottom": False, "left": False, "right": False}
-        test_rect.x += movement.x
-        test_rect.y += movement.y
-        collisions = test_rect.collidelist(collision_rects)
-
-        for c in collisions:
+        self.position.x += movement.x
+        test_rect = self.rect.copy()
+        verified_collisions = []
+        for c in collision_rects:
+            if test_rect.colliderect(c):
+                verified_collisions.append(c)
+        
+        for c in verified_collisions:
             if movement.x > 0:
+                test_rect.right = c.left
+                self.position.x = test_rect.x
                 directions["right"] = True
-                self.rect.right = c.rect.left
             if movement.x < 0:
+                test_rect.left = c.right
+                self.position.x = test_rect.x
                 directions["left"] = True
-                self.rect.left = c.rect.right
 
+        self.position.y += movement.y
+        test_rect = self.rect.copy()
+        verified_collisions = []
+        for c in collision_rects:
+            if test_rect.colliderect(c):
+                verified_collisions.append(c)
+        for c in verified_collisions:
             if movement.y > 0:
+                test_rect.bottom = c.top
+                self.position.y = test_rect.y
                 directions["top"] = True
-                self.rect.top = c.rect.bottom
             if movement.y < 0:
+                test_rect.top = c.bottom
+                self.position.y = test_rect.y
                 directions["bottom"] = True
-                self.rect.bottom = c.rect.top
 
-        self.position += pygame.math.Vector2(test_rect.x, test_rect.y)
+        return directions
     
     def shoot(
         self,
