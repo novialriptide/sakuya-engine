@@ -10,7 +10,6 @@ import math
 
 from .entity import Entity
 from .animation import split_image
-from .core import rotate_by_center
 from .math import get_angle
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
@@ -43,6 +42,12 @@ class Bullet(Entity):
         self.damage = damage
         self.curve = curve
         self.tags = tags
+
+    @property
+    def sprite(self) -> pygame.Surface:
+        direction = pygame.math.Vector2().angle_to(pygame.math.Vector2(1, 0).rotate(-self.angle))
+        new_surf = pygame.transform.rotate(super().sprite, direction)
+        return new_surf
 
     def update(self, delta_time: float) -> None:
         angle = math.radians(self.angle)
