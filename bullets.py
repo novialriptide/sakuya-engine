@@ -216,7 +216,8 @@ class BulletSpawner:
                 for b in range(self.bullets_per_array):
                     angle = self.angle + spread_between_each_array * b + spread_between_each_bullets * a
                     if self.target is not None and self.aim:
-                        target_angle = math.degrees(get_angle(self.position, self.target.position))
+                        angle_offset = (self.total_bullet_arrays * (self.spread_between_bullet_arrays + self.spread_within_bullet_arrays)) / 2 + 180
+                        target_angle = math.degrees(get_angle(self.position, self.target.position)) + angle_offset
                         angle += target_angle
                     bullets.append(self.shoot(angle))
 
