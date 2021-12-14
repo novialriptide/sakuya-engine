@@ -107,6 +107,7 @@ class Scene:
         Parameters:
             entity: The entity to compare with.
             ignore_tag: Tag to ignore.
+
         """
         entities = self.entities[:]
         entities.extend(self.bullets[:])
