@@ -123,7 +123,7 @@ class Scene:
 
         return collided
 
-    def advance_frame(self, delta_time: float) -> None:
+    def advance_frame(self, delta_time: float, collision_rects: List[pygame.Rect] = []) -> None:
         """Updates the entities inside the world, such as 
         physics & animation
         
@@ -134,7 +134,7 @@ class Scene:
 
         """
         for entity in self.entities[:]:
-            entity.update(delta_time)
+            entity.update(delta_time, collision_rects = collision_rects)
             if entity._is_destroyed:
                 self.entities.remove(entity)
 

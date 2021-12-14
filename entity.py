@@ -187,8 +187,28 @@ class Entity:
             If true, the position has been updated
 
         """
-        
-        self.position += movement
+        test_rect = self.rect.copy()
+        directions = {"top": False, "bottom": False, "left": False, "right": False}
+        test_rect.x += movement.x
+        test_rect.y += movement.y
+        collisions = test_rect.collidelist(collision_rects)
+
+        for c in collisions:
+            if movement.x > 0:
+                directions["right"] = True
+                self.rect.right = c.rect.left
+            if movement.x < 0:
+                directions["left"] = True
+                self.rect.left = c.rect.right
+
+            if movement.y > 0:
+                directions["top"] = True
+                self.rect.top = c.rect.bottom
+            if movement.y < 0:
+                directions["bottom"] = True
+                self.rect.bottom = c.rect.top
+
+        self.position += pygame.math.Vector2(test_rect.x, test_rect.y)
     
     def shoot(
         self,
@@ -281,7 +301,11 @@ class Entity:
 
         return e
 
-    def update(self, delta_time: float) -> None:
+    def update(
+        self,
+        delta_time: float,
+        collision_rects: List[pygame.Rect] = []
+    ) -> None:
         """Updates the position, animation, etc
 
         Parameters:
@@ -331,7 +355,7 @@ class Entity:
             self.velocity += self.acceleration + g
         
         velocity = self.velocity * delta_time
-        self.move(velocity, [])
+        self.move(velocity, collision_rects)
 
 def load_entity_json(json_path: str, bullet_target: Entity = None) -> Entity:
     from .bullets import load_bulletspawner_dict
