@@ -43,7 +43,7 @@ class Bullet(Entity):
         self.curve = curve
         self.tags = tags
         self.direction = 0
-        self._sprite = None
+        self._sprite = static_sprite
 
     @property
     def sprite(self) -> pygame.Surface:
@@ -89,7 +89,9 @@ class BulletSpawner:
         bullet_lifetime: float = 3000,
         aim: bool = False,
         target: Entity = None,
-        is_active: bool = False
+        is_active: bool = False,
+        repeat: bool = False,
+        wait_until_reset: int = 0
     ) -> None:
         """Constructor for BulletSpawner.
 
@@ -180,6 +182,8 @@ class BulletSpawner:
         self.aim = aim
         self.target = target
         self.is_active = is_active
+        self.repeat = repeat # wip
+        self.wait_until_reset = wait_until_reset # wip
 
     @property
     def total_bullets(self) -> int:
