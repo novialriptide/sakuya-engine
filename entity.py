@@ -152,6 +152,10 @@ class Entity:
     def center_offset(self) -> pygame.Vector2:
         return pygame.Vector2(self.rect.width/2, self.rect.height/2)
 
+    @property
+    def center_position(self) -> pygame.Vector2:
+        return self.position + pygame.Vector2(self.rect.width/2, self.rect.height/2)
+
     def destroy(self, time: int) -> None:
         """Set the destruction time.
 
