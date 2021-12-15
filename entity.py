@@ -132,13 +132,12 @@ class Entity:
             self._rect.y = self.position.y
             self._rect.width = width
             self._rect.height = height
-            return self._rect
         if self.sprite is None:
             self._rect.x = self.position.x
             self._rect.y = self.position.y
             self._rect.width = 1
             self._rect.height = 1
-            return pygame.Rect(self.position.x, self.position.y, 1, 1)
+        return self._rect
 
     @property
     def custom_hitbox(self) -> pygame.Rect:
