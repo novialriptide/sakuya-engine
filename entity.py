@@ -126,8 +126,8 @@ class Entity:
 
     @property
     def rect(self) -> pygame.Rect:
-        width, height = self.sprite.get_size()
         if self.sprite is not None:
+            width, height = self.sprite.get_size()
             self._rect.x = self.position.x
             self._rect.y = self.position.y
             self._rect.width = width

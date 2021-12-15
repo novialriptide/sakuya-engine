@@ -12,7 +12,7 @@ from .entity import Entity
 from .animation import split_image
 from .math import get_angle
 
-pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
 class Bullet(Entity):
     def __init__(
@@ -21,9 +21,9 @@ class Bullet(Entity):
         speed: float = 4,
         color: Tuple[int, int, int] = (255, 255, 255),
         damage: float = 5,
-        position: pygame_vector2 = pygame.Vector2(0, 0),
+        position: pygame_vector2 = pygame.math.Vector2(0, 0),
         obey_gravity: bool = False,
-        custom_hitbox_size: pygame_vector2 = pygame.Vector2(0, 0),
+        custom_hitbox_size: pygame_vector2 = pygame.math.Vector2(0, 0),
         name: str = None,
         static_sprite: pygame.Surface = None,
         curve: float = 0,
@@ -229,13 +229,13 @@ class BulletSpawner:
             spread_between_each_array = (self.spread_within_bullet_arrays / self.total_bullet_arrays)
             spread_between_each_bullets = self.spread_between_bullet_arrays
 
+            center_angle = ((self.total_bullet_arrays - 1) * spread_between_each_bullets + (self.bullets_per_array - 1) * spread_between_each_array) / 2
             for a in range(self.total_bullet_arrays):
                 for b in range(self.bullets_per_array):
                     angle = self.angle + spread_between_each_array * b + spread_between_each_bullets * a
                     if self.target is not None and self.aim:
                         # Responsible for making the bullet arrays aim from their center.
-                        angle_offset = -self.spread_within_bullet_arrays / self.bullets_per_array # + (self.total_bullet_arrays * (self.spread_between_bullet_arrays + self.spread_within_bullet_arrays)) / 2
-                        target_angle = math.degrees(get_angle(self.position, self.target.position)) + angle_offset
+                        target_angle = math.degrees(get_angle(self.position, self.target.position + self.target.center_offset)) - center_angle
                         angle += target_angle
                     bullets.append(self.shoot(angle))
 
