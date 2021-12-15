@@ -50,11 +50,11 @@ class Bullet(Entity):
         if self._sprite is None:
             return None
 
-        direction = pygame.Vector2().angle_to(pygame.Vector2(1, 0).rotate(-self.angle))
+        direction = -self.angle + 360
         if self.direction != direction:
             self._sprite = pygame.transform.rotate(super().sprite, direction)
-        
-        self.direction = direction
+            self.direction = direction
+
         return self._sprite
 
     def update(self, delta_time: float) -> None:
