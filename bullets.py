@@ -12,7 +12,7 @@ from .entity import Entity
 from .animation import split_image
 from .math import get_angle
 
-pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
 class Bullet(Entity):
     def __init__(
@@ -21,9 +21,9 @@ class Bullet(Entity):
         speed: float = 4,
         color: Tuple[int, int, int] = (255, 255, 255),
         damage: float = 5,
-        position: pygame_vector2 = pygame.math.Vector2(0, 0),
+        position: pygame_vector2 = pygame.Vector2(0, 0),
         obey_gravity: bool = False,
-        custom_hitbox_size: pygame_vector2 = pygame.math.Vector2(0, 0),
+        custom_hitbox_size: pygame_vector2 = pygame.Vector2(0, 0),
         name: str = None,
         static_sprite: pygame.Surface = None,
         curve: float = 0,
@@ -50,7 +50,7 @@ class Bullet(Entity):
         if self._sprite is None:
             return None
 
-        direction = pygame.math.Vector2().angle_to(pygame.math.Vector2(1, 0).rotate(-self.angle))
+        direction = pygame.Vector2().angle_to(pygame.Vector2(1, 0).rotate(-self.angle))
         if self.direction != direction:
             self._sprite = pygame.transform.rotate(super().sprite, direction)
         
@@ -60,15 +60,15 @@ class Bullet(Entity):
     def update(self, delta_time: float) -> None:
         angle = math.radians(self.angle)
         self.angle += self.curve * delta_time
-        self.velocity = pygame.math.Vector2(self.speed * math.cos(angle), self.speed * math.sin(angle))
+        self.velocity = pygame.Vector2(self.speed * math.cos(angle), self.speed * math.sin(angle))
         return super().update(delta_time)
 
 class BulletSpawner:
     def __init__(
         self,
         bullet: Bullet,
-        position: pygame_vector2 = pygame.math.Vector2(0, 0),
-        position_offset: pygame_vector2 = pygame.math.Vector2(0, 0),
+        position: pygame_vector2 = pygame.Vector2(0, 0),
+        position_offset: pygame_vector2 = pygame.Vector2(0, 0),
         iterations: int = 1,
         total_bullet_arrays: int = 1,
         bullets_per_array: int = 1,
@@ -264,10 +264,10 @@ class BulletSpawner:
 
 def load_bullet_dict(data: dict) -> Bullet:
     if "custom_hitbox_size" in data.keys():
-        data["custom_hitbox_size"] = pygame.math.Vector2(data["custom_hitbox_size"])
+        data["custom_hitbox_size"] = pygame.Vector2(data["custom_hitbox_size"])
 
     if "position" in data.keys():
-        data["position"] = pygame.math.Vector2(data["position"])
+        data["position"] = pygame.Vector2(data["position"])
 
     if "static_sprite" in data.keys():
         ss_data = data["static_sprite"]
@@ -286,6 +286,6 @@ def load_bulletspawner_dict(data: dict) -> BulletSpawner:
     del data["bullet"]
 
     if "position_offset" in data.keys():
-        data["position_offset"] = pygame.math.Vector2(data["position_offset"])
+        data["position_offset"] = pygame.Vector2(data["position_offset"])
 
     return BulletSpawner(bullet, **data)

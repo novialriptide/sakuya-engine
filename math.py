@@ -10,7 +10,7 @@ import pygame
 
 from .errors import NegativeSpeedError, LineSegmentLinesError
 
-pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
 def vector2_ratio_xy(vector: pygame_vector2) -> float:
     return vector.x / vector.y
@@ -78,7 +78,7 @@ def move_toward(origin: float, target: float, speed: float) -> float:
 def eval_segment_intersection(
     point1: pygame_vector2, point2: pygame_vector2, 
     point3: pygame_vector2, point4: pygame_vector2
-) -> pygame.math.Vector2:
+) -> pygame.Vector2:
     """Evaluates if 2 line segments collide with each other.
 
     Parameters:
@@ -109,7 +109,7 @@ def eval_segment_intersection(
     u = -(u1/dem)
 
     if t >= 0 and t <= 1 and u >= 0 and u <= 1:
-        return pygame.math.Vector2(
+        return pygame.Vector2(
             x1 + t*(x2-x1),
             y1 + t*(y2-y1)
         )

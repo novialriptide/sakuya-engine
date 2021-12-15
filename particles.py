@@ -9,7 +9,7 @@ import pygame
 
 from .physics import gravity
 
-pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
 class Particle:
     def __init__(
@@ -44,8 +44,8 @@ class Particles:
         particles_num: int = 2,
         colors: List[Tuple[int, int, int]] = [],
         lifetime: int = 1000,
-        offset: pygame_vector2 = pygame.math.Vector2(0, 0),
-        position: pygame_vector2 = pygame.math.Vector2(0, 0)
+        offset: pygame_vector2 = pygame.Vector2(0, 0),
+        position: pygame_vector2 = pygame.Vector2(0, 0)
     ) -> None:
         self.particles = []
         self.velocity = velocity
@@ -54,7 +54,7 @@ class Particles:
         self.colors = [screen.map_rgb(col) for col in colors]
         
         #self.colors = colors
-        self.spread = spread # pygame.math.Vector2
+        self.spread = spread # pygame.Vector2
         self.particles_num = particles_num # int
         self.lifetime = lifetime
         self.offset = offset
@@ -80,20 +80,20 @@ class Particles:
             par = Particle(
                 self.position + self.offset,
                 random_color,
-                pygame.math.Vector2(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y),
+                pygame.Vector2(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y),
                 destroy_time
             )
             self.particles.append(par)
 
 def load_particles_dict(data: dict) -> Particles:
-    velocity = pygame.math.Vector2(data["velocity"])
+    velocity = pygame.Vector2(data["velocity"])
     del data["velocity"]
 
     if "offset" in data.keys():
-        data["offset"] = pygame.math.Vector2(data["offset"])
+        data["offset"] = pygame.Vector2(data["offset"])
 
     if "position" in data.keys():
-        data["position"] = pygame.math.Vector2(data["position"])
+        data["position"] = pygame.Vector2(data["position"])
 
     return Particles(
         velocity,

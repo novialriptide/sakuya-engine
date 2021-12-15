@@ -4,4 +4,4 @@ This code is licensed under MIT license (see LICENSE for details)
 """
 import pygame
 
-gravity = pygame.math.Vector2(0, 0.05)
+gravity = pygame.Vector2(0, 0.05)

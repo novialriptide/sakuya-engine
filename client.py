@@ -11,7 +11,7 @@ import time
 from .errors import NoActiveSceneError, SceneNotActiveError
 from .events import EventSystem
 
-pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
+pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
 class Client:
     def __init__(
@@ -37,7 +37,7 @@ class Client:
         self.is_running = True # bool
         self.event_system = EventSystem()
         self._window_name = window_name # str
-        self.original_window_size = window_size # pygame.math.Vector2
+        self.original_window_size = window_size # pygame.Vector2
         self.window_icon = window_icon
         self.keep_aspect_ratio = keep_aspect_ratio # bool
         self.original_aspect_ratio = window_size.x / window_size.y # float
@@ -78,9 +78,9 @@ class Client:
         pygame.display.set_caption(self._window_name)
 
     @property
-    def window_size(self) -> pygame.math.Vector2:
+    def window_size(self) -> pygame.Vector2:
         window_rect = self.window.get_rect()
-        return pygame.math.Vector2(window_rect.width, window_rect.height)
+        return pygame.Vector2(window_rect.width, window_rect.height)
 
     @window_size.setter
     def window_size(self, window_size) -> None:
@@ -90,17 +90,17 @@ class Client:
         )
 
     @property
-    def scale(self) -> pygame.math.Vector2:
-        return pygame.math.Vector2(
+    def scale(self) -> pygame.Vector2:
+        return pygame.Vector2(
             self.window_size.x / self.original_window_size.x,
             self.window_size.y / self.original_window_size.y
         )
     
     @property
-    def mouse_position(self) -> pygame.math.Vector2:
-        mouse_pos = pygame.math.Vector2(pygame.mouse.get_pos())
+    def mouse_position(self) -> pygame.Vector2:
+        mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
         sca = self.scale
-        return pygame.math.Vector2(mouse_pos.x / sca.x, mouse_pos.y / sca.y)
+        return pygame.Vector2(mouse_pos.x / sca.x, mouse_pos.y / sca.y)
 
     @property
     def current_fps(self) -> float:
