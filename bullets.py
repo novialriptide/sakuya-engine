@@ -153,6 +153,8 @@ class BulletSpawner:
 
         """
         self.next_fire_ticks = pygame.time.get_ticks()
+        self.next_reset_ticks = pygame.time.get_ticks()
+        self.waiting_reset = False
         self.current_iteration = 0
         self.angle = starting_angle
         # Args
@@ -193,6 +195,10 @@ class BulletSpawner:
     def can_shoot(self) -> bool:
         return self.is_active and pygame.time.get_ticks() >= self.next_fire_ticks
 
+    @property
+    def can_reset(self) -> bool:
+        return self.repeat and pygame.time.get_ticks() >= self.next_reset_ticks
+
     def shoot(self, angle: float) -> Bullet:
         """Shoot a bullet.
 
@@ -224,8 +230,9 @@ class BulletSpawner:
     def update(self, delta_time: float) -> List[Bullet]:
         iter_bullet = 0
         bullets = []
+        pg_ticks = pygame.time.get_ticks()
         if self.can_shoot:
-            self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
+            self.next_fire_ticks = pg_ticks + self.fire_rate
             spread_between_each_array = (self.spread_within_bullet_arrays / self.total_bullet_arrays)
             spread_between_each_bullets = self.spread_between_bullet_arrays
 
@@ -244,6 +251,7 @@ class BulletSpawner:
             self.angle += self.spin_rate * delta_time
             self.spin_rate += self.spin_modificator * delta_time
 
+
         if iter_bullet >= self.total_bullets:
             self.current_iteration += 1
 
@@ -259,6 +267,15 @@ class BulletSpawner:
             if self.spin_rate > self.max_spin_rate:
                 self.spin_rate = self.max_spin_rate
                 self.spin_modificator *= -1
+
+        if self.repeat and not self.is_active and not self.waiting_reset:
+            self.next_reset_ticks = pg_ticks + self.wait_until_reset
+            self.waiting_reset = True
+        
+        if self.can_reset and self.repeat and not self.is_active:
+            self.current_iteration = 0
+            self.waiting_reset = False
+            self.is_active = True
         
         return bullets
 
