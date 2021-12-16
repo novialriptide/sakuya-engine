@@ -12,6 +12,13 @@ from .entity import Entity
 from .errors import EntityNotInScene
 from .events import EventSystem
 
+class ScrollBackgroundSprite:
+    def __init__(self, sprite: pygame.Surface, scroll: pygame.Vector2, infinite: bool = False) -> None:
+        self.sprite = sprite
+        self.scroll = scroll
+        self.infinite = infinite
+        self.position = pygame.Vector2(0, 0)
+
 class Scene:
     def __init__(self, client: Client, **kwargs) -> None:
         """The base class for a scene
@@ -21,11 +28,12 @@ class Scene:
         Parameters:
             client: game client
         """
-        self.is_paused = False
+        self.paused = False
         self.client = client
         self.entities = []
         self.bullets = []
         self.particle_systems = []
+        self.scroll_bgs = []
         self.event_system = EventSystem()
         self.camera = Camera()
         self.kwargs = kwargs
@@ -127,6 +135,15 @@ class Scene:
 
         return collided
 
+    def draw_scroll_bg(self) -> None:
+        for bg in self.scroll_bgs:
+            bg_rect = bg.sprite.get_rect()
+            self.client.screen.blit(bg.sprite, bg.position)
+            self.client.screen.blit(bg.sprite, bg.position - pygame.Vector2(bg_rect.width, 0))
+            self.client.screen.blit(bg.sprite, bg.position - pygame.Vector2(0, bg_rect.height))
+            self.client.screen.blit(bg.sprite, bg.position - pygame.Vector2(-bg_rect.width, 0))
+            self.client.screen.blit(bg.sprite, bg.position - pygame.Vector2(0, -bg_rect.height))
+
     def advance_frame(self, delta_time: float, collision_rects: List[pygame.Rect] = []) -> None:
         """Updates the entities inside the world, such as 
         physics & animation
@@ -138,6 +155,20 @@ class Scene:
 
         """
         self.camera.update(delta_time)
+
+        for bg in self.scroll_bgs:
+            bg_rect = bg.sprite.get_rect()
+            bg.position += bg.scroll * delta_time
+            if bg.position.x >= bg_rect.width:
+                bg.position.x = 0
+            if bg.position.y >= bg_rect.height:
+                bg.position.y = 0
+            if bg.position.x < 0:
+                bg.position.x = bg_rect.width
+            if bg.position.y < 0:
+                bg.position.y = bg_rect.height
+
+            print(bg.position.y, bg_rect.height)
 
         for entity in self.entities[:]:
             entity.update(delta_time, collision_rects = collision_rects)
