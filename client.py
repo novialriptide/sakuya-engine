@@ -140,7 +140,7 @@ class Client:
             # update all scenes
             for s in copy(self.running_scenes):
                 s = self.running_scenes[s]["scene"]
-                if not s.is_paused:
+                if not s.paused:
                     s.update()
 
             # delete scenes in queue
