@@ -88,7 +88,7 @@ class Entity:
         self.next_fire_ticks = pygame.time.get_ticks()
 
         self.current_health = max_health
-        self._max_health = max_health
+        self.max_health = max_health
 
         self.healthbar = Bar(max_health, healthbar_update_speed)
         self.healthbar_position_offset = healthbar_position_offset
@@ -421,5 +421,7 @@ def load_entity_json(json_path: str, bullet_target: Entity = None) -> Entity:
             new_particle_systems.append(new_ps)
         
         return_entity.particle_systems = new_particle_systems
+    
+    return_entity.current_health = data["max_health"]
 
     return return_entity

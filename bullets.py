@@ -295,7 +295,7 @@ def load_bullet_dict(data: dict) -> Bullet:
         )
         index = ss_data["index"]
         data["static_sprite"] = sprites[index]
-    
+
     return Bullet(**data)
 
 def load_bulletspawner_dict(data: dict) -> BulletSpawner:
