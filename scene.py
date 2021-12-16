@@ -139,10 +139,14 @@ class Scene:
         for bg in self.scroll_bgs:
             bg_rect = bg.sprite.get_rect()
             self.client.screen.blit(bg.sprite, bg.position)
-            self.client.screen.blit(bg.sprite, bg.position - pygame.Vector2(bg_rect.width, 0))
-            self.client.screen.blit(bg.sprite, bg.position - pygame.Vector2(0, bg_rect.height))
-            self.client.screen.blit(bg.sprite, bg.position - pygame.Vector2(-bg_rect.width, 0))
-            self.client.screen.blit(bg.sprite, bg.position - pygame.Vector2(0, -bg_rect.height))
+            if bg.position.x - 1 < bg_rect.width:
+                self.client.screen.blit(bg.sprite, (bg.position.x - bg_rect.width, bg.position.y))
+            if bg.position.x >= bg_rect.width:
+                self.client.screen.blit(bg.sprite, (bg.position.x + bg_rect.width, bg.position.y))
+            if bg.position.y < bg_rect.height:
+                self.client.screen.blit(bg.sprite, (bg.position.x, bg.position.y - bg_rect.height))
+            if bg.position.y >= bg_rect.height:
+                self.client.screen.blit(bg.sprite, (bg.position.x, bg.position.y + bg_rect.height))
 
     def advance_frame(self, delta_time: float, collision_rects: List[pygame.Rect] = []) -> None:
         """Updates the entities inside the world, such as 
