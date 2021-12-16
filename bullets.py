@@ -255,7 +255,7 @@ class BulletSpawner:
         if iter_bullet >= self.total_bullets:
             self.current_iteration += 1
 
-        if self.current_iteration > self.iterations and self.iterations != 0:
+        if self.current_iteration > self.iterations - 1 and self.iterations != 0:
             self.current_iteration = 0
             self.is_active = False
 
