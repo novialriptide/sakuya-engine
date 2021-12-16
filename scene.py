@@ -168,8 +168,6 @@ class Scene:
             if bg.position.y < 0:
                 bg.position.y = bg_rect.height
 
-            print(bg.position.y, bg_rect.height)
-
         for entity in self.entities[:]:
             entity.update(delta_time, collision_rects = collision_rects)
             if entity._is_destroyed:
