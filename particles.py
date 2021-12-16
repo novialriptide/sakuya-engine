@@ -60,9 +60,9 @@ class Particles:
         self.offset = offset
         self.position = position
     
-    def render(self, surface: pygame.Surface) -> None:
+    def render(self, surface: pygame.Surface, offset: pygame.Vector2 = pygame.Vector2(0, 0)) -> None:
         for p in self.particles:
-            surface.set_at((int(p.position.x), int(p.position.y)), p.color)
+            surface.set_at((int(p.position.x + offset.x), int(p.position.y + offset.y)), p.color)
 
     def update(self, delta_time: float) -> None:
         current_time = pygame.time.get_ticks()

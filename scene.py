@@ -6,6 +6,7 @@ from typing import List
 
 import pygame
 
+from .camera import Camera
 from .client import Client
 from .entity import Entity
 from .errors import EntityNotInScene
@@ -26,6 +27,7 @@ class Scene:
         self.bullets = []
         self.particle_systems = []
         self.event_system = EventSystem()
+        self.camera = Camera()
         self.kwargs = kwargs
 
     @property
@@ -135,6 +137,8 @@ class Scene:
             delta_time: The game's delta time
 
         """
+        self.camera.update(delta_time)
+
         for entity in self.entities[:]:
             entity.update(delta_time, collision_rects = collision_rects)
             if entity._is_destroyed:
