@@ -180,7 +180,7 @@ class Entity:
             If true, the position has been updated
 
         """
-        directions = {"top": False, "bottom": False, "left": False, "right": False}
+        hit = {"top": False, "bottom": False, "left": False, "right": False}
         self.position.x += movement.x
         test_rect = self.rect.copy()
         verified_collisions = []
@@ -192,11 +192,11 @@ class Entity:
             if movement.x > 0:
                 test_rect.right = c.left
                 self.position.x = test_rect.x
-                directions["right"] = True
+                hit["right"] = True
             if movement.x < 0:
                 test_rect.left = c.right
                 self.position.x = test_rect.x
-                directions["left"] = True
+                hit["left"] = True
 
         self.position.y += movement.y
         test_rect = self.rect.copy()
@@ -208,13 +208,13 @@ class Entity:
             if movement.y > 0:
                 test_rect.bottom = c.top
                 self.position.y = test_rect.y
-                directions["top"] = True
+                hit["top"] = True
             if movement.y < 0:
                 test_rect.top = c.bottom
                 self.position.y = test_rect.y
-                directions["bottom"] = True
+                hit["bottom"] = True
 
-        return directions
+        return hit
     
     def shoot(
         self,
