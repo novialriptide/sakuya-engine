@@ -335,7 +335,7 @@ class Entity:
         for ps in self.particle_systems:
             ps.position = self.position
             ps.update(delta_time)
-        
+
         # Update Animation
         if self.current_anim is not None:
             self.anim_get(self.current_anim).update(delta_time)
