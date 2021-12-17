@@ -29,7 +29,10 @@ class BaseController:
         if self.is_moving_up:
             _movement.y = -1
 
-        return _movement
+        try:
+            return _movement.normalize()
+        except ValueError:
+            return _movement
 
     def stop_movement(self) -> None:
         """Stops the controller's movement"""
