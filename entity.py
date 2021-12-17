@@ -18,6 +18,7 @@ from .particles import load_particles_dict
 from .controllers import BaseController
 from .particles import Particles
 from .bar import Bar
+from .math import vector2_move_toward
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
@@ -43,53 +44,61 @@ class Entity:
         static_sprite: pygame.Surface = None,
         healthbar_update_speed: float = 1000,
         healthbar_position_offset: pygame_vector2 = pygame.Vector2(0, 0),
-        draw_healthbar: bool = True
+        draw_healthbar: bool = True,
+        target_position: pygame_vector2 | None = None
     ):
-        """Objects that goes with a scene
-        """
         self.name = name
         self.tags = tags
         self.scale = pygame.Vector2(1, 1) * scale
+
+        # Animations
+        self.animations = {}
+        self.current_anim = None
         
+        # Positions & Movement
+        self.position = position
+        self.target_position = target_position
+        
+        # Controller
         if controller is not None:
             self.controller = controller()
         if controller is None:
             self.controller = None
 
-        self.has_collision = has_collision
-        self.animations = {}
-        self.current_anim = None
-        self.position = position
-        self.velocity = pygame.Vector2(0, 0)
-        self.speed = speed
-        self.acceleration = pygame.Vector2(0, 0)
-        self.obey_gravity = obey_gravity
-        self.terminal_velocity = 10.0
-        self.enable_terminal_velocity = enable_terminal_velocity
-
+        # Collisions & Physics
         self.has_collision = has_collision
         self.has_rigidbody = has_rigidbody
+        self.obey_gravity = obey_gravity
+        self.enable_terminal_velocity = enable_terminal_velocity
         self.custom_hitbox_size = custom_hitbox_size
+        self.speed = speed
+        self.terminal_velocity = 10.0
+        self.velocity = pygame.Vector2(0, 0)
+        self.acceleration = pygame.Vector2(0, 0)
         self._rect = pygame.Rect(0, 0, 0, 0)
         self._custom_hitbox_rect = pygame.Rect(0, 0, 0, 0)
 
+        # Systems
         self.particle_systems = particle_systems
         self.bullet_spawners = bullet_spawners
         self.update_bullet_spawners = update_bullet_spawners
-        
-        # destroy
+
+        # Destroy
         self._destroy_val = 0
         self._enable_destroy = False
         self._is_destroyed = False
 
-        # shooting
+        # Shooting
+        # NOTE: I do not recommend using this. Use BulletSpawners instead.
         self.fire_rate = fire_rate
         self.can_shoot = True
         self.next_fire_ticks = pygame.time.get_ticks()
 
+        # Health
         self.current_health = max_health
         self.max_health = max_health
 
+        # Health Bar
         self.healthbar = Bar(max_health, healthbar_update_speed)
         self.healthbar_position_offset = healthbar_position_offset
         self.draw_healthbar = draw_healthbar
@@ -359,8 +368,18 @@ class Entity:
         # Apply velocity
         if self.has_rigidbody:
             self.velocity += self.acceleration + g
-        
+
         velocity = self.velocity * delta_time
+
+        if self.target_position is not None:
+            self.position = vector2_move_toward(
+                self.position, self.target_position, 
+                self.speed * delta_time
+            )
+
+        if self.position == self.target_position:
+            self.target_position = None
+
         self.move(velocity, collision_rects)
 
 def load_entity_json(json_path: str, bullet_target: Entity = None) -> Entity:
