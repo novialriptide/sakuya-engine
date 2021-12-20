@@ -10,6 +10,7 @@ import time
 
 from .errors import NoActiveSceneError, SceneNotActiveError
 from .events import EventSystem
+from .math import vector2_ratio_yx
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
@@ -133,7 +134,7 @@ class Client:
                 if pg_event != []:
                     self.window = pygame.display.set_mode((
                         pg_event[0].w, 
-                        pg_event[0].w * self.original_window_size.ratio_yx),
+                        pg_event[0].w * vector2_ratio_yx(self.original_window_size)),
                         self.pg_flag
                     )
             
