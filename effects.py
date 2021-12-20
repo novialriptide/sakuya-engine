@@ -110,7 +110,12 @@ class Rain:
             rd.draw(surface, offset)
 
     def update(self, delta_time: float) -> None:
-        pos = self.position + pygame.Vector2(randint(0, self.surface_width), randint(0, self.surface_height))
+        if randint(0, 1) == 1:
+            offset = pygame.Vector2(randint(0, self.surface_width), 0)
+        else:
+            offset = pygame.Vector2(0, randint(0, self.surface_height))
+
+        pos = self.position + offset
         for d in range(self.drop_count):
             r = RainDrop(
                 pos,
