@@ -99,5 +99,5 @@ def load_wave_file(path: str, wave_manager: WaveManager, scene: Scene) -> None:
 def load_wave_json(path: str, wave_manager: WaveManager, scene: Scene) -> None:
     file = open(path, "r")
     data = json.load(file)
-    
+
     raise NotImplementedError

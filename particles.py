@@ -23,10 +23,9 @@ class Particle:
         self.position = position
         self.color = color
         self.velocity = velocity
-        
+
         self._enable_destroy = True
         self._destroy_val = destroy_time
-        
         self._destroy_queue = False
 
     def update(self, delta_time: float, current_time: int) -> None:
