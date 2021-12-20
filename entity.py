@@ -109,7 +109,6 @@ class Entity:
 
     @property
     def sprite(self) -> pygame.Surface:
-        cur_anim = self.anim_get(self.current_anim)
         if self.static_sprite is not None:
             if self.scale.x != 1 or self.scale.y != 1:
                 width, height = self.static_sprite.get_size()
@@ -122,6 +121,8 @@ class Entity:
                 return scaled_sprite
             else:
                 return self.static_sprite
+
+        cur_anim = self.anim_get(self.current_anim)
         if cur_anim is not None:
             if self.scale.x != 1 or self.scale.y != 1:
                 width, height = cur_anim.sprite.get_size()
@@ -161,11 +162,13 @@ class Entity:
 
     @property
     def center_offset(self) -> pygame.Vector2:
-        return pygame.Vector2(self.rect.width/2, self.rect.height/2)
+        rect = self.rect
+        return pygame.Vector2(rect.width/2, rect.height/2)
 
     @property
     def center_position(self) -> pygame.Vector2:
-        return self.position + pygame.Vector2(self.rect.width/2, self.rect.height/2)
+        rect = self.rect
+        return self.position + pygame.Vector2(rect.width/2, rect.height/2)
 
     def destroy(self, time: int) -> None:
         """Set the destruction time.

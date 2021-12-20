@@ -51,9 +51,9 @@ class Particles:
         self.velocity = velocity
 
         screen = pygame.display.get_surface()
-        self.colors = [screen.map_rgb(col) for col in colors]
+        #self.colors = [screen.map_rgb(col) for col in colors]
+        self.colors = colors
         
-        #self.colors = colors
         self.spread = spread # pygame.Vector2
         self.particles_num = particles_num # int
         self.lifetime = lifetime
