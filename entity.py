@@ -153,22 +153,23 @@ class Entity:
 
     @property
     def custom_hitbox(self) -> pygame.Rect:
-        rect = self.rect
-        self._custom_hitbox_rect.x = self.position.x + rect.width/2 - self.custom_hitbox_size.x
-        self._custom_hitbox_rect.y = self.position.y + rect.height/2 - self.custom_hitbox_size.y
-        self._custom_hitbox_rect.width = self.custom_hitbox_size.x*2
-        self._custom_hitbox_rect.height = self.custom_hitbox_size.y*2
+        width, height = self.sprite.get_size()
+        hb_size = self.custom_hitbox_size
+        self._custom_hitbox_rect.x = self.position.x + width/2 - hb_size.x
+        self._custom_hitbox_rect.y = self.position.y + height/2 - hb_size.y
+        self._custom_hitbox_rect.width = hb_size.x*2
+        self._custom_hitbox_rect.height = hb_size.y*2
         return self._custom_hitbox_rect
 
     @property
     def center_offset(self) -> pygame.Vector2:
-        rect = self.rect
-        return pygame.Vector2(rect.width/2, rect.height/2)
+        width, height = self.sprite.get_size()
+        return pygame.Vector2(width/2, height/2)
 
     @property
     def center_position(self) -> pygame.Vector2:
-        rect = self.rect
-        return self.position + pygame.Vector2(rect.width/2, rect.height/2)
+        width, height = self.sprite.get_size()
+        return self.position + pygame.Vector2(width/2, height/2)
 
     def destroy(self, time: int) -> None:
         """Set the destruction time.
