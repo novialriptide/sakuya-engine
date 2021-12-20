@@ -175,7 +175,7 @@ class Scene:
 
         for entity in self.entities[:]:
             entity.update(delta_time, collision_rects = collision_rects)
-            if entity._is_destroyed:
+            if entity._destroy_queue:
                 self.entities.remove(entity)
 
             # Update Bullet Spawners
@@ -187,12 +187,12 @@ class Scene:
 
         for bullet in self.bullets[:]:
             bullet.update(delta_time)
-            if bullet._is_destroyed:
+            if bullet._destroy_queue:
                 self.bullets.remove(bullet)
         
         for ef in self.effects[:]:
             ef.update(delta_time)
-            if ef._is_destroyed:
+            if ef._destroy_queue:
                 self.effects.remove(ef)
 
 class SceneManager:

@@ -25,7 +25,7 @@ class EnlargingCircle(BaseEffect):
         self.max_radius = max_radius
         self.speed = speed
 
-        self._is_destroyed = False
+        self._destroy_queue = False
 
     def draw(self, surface: pygame_surface, offset: pygame_vector2 = pygame.Vector2(0, 0)) -> None:
         pygame.draw.circle(surface, self.color, self.position + offset, self.radius, int(self.width))
@@ -35,4 +35,4 @@ class EnlargingCircle(BaseEffect):
         self.width = self.starting_width * (1 - self.radius / self.max_radius) + 1
 
         if self.radius >= self.max_radius:
-            self._is_destroyed = True
+            self._destroy_queue = True

@@ -27,11 +27,11 @@ class Particle:
         self._enable_destroy = True
         self._destroy_val = destroy_time
         
-        self._is_destroyed = False
+        self._destroy_queue = False
 
     def update(self, delta_time: float, current_time: int) -> None:
         if self._enable_destroy and self._destroy_val <= current_time:
-            self._is_destroyed = True
+            self._destroy_queue = True
 
         self.velocity += gravity
         self.position += self.velocity * delta_time
@@ -68,7 +68,7 @@ class Particles:
         current_time = pygame.time.get_ticks()
 
         for p in self.particles:
-            if p._is_destroyed:
+            if p._destroy_queue:
                 self.particles.remove(p)
             p.update(delta_time, current_time)
         

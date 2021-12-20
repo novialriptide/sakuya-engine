@@ -87,7 +87,7 @@ class Entity:
         # Destroy
         self._destroy_val = 0
         self._enable_destroy = False
-        self._is_destroyed = False
+        self._destroy_queue = False
         self.destroy_position = destroy_position
 
         # Shooting
@@ -334,10 +334,10 @@ class Entity:
         """
         # Destroy
         if self._enable_destroy and self._destroy_val <= pygame.time.get_ticks():
-            self._is_destroyed = True
+            self._destroy_queue = True
 
         if self.destroy_position == self.position:
-            self._is_destroyed = True
+            self._destroy_queue = True
 
         # Update Particles
         for ps in self.particle_systems:
