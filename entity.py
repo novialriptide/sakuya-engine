@@ -45,7 +45,8 @@ class Entity:
         healthbar_update_speed: float = 1000,
         healthbar_position_offset: pygame_vector2 = pygame.Vector2(0, 0),
         draw_healthbar: bool = True,
-        target_position: pygame_vector2 | None = None
+        target_position: pygame_vector2 | None = None,
+        destroy_position: pygame_vector2 | None = None
     ):
         self.name = name
         self.tags = tags
@@ -87,6 +88,7 @@ class Entity:
         self._destroy_val = 0
         self._enable_destroy = False
         self._is_destroyed = False
+        self.destroy_position = destroy_position
 
         # Shooting
         # NOTE: I do not recommend using this. Use BulletSpawners instead.
@@ -329,6 +331,9 @@ class Entity:
         """
         # Destroy
         if self._enable_destroy and self._destroy_val <= pygame.time.get_ticks():
+            self._is_destroyed = True
+
+        if self.destroy_position == self.position:
             self._is_destroyed = True
 
         # Update Particles
