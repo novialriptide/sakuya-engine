@@ -33,6 +33,7 @@ class Scene:
         self.entities = []
         self.bullets = []
         self.particle_systems = []
+        self.effects = []
         self.scroll_bgs = []
         self.event_system = EventSystem()
         self.camera = Camera()
@@ -188,6 +189,11 @@ class Scene:
             bullet.update(delta_time)
             if bullet._is_destroyed:
                 self.bullets.remove(bullet)
+        
+        for ef in self.effects[:]:
+            ef.update(delta_time)
+            if ef._is_destroyed:
+                self.effects.remove(ef)
 
 class SceneManager:
     def __init__(self, client: Client) -> None:
