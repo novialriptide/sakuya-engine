@@ -131,12 +131,6 @@ class Client:
                 pg_event = pygame.event.get(
                     eventtype=pygame.VIDEORESIZE
                 )
-                if pg_event != []:
-                    self.window = pygame.display.set_mode((
-                        pg_event[0].w, 
-                        pg_event[0].w * vector2_ratio_yx(self.original_window_size)),
-                        self.pg_flag
-                    )
             
             # update all scenes
             for s in copy(self.running_scenes):
@@ -152,7 +146,7 @@ class Client:
                 except KeyError:
                     pass
 
-            screen = pygame.transform.scale(self.screen, (self.window_size.x, self.window_size.y))
+            screen = pygame.transform.scale(self.screen, (self.window_size.x, self.window_size.x * vector2_ratio_yx(self.original_window_size)))
             self.window.blit(screen, (0,0))
             self.event_system.update()
             pygame.display.update()
