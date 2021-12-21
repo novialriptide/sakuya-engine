@@ -46,7 +46,8 @@ class Entity:
         healthbar_position_offset: pygame_vector2 = pygame.Vector2(0, 0),
         draw_healthbar: bool = True,
         target_position: pygame_vector2 | None = None,
-        destroy_position: pygame_vector2 | None = None
+        destroy_position: pygame_vector2 | None = None,
+        disable_bulletspawner_while_movement: bool = True
     ):
         self.name = name
         self.tags = tags
@@ -83,6 +84,7 @@ class Entity:
         self.particle_systems = particle_systems
         self.bullet_spawners = bullet_spawners
         self.update_bullet_spawners = update_bullet_spawners
+        self.disable_bulletspawner_while_movement = disable_bulletspawner_while_movement
 
         # Destroy
         self._destroy_val = 0
