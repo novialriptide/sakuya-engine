@@ -182,7 +182,7 @@ class Scene:
             for bs in entity.bullet_spawners:
                 bs.position = entity.position + entity.center_offset
                 if entity.update_bullet_spawners:
-                    if entity.disable_bulletspawner_while_movement and entity.target_position is not None:
+                    if entity.disable_bulletspawner_while_movement and entity.target_position is not None or entity.destroy_position is not None:
                         continue
                     new_bullets = bs.update(delta_time)
                     self.bullets.extend(new_bullets)
