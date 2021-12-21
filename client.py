@@ -125,12 +125,6 @@ class Client:
 
             if self.running_scenes == []:
                 raise NoActiveSceneError
-
-            # keep aspect ratio
-            if self.keep_aspect_ratio:
-                pg_event = pygame.event.get(
-                    eventtype=pygame.VIDEORESIZE
-                )
             
             # update all scenes
             for s in copy(self.running_scenes):
