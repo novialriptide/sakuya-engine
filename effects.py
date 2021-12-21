@@ -91,7 +91,7 @@ class Rain:
         velocity: pygame_vector2 = pygame.Vector2(2, 2),
         length: int = 5,
         color: Tuple[int, int, int] = (255, 255, 255),
-        destroy_time: int = 2000,
+        destroy_time: int = 300,
     ) -> None:
         self.drop_count = drop_count
         self.raindrops = []
@@ -125,5 +125,3 @@ class Rain:
                 destroy_time = self.raindrop_destroy_time
             )
             self.effects_list.append(r)
-        for rd in self.raindrops:
-            rd.update(delta_time)
