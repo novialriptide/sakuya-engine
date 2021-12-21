@@ -161,6 +161,9 @@ class Scene:
         """
         self.camera.update(delta_time)
 
+        for p in self.particle_systems:
+            p.update(delta_time)
+        
         for bg in self.scroll_bgs:
             bg_rect = bg.sprite.get_rect()
             bg.position += bg.scroll * delta_time
