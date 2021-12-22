@@ -148,22 +148,22 @@ class Client:
             self.ticks_elapsed += 1
 
     def add_scene(self, scene_name: str, **kwargs) -> None:
-        """
-        Adds scene to running scene 
+        """Adds scene to running scene 
 
         Parameters:
             scene_name: str to be added
+
         """
-        scene = self.scene_manager.get_scene(scene_name)
+        scene = copy(self.scene_manager.get_scene(scene_name))
         scene.on_awake(**kwargs)
         self.running_scenes[scene.name] = {"scene": scene, "kwargs": kwargs}
 
     def remove_scene(self, scene_name: str, **kwargs) -> None:
-        """
-        Removes scene
+        """Removes scene
 
         Parameters:
             scene_name: str to be removed
+
         """
         try:
             scene = self.scene_manager.get_scene(scene_name)
@@ -178,11 +178,11 @@ class Client:
         new_scene_name: str, 
         **kwargs
     ) -> None:
-        """
-        Removes and adds a scene
+        """Removes and adds a scene
 
         Parameters:
             scene_name: str to be added
+
         """
         try:
             self.remove_scene(old_scene_name)
