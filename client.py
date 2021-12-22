@@ -133,12 +133,9 @@ class Client:
                     s.update()
 
             # delete scenes in queue
-            for s in self.deleted_scenes_queue:
-                try:
-                    del self.running_scenes[s]
-                    self.deleted_scenes_queue.remove(s)
-                except KeyError:
-                    pass
+            for s in self.deleted_scenes_queue[:]:
+                del self.running_scenes[s]
+                self.deleted_scenes_queue.remove(s)
 
             screen = pygame.transform.scale(self.screen, (self.window_size.x, self.window_size.x * vector2_ratio_yx(self.original_window_size)))
             self.window.blit(screen, (0,0))
