@@ -155,7 +155,12 @@ class Entity:
 
     @property
     def custom_hitbox(self) -> pygame.Rect:
-        width, height = self.sprite.get_size()
+        s = self.sprite
+        if s is not None:
+            width, height = s.get_size()
+        else:
+            r = self.rect
+            width, height = r.width, r.height
         hb_size = self.custom_hitbox_size
         self._custom_hitbox_rect.x = self.position.x + width/2 - hb_size.x
         self._custom_hitbox_rect.y = self.position.y + height/2 - hb_size.y
@@ -165,7 +170,12 @@ class Entity:
 
     @property
     def center_offset(self) -> pygame.Vector2:
-        width, height = self.sprite.get_size()
+        s = self.sprite
+        if s is not None:
+            width, height = s.get_size()
+        else:
+            r = self.rect
+            width, height = r.width, r.height
         return pygame.Vector2(width/2, height/2)
 
     @property
