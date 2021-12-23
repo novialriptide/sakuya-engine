@@ -27,7 +27,8 @@ class Bullet(Entity):
         name: str = None,
         static_sprite: pygame.Surface = None,
         curve: float = 0,
-        tags: List[str] = []
+        tags: List[str] = [],
+        sound_upon_fire = None
     ) -> None:
         super().__init__(
             position = position,
@@ -44,6 +45,7 @@ class Bullet(Entity):
         self.tags = tags
         self.direction = 0
         self._sprite = static_sprite
+        self.sound_upon_fire = sound_upon_fire
 
     @property
     def sprite(self) -> pygame.Surface:
@@ -213,6 +215,11 @@ class BulletSpawner:
         bullet.acceleration = self.bullet_acceleration
         bullet.curve = self.bullet_curve
         bullet.destroy(self.bullet_lifetime)
+        
+        soundfx = bullet.sound_upon_fire
+        if soundfx is not None:
+            pygame.mixer.Sound.play(soundfx)
+
 
         return bullet
 
