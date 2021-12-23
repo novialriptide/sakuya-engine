@@ -63,6 +63,9 @@ class WaveManager:
     def load_wave(self, wave: int) -> None:
         raise NotImplementedError
     
+    def update(self) -> None:
+        pass
+    
 def _create_spawn_event(
     wave_manager: WaveManager,
     scene: Scene,
