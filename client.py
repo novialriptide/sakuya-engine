@@ -151,7 +151,7 @@ class Client:
             scene_name: str to be added
 
         """
-        scene = copy(self.scene_manager.get_scene(scene_name))
+        scene = copy(self.scene_manager.get_scene(scene_name))(self)
         scene.on_awake(**kwargs)
         self.running_scenes[scene.name] = {"scene": scene, "kwargs": kwargs}
 
@@ -163,7 +163,7 @@ class Client:
 
         """
         try:
-            scene = self.scene_manager.get_scene(scene_name)
+            scene = self.running_scenes[scene_name]["scene"]
             scene.on_delete(**kwargs)
             self.deleted_scenes_queue.append(scene.name)
         except KeyError:

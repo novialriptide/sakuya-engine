@@ -219,7 +219,7 @@ class SceneManager:
             scene: scene to be registered
 
         """
-        instance = scene(self.client)
+        instance = scene
         self.registered_scenes[scene.__name__] = instance
 
     def get_scene(self, scene_name: str) -> Scene:
