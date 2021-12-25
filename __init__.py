@@ -15,7 +15,10 @@ from .errors import *
 from .events import *
 from .lights import *
 from .math import *
-from .particles import *
+from .effect_fire import *
+from .effect_particles import *
+from .effect_rain import *
+from .effects import *
 from .physics import *
 from .scene import *
 from .text import *

@@ -8,10 +8,11 @@ import random
 import pygame
 
 from .physics import gravity
+from .effects import BaseEffect
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
-class Particle:
+class Particle(BaseEffect):
     def __init__(
         self,
         position: pygame_vector2,
@@ -27,6 +28,10 @@ class Particle:
         self._enable_destroy = True
         self._destroy_val = destroy_time
         self._destroy_queue = False
+    
+    def draw(self, surface: pygame.Surface, offset: pygame.Vector2 = pygame.Vector2(0, 0)) -> None:
+        for p in self.particles:
+            surface.set_at((int(p.position.x + offset.x), int(p.position.y + offset.y)), p.color)
 
     def update(self, delta_time: float, current_time: int) -> None:
         if self._enable_destroy and self._destroy_val <= current_time:
@@ -41,20 +46,16 @@ class Particles:
         velocity: pygame_vector2,
         spread: int = 3,
         particles_num: int = 2,
-        colors: List[Tuple[int, int, int]] = [],
         lifetime: int = 1000,
+        colors: List[Tuple[int, int, int]] = [],
         offset: pygame_vector2 = pygame.Vector2(0, 0),
         position: pygame_vector2 = pygame.Vector2(0, 0)
     ) -> None:
         self.particles = []
         self.velocity = velocity
-
-        screen = pygame.display.get_surface()
-        #self.colors = [screen.map_rgb(col) for col in colors]
         self.colors = colors
-        
-        self.spread = spread # pygame.Vector2
-        self.particles_num = particles_num # int
+        self.spread = spread
+        self.particles_num = particles_num
         self.lifetime = lifetime
         self.offset = offset
         self.position = position

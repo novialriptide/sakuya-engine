@@ -14,9 +14,9 @@ from copy import copy
 
 from .animation import Animation, load_anim_dict, split_image
 from .physics import gravity
-from .particles import load_particles_dict
+from .effect_particles import load_particles_dict
 from .controllers import BaseController
-from .particles import Particles
+from .effect_particles import Particles
 from .bar import Bar
 from .math import vector2_move_toward
 
