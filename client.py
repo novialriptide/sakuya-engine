@@ -84,9 +84,9 @@ class Client:
         return pygame.Vector2(window_rect.width, window_rect.height)
 
     @window_size.setter
-    def window_size(self, window_size) -> None:
+    def window_size(self, value) -> None:
         self.window = pygame.display.set_mode(
-            (window_size.x, window_size.y),
+            (value.x, value.y),
             self.pg_flag
         )
 
