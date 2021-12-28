@@ -2,7 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from typing import List
+from typing import List, Tuple
 import pygame
 from math import *
 
@@ -11,11 +11,13 @@ class Button:
         self,
         rect: pygame.Rect,
         methods: List[dict] = [],
+        color: Tuple[int, int, int] = (255, 255, 255),
         key: bool = None
     ) -> None:
         self.rect = rect
         self.key = key
         self.methods = methods
+        self.color = color
         
         self._pressed_up_times = 0
         self._pressed_down_times = 0
