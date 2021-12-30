@@ -1,106 +1,83 @@
 """
-SakuyaEngine (c) 2020-2021 Andrew Hong
+Helix: Flight Test (c) 2021 Andrew Hong
 This code is licensed under MIT license (see LICENSE for details)
 """
-from random import randrange
+from typing import List
 
+from .events import EventSystem, WaitEvent
 from .scene import Scene
 from .entity import Entity
-from .errors import NotEnoughArgumentsError, NotImplementedError
-from .events import EventSystem, WaitEvent
+from .errors import NotEnoughArgumentsError
 
+import pygame
 import json
 
-class Sequence:
-    def __init__(self):
-        self.in_session = False
-        self.entities = [] # List[Entity]
-
-    @property
-    def is_all_dead(self):
-        return NotImplementedError
-
 class WaveManager:
-    def __init__(self, ms_between_waves: int):
-        self.waves = [] # List[Wave]
-        self.ms_between_waves = ms_between_waves # int
-        self.entities = [] # List[Entity]
-        self.spawn_points = [] # List[Vector]
-
-    @property
-    def rand_entity(self):
-        """Returns random entity"""
-        return self.entities[randrange(0, len(self.entities))]
-
+    def __init__(self):
+        pass
+    
     def spawn(
         self,
-        entity_key: int,
-        spawn_key: int,
-        spawn_anim: int,
-        lifetime: int,
-        events_system: EventSystem
+        event_system: EventSystem,
+        enemy_path: List[pygame.Vector2],
+        entity_id: int,
+        lifetime: int = 10000
     ) -> Entity:
-        """Handles the entity spawning.
+        e = self.entities[entity_id].copy()
 
-        Could be overridden. If not, a premade function
-        is already built-in.
+        def move_despawn_func(entity: Entity, despawn_pos: pygame.Vector2):
+            # Event that will wait until it's time for it to despawn and execute the despawn movement.
+            entity.target_position = despawn_pos - e.center_offset
+            entity.destroy_position = despawn_pos - e.center_offset
 
-        Parameters:
-            entity_key: ID of the loaded entity.
-            spawn_key: ID of the loaded spawn point.
-            spawn_anim: ID of the spawn animation.
-            events_system: The scene's event system.
+        e.position = enemy_path[0] - e.center_offset
+        e.target_position = enemy_path[1] - e.center_offset
 
-        Returns:
-            The spawned entity.
-
-        """
-        e = self.entities[entity_key].copy()
-        e.position = self.spawn_points[spawn_key] - e.center_position
+        if lifetime != 0:
+            wait_moveback_enemy = WaitEvent("wait_moveback_enemy", lifetime, move_despawn_func, args=[e, enemy_path[2]])
+            event_system._methods.append(wait_moveback_enemy)
 
         return e
-
-    def load_wave(self, wave: int) -> None:
-        raise NotImplementedError
     
     def update(self) -> None:
         pass
-    
-def _create_spawn_event(
+
+def _create_spawn_event_stage(
     wave_manager: WaveManager,
     scene: Scene,
-    entity_key,
-    spawnpoint_key,
-    anim_key: int,
-    lifetime: int,
-    wait_time: int
+    event_system: EventSystem,
+    enemy_path: List[pygame.Vector2],
+    entity_id: int,
+    wait_time: int,
+    lifetime: int = 10000
 ) -> WaitEvent:
-    def spawn_func(_entity_key, _spawnpoint_key, _anim_key, _lifetime, _event_system, _delta_time):
-        entity = wave_manager.spawn(_entity_key, _spawnpoint_key, _anim_key, _lifetime, _event_system, _delta_time)
+    def spawn_func(_event_system, _enemy_path, _entity_id, _lifetime):
+        entity = wave_manager.spawn(_event_system, _enemy_path, _entity_id, _lifetime)
         scene.entities.append(entity)
     spawn_event = WaitEvent("spawn_enemy", wait_time, spawn_func, args=[
-        entity_key, spawnpoint_key, anim_key, lifetime,
-        scene.event_system, scene.client.get_delta_time
+        event_system, enemy_path, entity_id, lifetime
     ])
     return spawn_event
-    
-def load_wave_file(path: str, wave_manager: WaveManager, scene: Scene) -> None:
-    file = open(path, "r")
-    wait_time = 0
-    for line in file.readlines():
-        line = line.replace("\n", "")
-        cmd = line.split(" ")
-        if cmd[0] == "spawn":
-            try:
-                spawn_event = _create_spawn_event(wave_manager, scene, int(cmd[1]), int(cmd[2]), int(cmd[3]), int(cmd[4]), wait_time)
-                scene.event_system._methods.append(spawn_event)
-            except IndexError:
-                raise NotEnoughArgumentsError
-        if cmd[0] == "wait":
-            wait_time += int(cmd[1])
 
-def load_wave_json(path: str, wave_manager: WaveManager, scene: Scene) -> None:
+def load_stage_json(
+    path: str,
+    wave_manager: WaveManager,
+    scene: Scene
+) -> None:
     file = open(path, "r")
     data = json.load(file)
-
-    raise NotImplementedError
+    wait_time = 0
+    
+    for w in data["waves"].keys():
+        for p in data["waves"][w]:
+            enemy_path = data["paths"][p]["paths"]
+            enemies = data["waves"][w][p]["enemies"]
+            
+            for entity_id in enemies:
+                spawn_event = _create_spawn_event_stage(
+                    wave_manager, scene, scene.event_system, enemy_path,
+                    entity_id, wait_time
+                )
+                scene.event_system._methods.append(spawn_event)
+        
+        wait_time += int(w)
