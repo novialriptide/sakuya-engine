@@ -12,7 +12,7 @@ class Button:
         rect: pygame.Rect,
         methods: List[dict] = [],
         color: Tuple[int, int, int] = (255, 255, 255),
-        key: bool = None
+        key: pygame.key = None
     ) -> None:
         self.rect = rect
         self.key = key
@@ -24,16 +24,19 @@ class Button:
 
     @property
     def is_pressing_key(self) -> bool:
-        return pygame.key.get_pressed()[self.key] == 1
+        if self.key is not None:
+            return pygame.key.get_pressed()[self.key] == 1
+        else:
+            return False
 
     def is_pressing_mousedown(self, point: pygame.Vector2) -> bool:
-        return pygame.mouse.get_pressed()[0] and self.is_hovering(point)
+        return (pygame.mouse.get_pressed()[0] or self.is_pressing_key) and self.is_hovering(point)
 
     def is_pressing_mouseup(self, point: pygame.Vector2) -> bool:
-        return pygame.mouse.get_pressed()[1] and self.is_hovering(point)
+        return (pygame.mouse.get_pressed()[1] or self.is_pressing_key) and self.is_hovering(point)
 
     def is_pressing_mousedown_instant(self, point: pygame.Vector2) -> bool:
-        eval = pygame.mouse.get_pressed()[0] and self.is_hovering(point)
+        eval = self.is_pressing_mousedown(point)
 
         if not eval:
             self._pressed_down_times = 0
@@ -47,7 +50,7 @@ class Button:
         return eval
 
     def is_pressing_mouseup_instant(self, point: pygame.Vector2) -> bool:
-        eval = pygame.mouse.get_pressed()[1] and self.is_hovering(point)
+        eval = self.is_pressing_mouseup(point)
 
         if not eval:
             self._pressed_up_times = 0
