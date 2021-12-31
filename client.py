@@ -21,11 +21,9 @@ class Client:
         window_size: pygame_vector2,
         window_icon: pygame.Surface = None,
         resizeable_window: bool = True,
-        keep_aspect_ratio: bool = True,
         scale_upon_startup: float = 1
     ) -> None:
-        """
-        The game's main client.
+        """The game's main client.
 
         Warning: An event system is already built in to this object, but
         do not use it for any events related to a scene. Only use it
@@ -40,7 +38,6 @@ class Client:
         self._window_name = window_name # str
         self.original_window_size = window_size # pygame.Vector2
         self.window_icon = window_icon
-        self.keep_aspect_ratio = keep_aspect_ratio # bool
         self.original_aspect_ratio = window_size.x / window_size.y # float
         
         self.running_scenes = {}
@@ -54,7 +51,7 @@ class Client:
 
         self.pg_flag = 0
         if resizeable_window:
-            self.pg_flag = pygame.RESIZABLE | pygame.SCALED
+            self.pg_flag = pygame.RESIZABLE
 
         self.screen = pygame.Surface(window_size)
         self.window_size = window_size * scale_upon_startup
@@ -116,7 +113,7 @@ class Client:
         """
         last_time = time.time()
         while(self.is_running):
-            # delta time
+            # Delta time
             try:
                 self.delta_time = (time.time() - last_time) * 60
             except ZeroDivisionError:
@@ -126,19 +123,21 @@ class Client:
             if self.running_scenes == []:
                 raise NoActiveSceneError
             
-            # update all scenes
+            # Update all scenes
             for s in copy(self.running_scenes):
                 s = self.running_scenes[s]["scene"]
                 if not s.paused:
                     s.update()
 
-            # delete scenes in queue
+            # Delete scenes in queue
             for s in self.deleted_scenes_queue[:]:
                 del self.running_scenes[s]
                 self.deleted_scenes_queue.remove(s)
 
-            screen = pygame.transform.scale(self.screen, (self.window_size.x, self.window_size.x * vector2_ratio_yx(self.original_window_size)))
-            self.window.blit(screen, (0,0))
+            screen = pygame.transform.scale(self.screen, (self.window_size.y * self.original_window_size.x / self.original_window_size.y, self.window_size.y))
+            window_rect = self.window.get_rect()
+            screen_rect = screen.get_rect()
+            self.window.blit(screen, (window_rect.centerx - screen_rect.centerx, window_rect.centery - screen_rect.centery))
             self.event_system.update()
             pygame.display.update()
             self.pg_clock.tick(self.max_fps)
