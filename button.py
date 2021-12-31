@@ -10,9 +10,9 @@ class Button:
     def __init__(
         self,
         rect: pygame.Rect,
-        methods: List[dict] = [],
+        methods: List[dict] = [{"func": None, "args": [], "kwargs": {}}, ...],
         color: Tuple[int, int, int] = (255, 255, 255),
-        key: pygame.key = None
+        key: pygame.key or None = None
     ) -> None:
         self.rect = rect
         self.key = key
