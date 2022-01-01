@@ -1,6 +1,6 @@
 """
 SakuyaEngine (c) 2020-2021 Andrew Hong
-This code is licensed under MIT license (see LICENSE for details)
+This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from pygame import __version__ as pg_ver
 
