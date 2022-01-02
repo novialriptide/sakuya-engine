@@ -51,7 +51,7 @@ class Client:
 
         self.pg_flag = 0
         if resizeable_window:
-            self.pg_flag = pygame.RESIZABLE
+            self.pg_flag = pygame.RESIZABLE | pygame.SCALED
 
         self.screen = pygame.Surface(window_size)
         self.window_size = window_size * scale_upon_startup
@@ -86,6 +86,14 @@ class Client:
             (value.x, value.y),
             self.pg_flag
         )
+        
+    @property
+    def screen_size(self) -> pygame.Vector2:
+        return pygame.Vector2(self.window_size.y * self.original_window_size.x / self.original_window_size.y, self.window_size.y)
+
+    @property
+    def _screen(self) -> pygame.Surface:
+        return pygame.transform.scale(self.screen, self.screen_size)
 
     @property
     def scale(self) -> pygame.Vector2:
@@ -96,9 +104,13 @@ class Client:
     
     @property
     def mouse_position(self) -> pygame.Vector2:
+        window_rect = self.window.get_rect()
+        screen_rect = self._screen.get_rect()
+        center = pygame.Vector2(window_rect.centerx, window_rect.centery) - pygame.Vector2(screen_rect.centerx, screen_rect.centery)
         mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
         sca = self.scale
-        return pygame.Vector2(mouse_pos.x / sca.x, mouse_pos.y / sca.y)
+        r = pygame.Vector2(mouse_pos.x / sca.x, mouse_pos.y / sca.y)
+        return mouse_pos
 
     @property
     def current_fps(self) -> float:
@@ -131,13 +143,15 @@ class Client:
 
             # Delete scenes in queue
             for s in self.deleted_scenes_queue[:]:
-                del self.running_scenes[s]
-                self.deleted_scenes_queue.remove(s)
+                try:
+                    self.deleted_scenes_queue.remove(s)
+                    del self.running_scenes[s]
+                except KeyError:
+                    print(f"Tried deleting scene that does not exist: \"{s}\"")
 
-            screen = pygame.transform.scale(self.screen, (self.window_size.y * self.original_window_size.x / self.original_window_size.y, self.window_size.y))
             window_rect = self.window.get_rect()
-            screen_rect = screen.get_rect()
-            self.window.blit(screen, (window_rect.centerx - screen_rect.centerx, window_rect.centery - screen_rect.centery))
+            screen_rect = self._screen.get_rect()
+            self.window.blit(self._screen, (window_rect.centerx - screen_rect.centerx, window_rect.centery - screen_rect.centery))
             self.event_system.update()
             pygame.display.update()
             self.pg_clock.tick(self.max_fps)
