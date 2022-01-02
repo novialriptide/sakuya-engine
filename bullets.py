@@ -46,6 +46,13 @@ class Bullet(Entity):
         self.direction = 0
         self._sprite = static_sprite
         self.sound_upon_fire = sound_upon_fire
+        
+        s = self.sprite
+        if s is not None:
+            self._sprite_width, self._sprite_height = s.get_size()
+        else:
+            r = self.rect
+            self._sprite_width, self._sprite_height = r.width, r.height
 
     @property
     def sprite(self) -> pygame.Surface:
@@ -58,6 +65,15 @@ class Bullet(Entity):
             self.direction = direction
 
         return self._sprite
+
+    @property
+    def custom_hitbox(self) -> pygame.Rect:
+        hb_size = self.custom_hitbox_size
+        self._custom_hitbox_rect.x = self.position.x + self._sprite_width/2 - hb_size.x
+        self._custom_hitbox_rect.y = self.position.y + self._sprite_height/2 - hb_size.y
+        self._custom_hitbox_rect.width = hb_size.x*2
+        self._custom_hitbox_rect.height = hb_size.y*2
+        return self._custom_hitbox_rect
 
     def update(self, delta_time: float) -> None:
         angle = math.radians(self.angle)
