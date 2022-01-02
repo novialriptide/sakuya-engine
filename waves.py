@@ -80,4 +80,4 @@ def load_stage_json(
                 )
                 scene.event_system._methods.append(spawn_event)
         
-        wait_time += int(w)
+            wait_time += int(w)
