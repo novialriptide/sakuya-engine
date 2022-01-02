@@ -69,6 +69,7 @@ def load_stage_json(
     wait_time = 0
     
     for w in data["waves"].keys():
+        wait_time += int(w)
         for p in data["waves"][w]:
             enemy_path = data["paths"][p]["paths"]
             enemies = data["waves"][w][p]["enemies"]
@@ -79,5 +80,3 @@ def load_stage_json(
                     entity_id, wait_time
                 )
                 scene.event_system._methods.append(spawn_event)
-        
-            wait_time += int(w)
