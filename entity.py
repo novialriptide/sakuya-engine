@@ -94,6 +94,7 @@ class Entity:
         self._enable_destroy = False
         self._destroy_queue = False
         self.destroy_position = destroy_position
+        self.points_upon_death = 0
 
         # Health
         self.current_health = max_health
