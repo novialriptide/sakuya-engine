@@ -18,7 +18,8 @@ def light(surface: pygame.Surface, position: pygame_vector2, color: Tuple[int, i
         circle_surf.set_colorkey((0, 0, 0))
         surface.blit(circle_surf, position, special_flags = pygame.BLEND_RGB_ADD)
 
-def shadow(surface: pygame.Surface, position: pygame_vector2, darkness: int, radius: int):
+def shadow(surface: pygame.Surface, position: pygame_vector2, darkness: int, radius: int, offset = pygame.Vector2(0, 0)):
+    position += offset
     circle_surf = pygame.Surface((radius*2, radius*2), pygame.SRCALPHA)
     pygame.draw.circle(circle_surf, (0, 0, 0, darkness), (radius, radius), radius)
     position -= pygame.Vector2(radius, radius)
