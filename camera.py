@@ -5,7 +5,7 @@ import pygame
 import random
 
 class Camera:
-    def __init__(self, position = pygame.Vector2(0, 0), scroll = pygame.Vector2(0, 0)) -> None:
+    def __init__(self, position = pygame.Vector2(0, 0), scroll = pygame.Vector2(0, 0), shake_speed: int = 5) -> None:
         self.position = position
         self._position = position.copy()
         self.move_to_position = position.copy()
@@ -14,8 +14,9 @@ class Camera:
         self.shake_until = pygame.time.get_ticks()
         self.shaking = False
         self.shaking_range = 0
+        self.shake_speed = shake_speed
 
-    def shake(self, duration: int, range: float, shake_speed: int = 5) -> None:
+    def shake(self, duration: int, range: float) -> None:
         """Shakes the camera
 
         Parameters:
@@ -27,7 +28,6 @@ class Camera:
             current_ticks = pygame.time.get_ticks()
             self.shake_until = current_ticks + duration
             self.shaking_range = range
-            self.shake_speed = shake_speed
 
     def update(self, delta_time: float) -> None:
         self.position += self.scroll * delta_time
