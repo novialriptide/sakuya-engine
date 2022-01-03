@@ -4,6 +4,7 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 """
 from typing import Tuple, List, TypeVar, Callable
 from copy import copy
+from .clock import Clock
 
 import pygame
 import math
@@ -28,14 +29,16 @@ class Bullet(Entity):
         static_sprite: pygame.Surface = None,
         curve: float = 0,
         tags: List[str] = [],
-        sound_upon_fire = None
+        sound_upon_fire = None,
+        clock: Clock or None = None
     ) -> None:
         super().__init__(
             position = position,
             obey_gravity = obey_gravity,
             custom_hitbox_size = custom_hitbox_size,
             name = name,
-            static_sprite = static_sprite
+            static_sprite = static_sprite,
+            clock = clock
         )
         self.angle = angle
         self.speed = speed
@@ -85,6 +88,7 @@ class BulletSpawner:
     def __init__(
         self,
         bullet: Bullet,
+        clock: Clock = None,
         position: pygame_vector2 = pygame.Vector2(0, 0),
         position_offset: pygame_vector2 = pygame.Vector2(0, 0),
         iterations: int = 1,
@@ -170,8 +174,14 @@ class BulletSpawner:
                 The bullet's lifetime in milliseconds.
 
         """
-        self.next_fire_ticks = pygame.time.get_ticks()
-        self.next_reset_ticks = pygame.time.get_ticks()
+        self._clock = clock
+        
+        if self._clock is None:
+            self.next_fire_ticks = pygame.time.get_ticks()
+            self.next_reset_ticks = pygame.time.get_ticks()
+        else:
+            self.next_fire_ticks = self._clock.get_time()
+            self.next_reset_ticks = self._clock.get_time()
         self.waiting_reset = False
         self.current_iteration = 0
         self.angle = starting_angle
@@ -206,16 +216,32 @@ class BulletSpawner:
         self.wait_until_reset = wait_until_reset # wip
 
     @property
+    def clock(self) -> Clock:
+        return self._clock
+    
+    @clock.setter
+    def clock(self, value: Clock) -> None:
+        self._clock = value
+        self.next_fire_ticks = self._clock.get_time()
+        self.next_reset_ticks = self._clock.get_time()
+
+    @property
     def total_bullets(self) -> int:
         return self.total_bullet_arrays * self.bullets_per_array
 
     @property
     def can_shoot(self) -> bool:
-        return self.is_active and pygame.time.get_ticks() >= self.next_fire_ticks
+        if self._clock is None:
+            return self.is_active and pygame.time.get_ticks() >= self.next_fire_ticks
+        else:
+            return self.is_active and self._clock.get_time() >= self.next_fire_ticks
 
     @property
     def can_reset(self) -> bool:
-        return self.repeat and pygame.time.get_ticks() >= self.next_reset_ticks
+        if self._clock is None:
+            return self.repeat and pygame.time.get_ticks() >= self.next_reset_ticks
+        else:
+            return self.repeat and self._clock.get_time() >= self.next_reset_ticks
 
     def shoot(self, angle: float) -> Bullet:
         """Shoot a bullet.
@@ -230,6 +256,7 @@ class BulletSpawner:
         bullet.position = self.position + self.position_offset - bullet.center_offset
         bullet.acceleration = self.bullet_acceleration
         bullet.curve = self.bullet_curve
+        bullet.clock = self._clock
         bullet.destroy(self.bullet_lifetime)
         
         soundfx = bullet.sound_upon_fire
@@ -247,13 +274,19 @@ class BulletSpawner:
 
         """
         if self.can_shoot:
-            self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
+            if self._clock is None:
+                self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
+            else:
+                self.next_fire_ticks = self._clock.get_time() + self.fire_rate
             return self.shoot(angle)
 
     def update(self, delta_time: float) -> List[Bullet]:
         iter_bullet = 0
         bullets = []
-        pg_ticks = pygame.time.get_ticks()
+        if self._clock is None:
+            pg_ticks = pygame.time.get_ticks()
+        else:
+            pg_ticks = self._clock.get_time()
         if self.can_shoot:
             self.next_fire_ticks = pg_ticks + self.fire_rate
             spread_between_each_array = (self.spread_within_bullet_arrays / self.total_bullet_arrays)

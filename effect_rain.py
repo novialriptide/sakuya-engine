@@ -4,6 +4,7 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 """
 from random import randint
 from typing import TypeVar, Callable, Tuple, List
+from copy import copy
 
 from .effects import BaseEffect
 
@@ -18,14 +19,16 @@ class RainDrop(BaseEffect):
         position: pygame_vector2,
         velocity: pygame_vector2,
         length: int = 5,
-        color: Tuple[int, int, int] = (255, 255, 255)
+        color: List[int] = [255, 255, 255]
     ) -> None:
         self.position = position
         self.velocity = velocity
         self.velocity_norm = self.velocity.normalize()
         self.length = length
         self.color = color
-
+        for c in range(len(self.color)):
+            self.color[c] = max(min(self.color[c] + randint(-15, 15), 255), 0)
+        
         self._destroy_queue = False
 
     def draw(self, surface: pygame_surface, offset: pygame_vector2 = pygame.Vector2(0, 0)) -> None:
@@ -48,7 +51,7 @@ class Rain:
         position: pygame_vector2 = pygame.Vector2(0, 0),
         velocity: pygame_vector2 = pygame.Vector2(2, 2),
         length: int = 5,
-        color: Tuple[int, int, int] = (255, 255, 255)
+        color: List[int] = [255, 255, 255]
     ) -> None:
         self.drop_count = drop_count
         self.raindrops = []
@@ -75,7 +78,7 @@ class Rain:
         r = RainDrop(
             pos,
             self.raindrop_velocity,
-            length = self.raindrop_length,
-            color = self.raindrop_color
+            length = copy(self.raindrop_length),
+            color = copy(self.raindrop_color)
         )
         self.effects_list.append(r)

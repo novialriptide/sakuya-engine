@@ -11,6 +11,7 @@ from .client import Client
 from .entity import Entity
 from .errors import EntityNotInScene
 from .events import EventSystem
+from .clock import Clock
 
 class ScrollBackgroundSprite:
     def __init__(self, sprite: pygame.Surface, scroll: pygame.Vector2, infinite: bool = False) -> None:
@@ -35,9 +36,10 @@ class Scene:
         self.particle_systems = []
         self.effects = []
         self.scroll_bgs = []
-        self.event_system = EventSystem()
         self.camera = Camera()
         self.kwargs = kwargs
+        self.clock = Clock()
+        self.event_system = EventSystem(self.clock)
 
     @property
     def name(self) -> str:

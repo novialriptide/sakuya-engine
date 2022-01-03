@@ -2,6 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
+from .clock import Clock
 import pygame
 
 class BaseEvent:
@@ -16,8 +17,9 @@ class BaseEvent:
 class WaitEvent(BaseEvent):
     def __init__(self, name, time: int, method, args=[], kwargs={}):
         super().__init__(name, method, args=args, kwargs=kwargs)
+        self.clock = None
         self.time = time
-        self.execute_time = time + pygame.time.get_ticks()
+        self.execute_time = None
 
 class RepeatEvent(BaseEvent):
     def __init__(self, name, method, args=[], kwargs={}):
@@ -27,9 +29,10 @@ class RepeatEvent(BaseEvent):
         super().__init__(name, method, args=args, kwargs=kwargs)
 
 class EventSystem:
-    def __init__(self):
+    def __init__(self, clock: Clock):
         """Initiate the Event module, you should only use this once
         """
+        self.clock = clock
         self._methods = [] # List[BaseEvent]
 
     def add(self, event: BaseEvent):
@@ -45,10 +48,15 @@ class EventSystem:
         output = {"executed": [], "cancelled": []}
 
         for m in self._methods:
-            if isinstance(m, WaitEvent) and pygame.time.get_ticks() >= m.execute_time:
-                m.method(*m.args, **m.kwargs)
-                self._methods.remove(m)
-                output["cancelled"].append(m.name)
+            if isinstance(m, WaitEvent):
+                if m.clock is None:
+                    m.clock = self.clock
+                    m.execute_time = m.time + self.clock.get_time()
+            
+                if self.clock.get_time() >= m.execute_time:
+                    m.method(*m.args, **m.kwargs)
+                    self._methods.remove(m)
+                    output["cancelled"].append(m.name)
             
             if isinstance(m, RepeatEvent):
                 if not m.method(*m.args, **m.kwargs):

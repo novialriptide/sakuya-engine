@@ -8,9 +8,9 @@ from typing import TypeVar, Callable
 import pygame
 import time
 
+from .clock import Clock
 from .errors import NoActiveSceneError, SceneNotActiveError
 from .events import EventSystem
-from .math import vector2_ratio_yx
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
@@ -34,7 +34,8 @@ class Client:
             window_size: the window size
         """
         self.is_running = True # bool
-        self.event_system = EventSystem()
+        self.clock = Clock()
+        self.event_system = EventSystem(self.clock)
         self._window_name = window_name # str
         self.original_window_size = window_size # pygame.Vector2
         self.window_icon = window_icon

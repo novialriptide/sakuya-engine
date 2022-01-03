@@ -12,6 +12,7 @@ import json
 from typing import List
 from copy import copy
 
+from .clock import Clock
 from .animation import Animation, load_anim_dict, split_image
 from .physics import gravity
 from .effect_particles import load_particles_dict
@@ -31,7 +32,6 @@ class Entity:
         max_health: float = 100,
         position: pygame_vector2 = pygame.Vector2(0, 0),
         controller: BaseController = None,
-        fire_rate: int = 0,
         has_collision: bool = True,
         has_rigidbody: bool = False,
         enable_terminal_velocity: bool = False,
@@ -45,10 +45,13 @@ class Entity:
         healthbar_update_speed: float = 1000,
         healthbar_position_offset: pygame_vector2 = pygame.Vector2(0, 0),
         draw_healthbar: bool = True,
-        target_position: pygame_vector2 | None = None,
-        destroy_position: pygame_vector2 | None = None,
-        disable_bulletspawner_while_movement: bool = True
+        target_position: pygame_vector2 or None = None,
+        destroy_position: pygame_vector2 or None = None,
+        disable_bulletspawner_while_movement: bool = True,
+        clock: Clock or None = None 
     ):
+        self._clock = None
+        
         self.name = name
         self.tags = tags
         self.scale = pygame.Vector2(1, 1) * scale
@@ -92,12 +95,6 @@ class Entity:
         self._destroy_queue = False
         self.destroy_position = destroy_position
 
-        # Shooting
-        # NOTE: I do not recommend using this. Use BulletSpawners instead.
-        self.fire_rate = fire_rate
-        self.can_shoot = True
-        self.next_fire_ticks = pygame.time.get_ticks()
-
         # Health
         self.current_health = max_health
         self.max_health = max_health
@@ -108,6 +105,16 @@ class Entity:
         self.draw_healthbar = draw_healthbar
 
         self.static_sprite = static_sprite
+
+    @property
+    def clock(self) -> Clock:
+        return self._clock
+    
+    @clock.setter
+    def clock(self, value: Clock) -> None:
+        self._clock = value
+        self.next_fire_ticks = self._clock.get_time()
+        self.next_reset_ticks = self._clock.get_time()
 
     @property
     def sprite(self) -> pygame.Surface:
@@ -191,7 +198,10 @@ class Entity:
 
         """
         self._enable_destroy = True
-        self._destroy_val = time + pygame.time.get_ticks()
+        if self._clock is None:
+            self._destroy_val = time + pygame.time.get_ticks()
+        else:
+            self._destroy_val = time + self._clock.get_time()
 
     def move(
         self,
@@ -242,30 +252,6 @@ class Entity:
                 hit["bottom"] = True
 
         return hit
-    
-    def shoot(
-        self,
-        offset: pygame_vector2,
-        projectile,
-        angle: float,
-        speed: float
-    ) -> Entity:
-        """Shoot an entity.
-
-        Parameters:
-            offset: The position offset of where the projectile's initial position.
-            projectile: The entity that will be spawned.
-            angle: The angle (radian) of the projectile's velocity
-            speed: Speed of the projectile.
-
-        """
-        if self.can_shoot and pygame.time.get_ticks() >= self.next_fire_ticks:
-            self.next_fire_ticks = pygame.time.get_ticks() + self.fire_rate
-            projectile = copy(projectile)
-            projectile.owner = self
-            projectile.velocity = pygame.Vector2(speed * math.cos(angle), speed * math.sin(angle))
-            projectile.position = self.position + offset - pygame.Vector2(projectile.rect.width/2, projectile.rect.height/2)
-            return projectile
 
     def anim_get(self, animation_name: str) -> Animation:
         if animation_name is not None:
@@ -346,8 +332,12 @@ class Entity:
 
         """
         # Destroy
-        if self._enable_destroy and self._destroy_val <= pygame.time.get_ticks():
-            self._destroy_queue = True
+        if self._clock is None:
+            if self._enable_destroy and self._destroy_val <= pygame.time.get_ticks():
+                self._destroy_queue = True
+        else:
+            if self._enable_destroy and self._destroy_val <= self._clock.get_time():
+                self._destroy_queue = True
 
         if self.destroy_position == self.position:
             self._destroy_queue = True
@@ -364,6 +354,11 @@ class Entity:
         # Update HealthBar
         self.healthbar.current_health = self.current_health
         self.healthbar.update(delta_time)
+        
+        # Update bullet spawners
+        for b in self.bullet_spawners:
+            if self._clock is not None and b.clock is None:
+                b.clock = self._clock
 
         # Apply terminal velocity
         term_vec = self.terminal_velocity * delta_time
