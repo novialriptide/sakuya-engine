@@ -40,6 +40,10 @@ class Scene:
         self.kwargs = kwargs
         self.clock = Clock()
         self.event_system = EventSystem(self.clock)
+        
+        self.screen_pos = pygame.Vector2(0, 0)
+        self.screen = self.client.screen.copy()
+        self.screen.fill((0, 0, 0))
 
     @property
     def name(self) -> str:
@@ -141,15 +145,15 @@ class Scene:
     def draw_scroll_bg(self) -> None:
         for bg in self.scroll_bgs:
             bg_rect = bg.sprite.get_rect()
-            self.client.screen.blit(bg.sprite, bg.position)
+            self.screen.blit(bg.sprite, bg.position)
             if bg.position.x - 1 < bg_rect.width:
-                self.client.screen.blit(bg.sprite, (bg.position.x - bg_rect.width, bg.position.y))
+                self.screen.blit(bg.sprite, (bg.position.x - bg_rect.width, bg.position.y))
             if bg.position.x >= bg_rect.width:
-                self.client.screen.blit(bg.sprite, (bg.position.x + bg_rect.width, bg.position.y))
+                self.screen.blit(bg.sprite, (bg.position.x + bg_rect.width, bg.position.y))
             if bg.position.y < bg_rect.height:
-                self.client.screen.blit(bg.sprite, (bg.position.x, bg.position.y - bg_rect.height))
+                self.screen.blit(bg.sprite, (bg.position.x, bg.position.y - bg_rect.height))
             if bg.position.y >= bg_rect.height:
-                self.client.screen.blit(bg.sprite, (bg.position.x, bg.position.y + bg_rect.height))
+                self.screen.blit(bg.sprite, (bg.position.x, bg.position.y + bg_rect.height))
 
     def advance_frame(self, delta_time: float, collision_rects: List[pygame.Rect] = []) -> None:
         """Updates the entities inside the world, such as 

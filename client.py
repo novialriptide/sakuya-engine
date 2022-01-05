@@ -141,6 +141,7 @@ class Client:
                 s = self.running_scenes[s]["scene"]
                 if not s.paused:
                     s.update()
+                    self.screen.blit(s.screen, s.screen_pos)
 
             # Delete scenes in queue
             for s in self.deleted_scenes_queue[:]:
