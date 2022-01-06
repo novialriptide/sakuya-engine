@@ -6,5 +6,11 @@
 
 A game engine tool, named after a Touhou character, specifically made for bullet hells. This tool depends on [pygame](https://www.pygame.org/)
 
+## Installation
+```
+pip install -r requirements.txt
+pip install .
+```
+
 ## Developers
 1. [Andrew Hong](https://github.com/novialriptide)
