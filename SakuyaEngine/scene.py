@@ -36,6 +36,7 @@ class Scene:
         self.particle_systems = []
         self.effects = []
         self.scroll_bgs = []
+        self.collision_rects = []
         self.camera = Camera()
         self.kwargs = kwargs
         self.clock = Clock()

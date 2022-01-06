@@ -2,7 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
-from Helix.SakuyaEngine.tile import split_image
+from .tile import split_image
 
 import pygame
 import typing

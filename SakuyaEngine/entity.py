@@ -13,9 +13,8 @@ from typing import List
 from copy import copy
 
 from .clock import Clock
-from .animation import Animation, load_anim_dict, split_image
+from .animation import Animation
 from .physics import gravity
-from .effect_particles import load_particles_dict
 from .controllers import BaseController
 from .effect_particles import Particles
 from .bar import Bar
@@ -48,7 +47,8 @@ class Entity:
         target_position: pygame_vector2 or None = None,
         destroy_position: pygame_vector2 or None = None,
         disable_bulletspawner_while_movement: bool = True,
-        clock: Clock or None = None 
+        clock: Clock or None = None,
+        gravity_scale: float = 1
     ):
         self._clock = None
         
@@ -82,6 +82,7 @@ class Entity:
         self.acceleration = pygame.Vector2(0, 0)
         self._rect = pygame.Rect(0, 0, 0, 0)
         self._custom_hitbox_rect = pygame.Rect(0, 0, 0, 0)
+        self.gravity_scale = gravity_scale
 
         # Systems
         self.particle_systems = particle_systems
@@ -377,14 +378,12 @@ class Entity:
         if self.controller is not None:
             self.velocity = self.controller.movement * self.speed
 
-        # Apply gravity?
         g = gravity
         if not self.obey_gravity:
             g = pygame.Vector2(0, 0)
 
         # Apply velocity
-        if self.has_rigidbody:
-            self.velocity += self.acceleration + g
+        self.velocity += self.acceleration + g
 
         velocity = self.velocity * delta_time
 
@@ -397,67 +396,14 @@ class Entity:
         if self.position == self.target_position:
             self.target_position = None
 
-        self.move(velocity, collision_rects)
+        collisions = self.move(velocity, collision_rects)
 
-def load_entity_json(json_path: str, bullet_target: Entity = None) -> Entity:
-    from .bullets import load_bulletspawner_dict
-
-    data = json.load(open(json_path))
-    return_entity = Entity()
-
-    # Position
-    if "position" in data.keys():
-        data["position"] = pygame.Vector2(data["position"])
-
-    # Custom Hitbox Size
-    if "custom_hitbox_size" in data.keys():
-        data["custom_hitbox_size"] = pygame.Vector2(data["custom_hitbox_size"])
-
-    # Healthbar
-    if "healthbar_position_offset" in data.keys():
-        data["healthbar_position_offset"] = pygame.Vector2(data["healthbar_position_offset"])
-
-    # Animations
-    if "animations" in data.keys() and "static_sprite" not in data.keys():
-        for a in data["animations"][:]:
-            anim = load_anim_dict(a)
-            return_entity.anim_add(anim)
-        return_entity.anim_set(list(return_entity.animations.keys())[0])
-        del data["animations"]
-
-    if "static_sprite" in data.keys():
-        sprite = split_image(
-            pygame.image.load(data["static_sprite"]["path"]),
-            px_width = data["static_sprite"]["width"],
-            px_height = data["static_sprite"]["height"]
-        )
-        data["static_sprite"] = pygame.image.load(sprite[data["static_sprite"]["index"]])
-
-    for key in data:
-        if hasattr(return_entity, key):
-            setattr(return_entity, key, data[key])
-
-    # Bullet Spawners
-    if "bullet_spawners" in data.keys():
-        spawners = data["bullet_spawners"][:]
-        new_bullet_spawners = []
-        for bs in spawners:
-            new_bs = load_bulletspawner_dict(bs)
-            new_bs.target = bullet_target
-            new_bullet_spawners.append(new_bs)
-
-        return_entity.bullet_spawners = new_bullet_spawners
-
-    # Particle Systems
-    if "particle_systems" in data.keys():
-        particle_systems = data["particle_systems"][:]
-        new_particle_systems = []
-        for ps in particle_systems:
-            new_ps = load_particles_dict(ps)
-            new_particle_systems.append(new_ps)
-        
-        return_entity.particle_systems = new_particle_systems
-    
-    return_entity.current_health = data["max_health"]
-
-    return return_entity
+        # Apply gravity?
+        if g.y < 0 and collisions["bottom"]:
+            self.velocity.y = 0
+        if g.y > 0 and collisions["top"]:
+            self.velocity.y = 0
+        if g.x > 0 and collisions["right"]:
+            self.velocity.x = 0
+        if g.x < 0 and collisions["left"]:
+            self.velocity.x = 0

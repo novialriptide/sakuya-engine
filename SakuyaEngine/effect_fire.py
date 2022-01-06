@@ -3,7 +3,7 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from typing import List, TypeVar, Callable, Tuple
-from Helix.SakuyaEngine.effect_particles import Particle, Particles
+from .effect_particles import Particle, Particles
 
 import pygame
 
