@@ -74,10 +74,12 @@ class TileMap:
         self.add_layer()
         
     def add_layer(self) -> None:
+        layer = []
         for r in range(self.rows):
-            self.map_layers.append([])
+            layer.append([])
             for c in range(self.columns):
-                self.map_layers[r][c] = 0
+                layer[r][c] = 0
+        self.map_layers.append(layer)
                 
-    def get_tile(self, pos: pygame.Vector2) -> int:
-        return self.map_layers[pos.y][pos.x]
+    def get_tile(self, layer: int, pos: pygame.Vector2) -> int:
+        return self.map_layers[layer][pos.y][pos.x]
