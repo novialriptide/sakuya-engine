@@ -21,7 +21,8 @@ class Client:
         window_size: pygame_vector2,
         window_icon: pygame.Surface = None,
         resizeable_window: bool = True,
-        scale_upon_startup: float = 1
+        scale_upon_startup: float = 1,
+        debug_caption: bool = True
     ) -> None:
         """The game's main client.
 
@@ -33,6 +34,7 @@ class Client:
             window_name: the window's name
             window_size: the window size
         """
+        self.debug_caption = debug_caption
         self.is_running = True # bool
         self.clock = Clock()
         self.event_system = EventSystem(self.clock)
@@ -141,6 +143,7 @@ class Client:
                 s = self.running_scenes[s]["scene"]
                 if not s.paused:
                     s.update()
+                    self.screen.fill((191, 64, 191))
                     self.screen.blit(s.screen, s.screen_pos)
 
             # Delete scenes in queue
@@ -158,6 +161,22 @@ class Client:
             pygame.display.update()
             self.pg_clock.tick(self.max_fps)
             self.ticks_elapsed += 1
+            
+            if self.debug_caption:
+                fps = round(self.pg_clock.get_fps(), 2)
+                bullets = 0
+                entities = 0
+                effects = 0
+                scene_time = 0
+                client_time = round(self.clock.get_time(), 2)
+                for s in self.running_scenes:
+                    s = self.running_scenes[s]["scene"]
+                    bullets += len(s.bullets)
+                    entities += len(s.entities)
+                    effects += len(s.effects)
+                    scene_time = round(s.clock.get_time(), 2)
+                scene = ', '.join(self.running_scenes)
+                pygame.display.set_caption(f"fps: {fps}, entities: {entities + bullets}, effects: {effects}, scene_time: {scene_time}, client_time: {client_time}, scene: {scene}")
 
     def add_scene(self, scene_name: str, **kwargs) -> None:
         """Adds scene to running scene 
