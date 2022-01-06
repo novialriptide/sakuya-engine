@@ -30,8 +30,7 @@ def crop_tile_image(
 def split_image(
     image: pygame.Surface,
     px_width: int,
-    px_height: int,
-    px_distance: int = 0
+    px_height: int
 ) -> List[pygame.Surface]:
     """Split an image into a tileset.
 
@@ -47,9 +46,6 @@ def split_image(
     rows = int(rect.height / px_height)
     tiles = [] # List[pygame.Surface]
 
-    if px_distance != 0:
-        raise NotImplementedError
-
     for r in range(rows):
         for c in range(columns):
             tile_sprite = crop_tile_image(
@@ -60,19 +56,28 @@ def split_image(
 
     return tiles
 
-class TileMap:
-    def __init__(self):
-        self.scale = pygame.Vector2(1, 1)
-        raise NotImplementedError
-
 class TileSet:
-    def __init__(self):
-        raise NotImplementedError
+    def __init__(self, image: pygame.Surface, px_width: int, px_height: int):
+        self.image = image
+        self.px_width = px_width
+        self.px_height = px_height
+        
+        self.tiles = split_image(self.image, self.px_width, self.px_height)
 
-    @property
-    def columns(self) -> int:
-        raise NotImplementedError
-
-    @property
-    def rows(self) -> int:
-        raise NotImplementedError
+class TileMap:
+    def __init__(self, columns: int, rows: int, tile_set: TileSet) -> None:
+        self.columns = columns
+        self.rows = rows
+        self.map_layers = []
+        self.tile_set = tile_set
+        self._surface = pygame.Surface(columns * tile_set.px_width, rows * tile_set.px_height)
+        self.add_layer()
+        
+    def add_layer(self) -> None:
+        for r in range(self.rows):
+            self.map_layers.append([])
+            for c in range(self.columns):
+                self.map_layers[r][c] = 0
+                
+    def get_tile(self, pos: pygame.Vector2) -> int:
+        return self.map_layers[pos.y][pos.x]
