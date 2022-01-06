@@ -103,7 +103,7 @@ class BulletSpawner:
         max_spin_rate: float = 1,
         fire_rate: float = 0,
         bullet_speed: float = 3,
-        bullet_acceleration: float = 0,
+        bullet_acceleration: pygame.Vector2 = pygame.Vector2(0, 0),
         bullet_curve: float = 0,
         bullet_curve_change_rate: float = 0,
         invert_curve: bool = False,
