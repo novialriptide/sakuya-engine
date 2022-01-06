@@ -52,20 +52,17 @@ def split_image(
 
     for r in range(rows):
         for c in range(columns):
-            tiles.append(
-                crop_tile_image(
-                    image,
-                    c, r, 
-                    px_width,
-                    px_height
-                )
+            tile_sprite = crop_tile_image(
+                image, c, r, 
+                px_width, px_height
             )
+            tiles.append(tile_sprite)
 
     return tiles
 
 class TileMap:
     def __init__(self):
-        self.scale = Vector(1, 1)
+        self.scale = pygame.Vector2(1, 1)
         raise NotImplementedError
 
 class TileSet:
