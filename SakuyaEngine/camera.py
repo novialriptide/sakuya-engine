@@ -4,8 +4,14 @@ from .math import vector2_move_toward
 import pygame
 import random
 
+
 class Camera:
-    def __init__(self, position = pygame.Vector2(0, 0), scroll = pygame.Vector2(0, 0), shake_speed: int = 5) -> None:
+    def __init__(
+        self,
+        position=pygame.Vector2(0, 0),
+        scroll=pygame.Vector2(0, 0),
+        shake_speed: int = 5,
+    ) -> None:
         self.position = position
         self._position = position.copy()
         self.move_to_position = position.copy()
@@ -36,12 +42,14 @@ class Camera:
         if self.shaking:
             shake_vector = pygame.Vector2(
                 random.uniform(-self.shaking_range, self.shaking_range),
-                random.uniform(-self.shaking_range, self.shaking_range)
+                random.uniform(-self.shaking_range, self.shaking_range),
             )
             self.move_to_position = self._position + shake_vector
 
         if self.shaking and current_ticks >= self.shake_until:
             self.shaking = False
             self.move_to_position = self._position
-        
-        self.position = vector2_move_toward(self.position, self.move_to_position, self.shake_speed)
+
+        self.position = vector2_move_toward(
+            self.position, self.move_to_position, self.shake_speed
+        )

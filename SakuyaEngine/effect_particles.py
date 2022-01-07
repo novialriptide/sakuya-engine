@@ -12,15 +12,16 @@ from .effects import BaseEffect
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
+
 class Particle(BaseEffect):
     def __init__(
         self,
         position: pygame_vector2,
         color: Tuple[int, int, int],
         velocity: pygame_vector2,
-        destroy_time: int
+        destroy_time: int,
     ) -> None:
-        
+
         self.position = position
         self.color = color
         self.velocity = velocity
@@ -28,10 +29,14 @@ class Particle(BaseEffect):
         self._enable_destroy = True
         self._destroy_val = destroy_time
         self._destroy_queue = False
-    
-    def draw(self, surface: pygame.Surface, offset: pygame.Vector2 = pygame.Vector2(0, 0)) -> None:
+
+    def draw(
+        self, surface: pygame.Surface, offset: pygame.Vector2 = pygame.Vector2(0, 0)
+    ) -> None:
         for p in self.particles:
-            surface.set_at((int(p.position.x + offset.x), int(p.position.y + offset.y)), p.color)
+            surface.set_at(
+                (int(p.position.x + offset.x), int(p.position.y + offset.y)), p.color
+            )
 
     def update(self, delta_time: float, current_time: int) -> None:
         if self._enable_destroy and self._destroy_val <= current_time:
@@ -39,6 +44,7 @@ class Particle(BaseEffect):
 
         self.velocity += gravity
         self.position += self.velocity * delta_time
+
 
 class Particles:
     def __init__(
@@ -49,7 +55,7 @@ class Particles:
         lifetime: int = 1000,
         colors: List[Tuple[int, int, int]] = [],
         offset: pygame_vector2 = pygame.Vector2(0, 0),
-        position: pygame_vector2 = pygame.Vector2(0, 0)
+        position: pygame_vector2 = pygame.Vector2(0, 0),
     ) -> None:
         self.particles = []
         self.velocity = velocity
@@ -59,10 +65,14 @@ class Particles:
         self.lifetime = lifetime
         self.offset = offset
         self.position = position
-    
-    def render(self, surface: pygame.Surface, offset: pygame.Vector2 = pygame.Vector2(0, 0)) -> None:
+
+    def render(
+        self, surface: pygame.Surface, offset: pygame.Vector2 = pygame.Vector2(0, 0)
+    ) -> None:
         for p in self.particles:
-            surface.set_at((int(p.position.x + offset.x), int(p.position.y + offset.y)), p.color)
+            surface.set_at(
+                (int(p.position.x + offset.x), int(p.position.y + offset.y)), p.color
+            )
 
     def update(self, delta_time: float) -> None:
         current_time = pygame.time.get_ticks()
@@ -71,7 +81,7 @@ class Particles:
             if p._destroy_queue:
                 self.particles.remove(p)
             p.update(delta_time, current_time)
-        
+
         destroy_time = self.lifetime + current_time
         for p in range(self.particles_num):
             random_color = random.choice(self.colors)
@@ -80,10 +90,13 @@ class Particles:
             par = Particle(
                 self.position + self.offset,
                 random_color,
-                pygame.Vector2(self.velocity.x + random_spread_x, self.velocity.y + random_spread_y),
-                destroy_time
+                pygame.Vector2(
+                    self.velocity.x + random_spread_x, self.velocity.y + random_spread_y
+                ),
+                destroy_time,
             )
             self.particles.append(par)
+
 
 def load_particles_dict(data: dict) -> Particles:
     velocity = pygame.Vector2(data["velocity"])
@@ -95,7 +108,4 @@ def load_particles_dict(data: dict) -> Particles:
     if "position" in data.keys():
         data["position"] = pygame.Vector2(data["position"])
 
-    return Particles(
-        velocity,
-        **data
-    )
+    return Particles(velocity, **data)

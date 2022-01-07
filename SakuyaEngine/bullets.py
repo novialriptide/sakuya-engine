@@ -15,6 +15,7 @@ from .math import get_angle
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
+
 class Bullet(Entity):
     def __init__(
         self,
@@ -29,16 +30,16 @@ class Bullet(Entity):
         static_sprite: pygame.Surface = None,
         curve: float = 0,
         tags: List[str] = [],
-        sound_upon_fire = None,
-        clock: Clock or None = None
+        sound_upon_fire=None,
+        clock: Clock or None = None,
     ) -> None:
         super().__init__(
-            position = position,
-            obey_gravity = obey_gravity,
-            custom_hitbox_size = custom_hitbox_size,
-            name = name,
-            static_sprite = static_sprite,
-            clock = clock
+            position=position,
+            obey_gravity=obey_gravity,
+            custom_hitbox_size=custom_hitbox_size,
+            name=name,
+            static_sprite=static_sprite,
+            clock=clock,
         )
         self.angle = angle
         self.speed = speed
@@ -49,7 +50,7 @@ class Bullet(Entity):
         self.direction = 0
         self._sprite = static_sprite
         self.sound_upon_fire = sound_upon_fire
-        
+
         s = self.sprite
         if s is not None:
             self._sprite_width, self._sprite_height = s.get_size()
@@ -72,17 +73,24 @@ class Bullet(Entity):
     @property
     def custom_hitbox(self) -> pygame.Rect:
         hb_size = self.custom_hitbox_size
-        self._custom_hitbox_rect.x = self.position.x + self._sprite_width/2 - hb_size.x
-        self._custom_hitbox_rect.y = self.position.y + self._sprite_height/2 - hb_size.y
-        self._custom_hitbox_rect.width = hb_size.x*2
-        self._custom_hitbox_rect.height = hb_size.y*2
+        self._custom_hitbox_rect.x = (
+            self.position.x + self._sprite_width / 2 - hb_size.x
+        )
+        self._custom_hitbox_rect.y = (
+            self.position.y + self._sprite_height / 2 - hb_size.y
+        )
+        self._custom_hitbox_rect.width = hb_size.x * 2
+        self._custom_hitbox_rect.height = hb_size.y * 2
         return self._custom_hitbox_rect
 
     def update(self, delta_time: float) -> None:
         angle = math.radians(self.angle)
         self.angle += self.curve * delta_time
-        self.velocity = pygame.Vector2(self.speed * math.cos(angle), self.speed * math.sin(angle))
+        self.velocity = pygame.Vector2(
+            self.speed * math.cos(angle), self.speed * math.sin(angle)
+        )
         return super().update(delta_time)
+
 
 class BulletSpawner:
     def __init__(
@@ -113,7 +121,7 @@ class BulletSpawner:
         target: Entity = None,
         is_active: bool = False,
         repeat: bool = False,
-        wait_until_reset: int = 0
+        wait_until_reset: int = 0,
     ) -> None:
         """Constructor for BulletSpawner.
 
@@ -141,7 +149,7 @@ class BulletSpawner:
                 Sets the spread between individual bullet arrays. (in degrees)
             spread_within_bullet_arrays:
                 Sets the spread within the bullet arrays.
-                More specifically, it sets the spread between the 
+                More specifically, it sets the spread between the
                 first and last bullet of each array. (in degrees)
             fire_rate:
                 Set the bullet spawner's fire rate for each individual bullet.
@@ -151,7 +159,7 @@ class BulletSpawner:
                 This parameter sets the rate at which the
                 bullet arrays will rotate around their origin.
             invert_spin / max_spin_rate:
-                Nothing will happen if set to False, but if set to True, 
+                Nothing will happen if set to False, but if set to True,
                 the spin rate will invert once the spin rate has reached
                 the max_spin_rate
             spin_modificator:
@@ -165,9 +173,9 @@ class BulletSpawner:
                 This parameter sets the curve at which
                 the bullet will move along.
             bullet_curve_change_rate:
-                This parameter sets the 
+                This parameter sets the
             invert_curve / max_bullet_curve_rate:
-                Nothing will happen if set to False, but if set to True, 
+                Nothing will happen if set to False, but if set to True,
                 the curve rate will invert once the curve rate has reached
                 the max_bullet_curve_rate
             bullet_lifetime:
@@ -175,7 +183,7 @@ class BulletSpawner:
 
         """
         self._clock = clock
-        
+
         if self._clock is None:
             self.next_fire_ticks = pygame.time.get_ticks()
             self.next_reset_ticks = pygame.time.get_ticks()
@@ -205,20 +213,20 @@ class BulletSpawner:
         self.bullet_speed = bullet_speed
         self.bullet_acceleration = bullet_acceleration
         self.bullet_curve = bullet_curve
-        self.bullet_curve_change_rate = bullet_curve_change_rate # wip
-        self.invert_curve = invert_curve # wip
-        self.max_bullet_curve_rate = max_bullet_curve_rate # wip
+        self.bullet_curve_change_rate = bullet_curve_change_rate  # wip
+        self.invert_curve = invert_curve  # wip
+        self.max_bullet_curve_rate = max_bullet_curve_rate  # wip
         self.bullet_lifetime = bullet_lifetime
         self.aim = aim
         self.target = target
         self.is_active = is_active
-        self.repeat = repeat # wip
-        self.wait_until_reset = wait_until_reset # wip
+        self.repeat = repeat  # wip
+        self.wait_until_reset = wait_until_reset  # wip
 
     @property
     def clock(self) -> Clock:
         return self._clock
-    
+
     @clock.setter
     def clock(self, value: Clock) -> None:
         self._clock = value
@@ -258,11 +266,10 @@ class BulletSpawner:
         bullet.curve = self.bullet_curve
         bullet.clock = self._clock
         bullet.destroy(self.bullet_lifetime)
-        
+
         soundfx = bullet.sound_upon_fire
         if soundfx is not None:
             pygame.mixer.Sound.play(soundfx)
-
 
         return bullet
 
@@ -289,16 +296,33 @@ class BulletSpawner:
             pg_ticks = self._clock.get_time()
         if self.can_shoot:
             self.next_fire_ticks = pg_ticks + self.fire_rate
-            spread_between_each_array = (self.spread_within_bullet_arrays / self.total_bullet_arrays)
+            spread_between_each_array = (
+                self.spread_within_bullet_arrays / self.total_bullet_arrays
+            )
             spread_between_each_bullets = self.spread_between_bullet_arrays
 
-            center_angle = ((self.total_bullet_arrays - 1) * spread_between_each_bullets + (self.bullets_per_array - 1) * spread_between_each_array) / 2
+            center_angle = (
+                (self.total_bullet_arrays - 1) * spread_between_each_bullets
+                + (self.bullets_per_array - 1) * spread_between_each_array
+            ) / 2
             for a in range(self.total_bullet_arrays):
                 for b in range(self.bullets_per_array):
-                    angle = self.angle + spread_between_each_array * b + spread_between_each_bullets * a
+                    angle = (
+                        self.angle
+                        + spread_between_each_array * b
+                        + spread_between_each_bullets * a
+                    )
                     if self.target is not None and self.aim:
                         # Responsible for making the bullet arrays aim from their center.
-                        target_angle = math.degrees(get_angle(self.position, self.target.position + self.target.center_offset)) - center_angle
+                        target_angle = (
+                            math.degrees(
+                                get_angle(
+                                    self.position,
+                                    self.target.position + self.target.center_offset,
+                                )
+                            )
+                            - center_angle
+                        )
                         angle += target_angle
                     bullets.append(self.shoot(angle))
 
@@ -306,7 +330,6 @@ class BulletSpawner:
 
             self.angle += self.spin_rate * delta_time
             self.spin_rate += self.spin_modificator * delta_time
-
 
         if iter_bullet >= self.total_bullets:
             self.current_iteration += 1
@@ -319,7 +342,7 @@ class BulletSpawner:
             if self.spin_rate < -self.max_spin_rate:
                 self.spin_rate = -self.max_spin_rate
                 self.spin_modificator *= -1
-            
+
             if self.spin_rate > self.max_spin_rate:
                 self.spin_rate = self.max_spin_rate
                 self.spin_modificator *= -1
@@ -327,13 +350,14 @@ class BulletSpawner:
         if self.repeat and not self.is_active and not self.waiting_reset:
             self.next_reset_ticks = pg_ticks + self.wait_until_reset
             self.waiting_reset = True
-        
+
         if self.can_reset and self.repeat and not self.is_active:
             self.current_iteration = 0
             self.waiting_reset = False
             self.is_active = True
-        
+
         return bullets
+
 
 def load_bullet_dict(data: dict) -> Bullet:
     if "custom_hitbox_size" in data.keys():
@@ -346,13 +370,14 @@ def load_bullet_dict(data: dict) -> Bullet:
         ss_data = data["static_sprite"]
         sprites = split_image(
             pygame.image.load(ss_data["path"]),
-            px_width = ss_data["width"],
-            px_height = ss_data["height"]
+            px_width=ss_data["width"],
+            px_height=ss_data["height"],
         )
         index = ss_data["index"]
         data["static_sprite"] = sprites[index]
 
     return Bullet(**data)
+
 
 def load_bulletspawner_dict(data: dict) -> BulletSpawner:
     bullet = load_bullet_dict(data["bullet"])

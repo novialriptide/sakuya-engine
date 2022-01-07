@@ -4,8 +4,10 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 """
 import pygame
 
+
 class BaseController:
     """Base class of a controller for a Player or Artificial Intelligence"""
+
     def __init__(self) -> None:
         """Used to control player movements
 

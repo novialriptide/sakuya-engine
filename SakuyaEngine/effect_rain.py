@@ -13,13 +13,14 @@ import pygame
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 pygame_surface = TypeVar("pygame_surface", Callable, pygame.Surface)
 
+
 class RainDrop(BaseEffect):
     def __init__(
         self,
         position: pygame_vector2,
         velocity: pygame_vector2,
         length: int = 5,
-        color: List[int] = [255, 255, 255]
+        color: List[int] = [255, 255, 255],
     ) -> None:
         self.position = position
         self.velocity = velocity
@@ -28,19 +29,27 @@ class RainDrop(BaseEffect):
         self.color = color
         for c in range(len(self.color)):
             self.color[c] = max(min(self.color[c] + randint(-15, 15), 255), 0)
-        
+
         self._destroy_queue = False
 
-    def draw(self, surface: pygame_surface, offset: pygame_vector2 = pygame.Vector2(0, 0)) -> None:
+    def draw(
+        self, surface: pygame_surface, offset: pygame_vector2 = pygame.Vector2(0, 0)
+    ) -> None:
         pos2 = self.position + self.velocity_norm * self.length
         pygame.draw.line(surface, self.color, self.position + offset, pos2 + offset)
 
-        if self.position.y < 0 or self.position.y > surface.get_height() or self.position.x < 0 or self.position.x > surface.get_width():
+        if (
+            self.position.y < 0
+            or self.position.y > surface.get_height()
+            or self.position.x < 0
+            or self.position.x > surface.get_width()
+        ):
             self._destroy_queue = True
 
     def update(self, delta_time: float) -> None:
         velocity = self.velocity * delta_time
         self.position += velocity
+
 
 class Rain:
     def __init__(
@@ -51,7 +60,7 @@ class Rain:
         position: pygame_vector2 = pygame.Vector2(0, 0),
         velocity: pygame_vector2 = pygame.Vector2(2, 2),
         length: int = 5,
-        color: List[int] = [255, 255, 255]
+        color: List[int] = [255, 255, 255],
     ) -> None:
         self.drop_count = drop_count
         self.raindrops = []
@@ -64,7 +73,9 @@ class Rain:
         self.surface_width = surface.get_width()
         self.surface_height = surface.get_height()
 
-    def draw(self, surface: pygame_surface, offset: pygame_vector2 = pygame.Vector2(0, 0)) -> None:
+    def draw(
+        self, surface: pygame_surface, offset: pygame_vector2 = pygame.Vector2(0, 0)
+    ) -> None:
         for rd in self.raindrops:
             rd.draw(surface, offset)
 
@@ -78,7 +89,7 @@ class Rain:
         r = RainDrop(
             pos,
             self.raindrop_velocity,
-            length = copy(self.raindrop_length),
-            color = copy(self.raindrop_color)
+            length=copy(self.raindrop_length),
+            color=copy(self.raindrop_color),
         )
         self.effects_list.append(r)

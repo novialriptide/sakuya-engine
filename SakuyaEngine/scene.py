@@ -13,12 +13,16 @@ from .errors import EntityNotInScene
 from .events import EventSystem
 from .clock import Clock
 
+
 class ScrollBackgroundSprite:
-    def __init__(self, sprite: pygame.Surface, scroll: pygame.Vector2, infinite: bool = False) -> None:
+    def __init__(
+        self, sprite: pygame.Surface, scroll: pygame.Vector2, infinite: bool = False
+    ) -> None:
         self.sprite = sprite
         self.scroll = scroll
         self.infinite = infinite
         self.position = pygame.Vector2(0, 0)
+
 
 class Scene:
     def __init__(self, client: Client, **kwargs) -> None:
@@ -41,7 +45,7 @@ class Scene:
         self.kwargs = kwargs
         self.clock = Clock()
         self.event_system = EventSystem(self.clock)
-        
+
         self.screen_pos = pygame.Vector2(0, 0)
         self.screen = self.client.screen.copy()
         self.screen.fill((0, 0, 0))
@@ -52,7 +56,7 @@ class Scene:
 
     def on_awake(self, **kwargs) -> None:
         """Will be called upon startup.
-        
+
         Must be overrided
 
         Parameters:
@@ -63,7 +67,7 @@ class Scene:
 
     def on_delete(self, **kwargs) -> None:
         """Will be called upon destruction.
-        
+
         Must be overrided
 
         Parameters:
@@ -74,7 +78,7 @@ class Scene:
 
     def update(self, delta_time, **kwargs) -> None:
         """Will be called upon every frame. Calling advance_frame() is recommended.
-        
+
         Must be overrided.
 
         Parameters:
@@ -97,7 +101,9 @@ class Scene:
 
         return entities
 
-    def test_collisions_rect(self, entity: Entity, ignore_tag: str = None) -> List[Entity]:
+    def test_collisions_rect(
+        self, entity: Entity, ignore_tag: str = None
+    ) -> List[Entity]:
         """Returns a list of entities that collides with an entity using pygame.Rect(s).
 
         Parameters:
@@ -111,16 +117,21 @@ class Scene:
             entities.remove(entity)
         except:
             raise EntityNotInScene
-        
+
         collided = []
         for e in entities:
-            if entity.custom_hitbox.colliderect(e.custom_hitbox) and ignore_tag not in e.tags:
+            if (
+                entity.custom_hitbox.colliderect(e.custom_hitbox)
+                and ignore_tag not in e.tags
+            ):
                 collided.append(e)
 
         return collided
 
-    def test_collisions_point(self, entity: Entity, ignore_tag: str = None) -> List[Entity]:
-        """Returns a list of entities that collides with 
+    def test_collisions_point(
+        self, entity: Entity, ignore_tag: str = None
+    ) -> List[Entity]:
+        """Returns a list of entities that collides with
         an entity using points. The entity's hitbox will
         still be a pygame.Rect.
 
@@ -135,10 +146,13 @@ class Scene:
             entities.remove(entity)
         except:
             raise EntityNotInScene
-        
+
         collided = []
         for e in entities:
-            if entity.custom_hitbox.collidepoint(e.position + e.center_offset) and ignore_tag not in e.tags:
+            if (
+                entity.custom_hitbox.collidepoint(e.position + e.center_offset)
+                and ignore_tag not in e.tags
+            ):
                 collided.append(e)
 
         return collided
@@ -148,18 +162,28 @@ class Scene:
             bg_rect = bg.sprite.get_rect()
             self.screen.blit(bg.sprite, bg.position)
             if bg.position.x - 1 < bg_rect.width:
-                self.screen.blit(bg.sprite, (bg.position.x - bg_rect.width, bg.position.y))
+                self.screen.blit(
+                    bg.sprite, (bg.position.x - bg_rect.width, bg.position.y)
+                )
             if bg.position.x >= bg_rect.width:
-                self.screen.blit(bg.sprite, (bg.position.x + bg_rect.width, bg.position.y))
+                self.screen.blit(
+                    bg.sprite, (bg.position.x + bg_rect.width, bg.position.y)
+                )
             if bg.position.y < bg_rect.height:
-                self.screen.blit(bg.sprite, (bg.position.x, bg.position.y - bg_rect.height))
+                self.screen.blit(
+                    bg.sprite, (bg.position.x, bg.position.y - bg_rect.height)
+                )
             if bg.position.y >= bg_rect.height:
-                self.screen.blit(bg.sprite, (bg.position.x, bg.position.y + bg_rect.height))
+                self.screen.blit(
+                    bg.sprite, (bg.position.x, bg.position.y + bg_rect.height)
+                )
 
-    def advance_frame(self, delta_time: float, collision_rects: List[pygame.Rect] = []) -> None:
-        """Updates the entities inside the world, such as 
+    def advance_frame(
+        self, delta_time: float, collision_rects: List[pygame.Rect] = []
+    ) -> None:
+        """Updates the entities inside the world, such as
         physics & animation
-        
+
         Should be added to the end of the main loop
 
         Parameters:
@@ -170,7 +194,7 @@ class Scene:
 
         for p in self.particle_systems:
             p.update(delta_time)
-        
+
         for bg in self.scroll_bgs:
             bg_rect = bg.sprite.get_rect()
             bg.position += bg.scroll * delta_time
@@ -184,7 +208,7 @@ class Scene:
                 bg.position.y = bg_rect.height
 
         for entity in self.entities[:]:
-            entity.update(delta_time, collision_rects = collision_rects)
+            entity.update(delta_time, collision_rects=collision_rects)
             if entity._destroy_queue:
                 self.entities.remove(entity)
 
@@ -192,7 +216,11 @@ class Scene:
             for bs in entity.bullet_spawners:
                 bs.position = entity.position + entity.center_offset
                 if entity.update_bullet_spawners:
-                    if entity.disable_bulletspawner_while_movement and entity.target_position is not None or entity.destroy_position is not None:
+                    if (
+                        entity.disable_bulletspawner_while_movement
+                        and entity.target_position is not None
+                        or entity.destroy_position is not None
+                    ):
                         continue
                     new_bullets = bs.update(delta_time)
                     self.bullets.extend(new_bullets)
@@ -201,11 +229,12 @@ class Scene:
             bullet.update(delta_time)
             if bullet._destroy_queue:
                 self.bullets.remove(bullet)
-        
+
         for ef in self.effects[:]:
             ef.update(delta_time)
             if ef._destroy_queue:
                 self.effects.remove(ef)
+
 
 class SceneManager:
     def __init__(self, client: Client) -> None:

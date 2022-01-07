@@ -14,6 +14,7 @@ from .events import EventSystem
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
+
 class Client:
     def __init__(
         self,
@@ -22,7 +23,7 @@ class Client:
         window_icon: pygame.Surface = None,
         resizeable_window: bool = True,
         scale_upon_startup: float = 1,
-        debug_caption: bool = True
+        debug_caption: bool = True,
     ) -> None:
         """The game's main client.
 
@@ -35,20 +36,20 @@ class Client:
             window_size: the window size
         """
         self.debug_caption = debug_caption
-        self.is_running = True # bool
+        self.is_running = True  # bool
         self.clock = Clock()
         self.event_system = EventSystem(self.clock)
-        self._window_name = window_name # str
-        self.original_window_size = window_size # pygame.Vector2
+        self._window_name = window_name  # str
+        self.original_window_size = window_size  # pygame.Vector2
         self.window_icon = window_icon
-        self.original_aspect_ratio = window_size.x / window_size.y # float
-        
+        self.original_aspect_ratio = window_size.x / window_size.y  # float
+
         self.running_scenes = {}
         self.deleted_scenes_queue = []
-        self.scene_manager = None # SceneManager
-        
+        self.scene_manager = None  # SceneManager
+
         self.pg_clock = pygame.time.Clock()
-        self.max_fps = -1 # int
+        self.max_fps = -1  # int
         self.delta_time = 0
         self.ticks_elapsed = 0
 
@@ -62,7 +63,7 @@ class Client:
         pygame.display.set_caption(self._window_name)
 
         if self.window_icon is None:
-            pass # add sakuya as a default icon
+            pass  # add sakuya as a default icon
 
         if self.window_icon is not None:
             # if you run the program from source, the icon
@@ -85,14 +86,16 @@ class Client:
 
     @window_size.setter
     def window_size(self, value) -> None:
-        self.window = pygame.display.set_mode(
-            (value.x, value.y),
-            self.pg_flag
-        )
-        
+        self.window = pygame.display.set_mode((value.x, value.y), self.pg_flag)
+
     @property
     def screen_size(self) -> pygame.Vector2:
-        return pygame.Vector2(self.window_size.y * self.original_window_size.x / self.original_window_size.y, self.window_size.y)
+        return pygame.Vector2(
+            self.window_size.y
+            * self.original_window_size.x
+            / self.original_window_size.y,
+            self.window_size.y,
+        )
 
     @property
     def _screen(self) -> pygame.Surface:
@@ -102,14 +105,16 @@ class Client:
     def scale(self) -> pygame.Vector2:
         return pygame.Vector2(
             self.window_size.x / self.original_window_size.x,
-            self.window_size.y / self.original_window_size.y
+            self.window_size.y / self.original_window_size.y,
         )
-    
+
     @property
     def mouse_position(self) -> pygame.Vector2:
         window_rect = self.window.get_rect()
         screen_rect = self._screen.get_rect()
-        center = pygame.Vector2(window_rect.centerx, window_rect.centery) - pygame.Vector2(screen_rect.centerx, screen_rect.centery)
+        center = pygame.Vector2(
+            window_rect.centerx, window_rect.centery
+        ) - pygame.Vector2(screen_rect.centerx, screen_rect.centery)
         mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
         sca = self.scale
         r = pygame.Vector2(mouse_pos.x / sca.x, mouse_pos.y / sca.y)
@@ -127,7 +132,7 @@ class Client:
         Main game loop
         """
         last_time = time.time()
-        while(self.is_running):
+        while self.is_running:
             # Delta time
             try:
                 self.delta_time = (time.time() - last_time) * 60
@@ -137,7 +142,7 @@ class Client:
 
             if self.running_scenes == []:
                 raise NoActiveSceneError
-            
+
             # Update all scenes
             for s in copy(self.running_scenes):
                 s = self.running_scenes[s]["scene"]
@@ -152,16 +157,22 @@ class Client:
                     self.deleted_scenes_queue.remove(s)
                     del self.running_scenes[s]
                 except KeyError:
-                    print(f"Tried deleting scene that does not exist: \"{s}\"")
+                    print(f'Tried deleting scene that does not exist: "{s}"')
 
             window_rect = self.window.get_rect()
             screen_rect = self._screen.get_rect()
-            self.window.blit(self._screen, (window_rect.centerx - screen_rect.centerx, window_rect.centery - screen_rect.centery))
+            self.window.blit(
+                self._screen,
+                (
+                    window_rect.centerx - screen_rect.centerx,
+                    window_rect.centery - screen_rect.centery,
+                ),
+            )
             self.event_system.update()
             pygame.display.update()
             self.pg_clock.tick(self.max_fps)
             self.ticks_elapsed += 1
-            
+
             if self.debug_caption:
                 fps = round(self.pg_clock.get_fps(), 2)
                 bullets = 0
@@ -175,11 +186,13 @@ class Client:
                     entities += len(s.entities)
                     effects += len(s.effects)
                     scene_time = round(s.clock.get_time(), 2)
-                scene = ', '.join(self.running_scenes)
-                pygame.display.set_caption(f"fps: {fps}, entities: {entities + bullets}, effects: {effects}, scene_time: {scene_time}, client_time: {client_time}, scene: {scene}")
+                scene = ", ".join(self.running_scenes)
+                pygame.display.set_caption(
+                    f"fps: {fps}, entities: {entities + bullets}, effects: {effects}, scene_time: {scene_time}, client_time: {client_time}, scene: {scene}"
+                )
 
     def add_scene(self, scene_name: str, **kwargs) -> None:
-        """Adds scene to running scene 
+        """Adds scene to running scene
 
         Parameters:
             scene_name: str to be added
@@ -203,12 +216,7 @@ class Client:
         except KeyError:
             raise SceneNotActiveError
 
-    def replace_scene(
-        self,
-        old_scene_name: str,
-        new_scene_name: str, 
-        **kwargs
-    ) -> None:
+    def replace_scene(self, old_scene_name: str, new_scene_name: str, **kwargs) -> None:
         """Removes and adds a scene
 
         Parameters:

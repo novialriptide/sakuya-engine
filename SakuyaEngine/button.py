@@ -6,19 +6,20 @@ from typing import List, Tuple
 import pygame
 from math import *
 
+
 class Button:
     def __init__(
         self,
         rect: pygame.Rect,
         methods: List[dict] = [{"func": None, "args": [], "kwargs": {}}, ...],
         color: Tuple[int, int, int] = (255, 255, 255),
-        key: pygame.key or None = None
+        key: pygame.key or None = None,
     ) -> None:
         self.rect = rect
         self.key = key
         self.methods = methods
         self.color = color
-        
+
         self._pressed_up_times = 0
         self._pressed_down_times = 0
 
@@ -30,10 +31,14 @@ class Button:
             return False
 
     def is_pressing_mousedown(self, point: pygame.Vector2) -> bool:
-        return (pygame.mouse.get_pressed()[0] and self.is_hovering(point)) or self.is_pressing_key
+        return (
+            pygame.mouse.get_pressed()[0] and self.is_hovering(point)
+        ) or self.is_pressing_key
 
     def is_pressing_mouseup(self, point: pygame.Vector2) -> bool:
-        return (pygame.mouse.get_pressed()[1] and self.is_hovering(point)) or self.is_pressing_key
+        return (
+            pygame.mouse.get_pressed()[1] and self.is_hovering(point)
+        ) or self.is_pressing_key
 
     def is_pressing_mousedown_instant(self, point: pygame.Vector2) -> bool:
         eval = self.is_pressing_mousedown(point)
@@ -60,11 +65,12 @@ class Button:
 
         if self._pressed_up_times > 1 and eval:
             return False
-        
+
         return eval
 
     def is_hovering(self, point: pygame.Vector2) -> bool:
         return self.rect.collidepoint(point)
 
     def execute(self) -> None:
-        for f in self.methods: f["func"](*f["args"], **f["kwargs"])
+        for f in self.methods:
+            f["func"](*f["args"], **f["kwargs"])

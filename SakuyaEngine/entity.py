@@ -22,6 +22,7 @@ from .math import vector2_move_toward
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
+
 class Entity:
     def __init__(
         self,
@@ -48,10 +49,10 @@ class Entity:
         destroy_position: pygame_vector2 or None = None,
         disable_bulletspawner_while_movement: bool = True,
         clock: Clock or None = None,
-        gravity_scale: float = 1
+        gravity_scale: float = 1,
     ):
         self._clock = None
-        
+
         self.name = name
         self.tags = tags
         self.scale = pygame.Vector2(1, 1) * scale
@@ -59,11 +60,11 @@ class Entity:
         # Animations
         self.animations = {}
         self.current_anim = None
-        
+
         # Positions & Movement
         self.position = position
         self.target_position = target_position
-        
+
         # Controller
         if controller is not None:
             self.controller = controller()
@@ -111,7 +112,7 @@ class Entity:
     @property
     def clock(self) -> Clock:
         return self._clock
-    
+
     @clock.setter
     def clock(self, value: Clock) -> None:
         self._clock = value
@@ -124,10 +125,7 @@ class Entity:
             if self.scale.x != 1 or self.scale.y != 1:
                 width, height = self.static_sprite.get_size()
                 scaled_sprite = pygame.transform.scale(
-                    self.static_sprite, (
-                        self.scale.x * width, 
-                        self.scale.y * height
-                    )
+                    self.static_sprite, (self.scale.x * width, self.scale.y * height)
                 )
                 return scaled_sprite
             else:
@@ -138,10 +136,7 @@ class Entity:
             if self.scale.x != 1 or self.scale.y != 1:
                 width, height = cur_anim.sprite.get_size()
                 scaled_sprite = pygame.transform.scale(
-                    cur_anim.sprite, (
-                        self.scale.x * width, 
-                        self.scale.y * height
-                    )
+                    cur_anim.sprite, (self.scale.x * width, self.scale.y * height)
                 )
                 return scaled_sprite
             else:
@@ -171,10 +166,10 @@ class Entity:
             r = self.rect
             width, height = r.width, r.height
         hb_size = self.custom_hitbox_size
-        self._custom_hitbox_rect.x = self.position.x + width/2 - hb_size.x
-        self._custom_hitbox_rect.y = self.position.y + height/2 - hb_size.y
-        self._custom_hitbox_rect.width = hb_size.x*2
-        self._custom_hitbox_rect.height = hb_size.y*2
+        self._custom_hitbox_rect.x = self.position.x + width / 2 - hb_size.x
+        self._custom_hitbox_rect.y = self.position.y + height / 2 - hb_size.y
+        self._custom_hitbox_rect.width = hb_size.x * 2
+        self._custom_hitbox_rect.height = hb_size.y * 2
         return self._custom_hitbox_rect
 
     @property
@@ -185,12 +180,12 @@ class Entity:
         else:
             r = self.rect
             width, height = r.width, r.height
-        return pygame.Vector2(width/2, height/2)
+        return pygame.Vector2(width / 2, height / 2)
 
     @property
     def center_position(self) -> pygame.Vector2:
         width, height = self.sprite.get_size()
-        return self.position + pygame.Vector2(width/2, height/2)
+        return self.position + pygame.Vector2(width / 2, height / 2)
 
     def destroy(self, time: int) -> None:
         """Set the destruction time.
@@ -206,9 +201,7 @@ class Entity:
             self._destroy_val = time + self._clock.get_time()
 
     def move(
-        self,
-        movement: pygame_vector2, 
-        collision_rects: List[pygame.Rect]
+        self, movement: pygame_vector2, collision_rects: List[pygame.Rect]
     ) -> bool:
         """Moves the position
 
@@ -226,7 +219,7 @@ class Entity:
         for c in collision_rects:
             if test_rect.colliderect(c):
                 verified_collisions.append(c)
-        
+
         for c in verified_collisions:
             if movement.x > 0:
                 test_rect.right = c.left
@@ -296,7 +289,7 @@ class Entity:
 
     def copy(self) -> Entity:
         """Returns a copy of the entity
-        
+
         You should not use Python3's copy.copy() method since
         it will interfere with the same entities animations
 
@@ -323,9 +316,7 @@ class Entity:
         return e
 
     def update(
-        self,
-        delta_time: float,
-        collision_rects: List[pygame.Rect] = []
+        self, delta_time: float, collision_rects: List[pygame.Rect] = []
     ) -> None:
         """Updates the position, animation, etc
 
@@ -356,7 +347,7 @@ class Entity:
         # Update HealthBar
         self.healthbar.current_health = self.current_health
         self.healthbar.update(delta_time)
-        
+
         # Update bullet spawners
         for b in self.bullet_spawners:
             if self._clock is not None and b.clock is None:
@@ -389,8 +380,7 @@ class Entity:
 
         if self.target_position is not None:
             self.position = vector2_move_toward(
-                self.position, self.target_position, 
-                self.speed * delta_time
+                self.position, self.target_position, self.speed * delta_time
             )
 
         if self.position == self.target_position:

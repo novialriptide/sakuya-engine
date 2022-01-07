@@ -9,14 +9,15 @@ from typing import Tuple
 
 pygame.freetype.init()
 
+
 def text(
     text: str,
     size: int,
     sys_font: str,
     color: Tuple[int, int, int],
-    antialias: bool = False
+    antialias: bool = False,
 ) -> pygame.Surface:
-    """Creates a pygame Surface object that 
+    """Creates a pygame Surface object that
     uses a font from the operating system.
 
     Parameters:
@@ -30,17 +31,18 @@ def text(
 
     """
     formatting = pygame.freetype.SysFont(sys_font)
-    text_surface = formatting.render(text, fgcolor=color, size = size)
+    text_surface = formatting.render(text, fgcolor=color, size=size)
     return text_surface[0]
+
 
 def text2(
     text: str,
     size: int,
     font: str,
     color: Tuple[int, int, int],
-    antialias: bool = False
+    antialias: bool = False,
 ) -> pygame.Surface:
-    """Creates a pygame Surface object that 
+    """Creates a pygame Surface object that
     uses a font from local files.
 
     Parameters:
@@ -54,16 +56,16 @@ def text2(
 
     """
     formatting = pygame.freetype.Font(font)
-    text_surface = formatting.render(text, fgcolor=color, size = size)
+    text_surface = formatting.render(text, fgcolor=color, size=size)
     return text_surface[0]
+
 
 alphabetchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 specialchars = ",./;'[]\\-=<>?:\"{}|!@#$%^&*()"
+
+
 def text3(
-    text: str,
-    size: int,
-    font: str,
-    color: Tuple[int, int, int]
+    text: str, size: int, font: str, color: Tuple[int, int, int]
 ) -> pygame.Surface:
     transparent_background_color = (255, 43, 243)
     separate_color = (255, 43, 243)

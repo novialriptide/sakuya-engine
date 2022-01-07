@@ -7,10 +7,9 @@ import pygame
 from typing import List
 from .errors import NotImplementedError
 
+
 def crop_tile_image(
-    image: pygame.Surface,
-    x: int, y: int,
-    width: int, height: int
+    image: pygame.Surface, x: int, y: int, width: int, height: int
 ) -> pygame.Surface:
     """Crop a tile out.
     Not intended to be used outside of this file.
@@ -23,14 +22,13 @@ def crop_tile_image(
         height: The tile's height.
 
     """
-    tile = image.subsurface((x*width, y*height, width, height))
+    tile = image.subsurface((x * width, y * height, width, height))
 
     return tile
 
+
 def split_image(
-    image: pygame.Surface,
-    px_width: int,
-    px_height: int
+    image: pygame.Surface, px_width: int, px_height: int
 ) -> List[pygame.Surface]:
     """Split an image into a tileset.
 
@@ -44,25 +42,24 @@ def split_image(
     rect = image.get_rect()
     columns = int(rect.width / px_width)
     rows = int(rect.height / px_height)
-    tiles = [] # List[pygame.Surface]
+    tiles = []  # List[pygame.Surface]
 
     for r in range(rows):
         for c in range(columns):
-            tile_sprite = crop_tile_image(
-                image, c, r, 
-                px_width, px_height
-            )
+            tile_sprite = crop_tile_image(image, c, r, px_width, px_height)
             tiles.append(tile_sprite)
 
     return tiles
+
 
 class TileSet:
     def __init__(self, image: pygame.Surface, px_width: int, px_height: int):
         self.image = image
         self.px_width = px_width
         self.px_height = px_height
-        
+
         self.tiles = split_image(self.image, self.px_width, self.px_height)
+
 
 class TileMap:
     def __init__(self, columns: int, rows: int, tile_set: TileSet) -> None:
@@ -70,9 +67,11 @@ class TileMap:
         self.rows = rows
         self.map_layers = []
         self.tile_set = tile_set
-        self._surface = pygame.Surface(columns * tile_set.px_width, rows * tile_set.px_height)
+        self._surface = pygame.Surface(
+            columns * tile_set.px_width, rows * tile_set.px_height
+        )
         self.add_layer()
-        
+
     def add_layer(self) -> None:
         layer = []
         for r in range(self.rows):
@@ -80,6 +79,6 @@ class TileMap:
             for c in range(self.columns):
                 layer[r][c] = 0
         self.map_layers.append(layer)
-                
+
     def get_tile(self, layer: int, pos: pygame.Vector2) -> int:
         return self.map_layers[layer][pos.y][pos.x]
