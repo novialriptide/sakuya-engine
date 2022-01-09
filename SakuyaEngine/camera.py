@@ -1,4 +1,3 @@
-from copy import copy
 from .math import vector2_move_toward
 
 import pygame

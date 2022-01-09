@@ -6,8 +6,6 @@ from __future__ import annotations
 from typing import TypeVar, Callable
 
 import pygame
-import math
-import json
 
 from typing import List
 from copy import copy

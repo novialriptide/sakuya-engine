@@ -5,7 +5,6 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 import pygame
 
 from typing import List
-from .errors import NotImplementedError
 
 
 def crop_tile_image(

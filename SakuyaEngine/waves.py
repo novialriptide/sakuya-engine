@@ -7,7 +7,6 @@ from typing import List
 from .events import EventSystem, WaitEvent
 from .scene import Scene
 from .entity import Entity
-from .errors import NotEnoughArgumentsError
 
 import pygame
 import json

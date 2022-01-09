@@ -3,7 +3,7 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from random import randint
-from typing import TypeVar, Callable, Tuple, List
+from typing import TypeVar, Callable, List
 from copy import copy
 
 from .effects import BaseEffect
