@@ -109,18 +109,6 @@ class Client:
         )
 
     @property
-    def mouse_position(self) -> pygame.Vector2:
-        window_rect = self.window.get_rect()
-        screen_rect = self._screen.get_rect()
-        center = pygame.Vector2(
-            window_rect.centerx, window_rect.centery
-        ) - pygame.Vector2(screen_rect.centerx, screen_rect.centery)
-        mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
-        sca = self.scale
-        r = pygame.Vector2(mouse_pos.x / sca.x, mouse_pos.y / sca.y)
-        return mouse_pos
-
-    @property
     def current_fps(self) -> float:
         return self.pg_clock.get_fps()
 

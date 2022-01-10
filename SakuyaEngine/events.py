@@ -3,8 +3,6 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from .clock import Clock
-import pygame
-
 
 class BaseEvent:
     """Do not use this."""
