@@ -2,6 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
+from SakuyaEngine.__version__ import GAME_VERSION
 from pygame import __version__ as pg_ver
 
 from .ai import *
@@ -26,5 +27,5 @@ from .waves import *
 
 __version__ = "2.2.1"
 print(
-    f"sakuya engine {__version__} by novial (using pygame {pg_ver})\nsource code: https://github.com/novialriptide/Sakuya"
+    f"sakuya engine {GAME_VERSION} by novial (using pygame {pg_ver})\nsource code: https://github.com/novialriptide/Sakuya"
 )
