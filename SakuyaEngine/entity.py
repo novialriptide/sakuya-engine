@@ -33,7 +33,7 @@ class Entity:
         has_collision: bool = True,
         has_rigidbody: bool = False,
         enable_terminal_velocity: bool = False,
-        obey_gravity: bool = True,
+        obey_gravity: bool = False,
         speed: float = 0,
         custom_hitbox_size: pygame_vector2 = pygame.Vector2(0, 0),
         particle_systems: List[Particles] = [],
