@@ -21,3 +21,6 @@ class BaseEffect:
 
     def update(self, delta_time: float) -> None:
         pass
+
+    def update(self, delta_time: float, current_time: int) -> None:
+        pass

@@ -26,9 +26,9 @@ class RainDrop(BaseEffect):
         self.velocity = velocity
         self.velocity_norm = self.velocity.normalize()
         self.length = length
-        self.color = color
-        for c in range(len(self.color)):
-            self.color[c] = max(min(self.color[c] + randint(-15, 15), 255), 0)
+        self.color = []
+        for c in range(len(color)):
+            self.color.append(max(min(color[c] + randint(-15, 15), 255), 0))
 
         self._destroy_queue = False
 
