@@ -3,6 +3,7 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from copy import copy
+from math import pi
 from typing import TypeVar, Callable
 
 import pygame
@@ -24,6 +25,7 @@ class Client:
         resizeable_window: bool = True,
         scale_upon_startup: float = 1,
         debug_caption: bool = True,
+        keep_aspect_ratio: bool = True
     ) -> None:
         """The game's main client.
 
@@ -40,9 +42,11 @@ class Client:
         self.clock = Clock()
         self.event_system = EventSystem(self.clock)
         self._window_name = window_name  # str
+        self._screen_pos = pygame.Vector2(0, 0)
         self.original_window_size = window_size  # pygame.Vector2
         self.window_icon = window_icon
         self.original_aspect_ratio = window_size.x / window_size.y  # float
+        self.keep_aspect_ratio = keep_aspect_ratio
 
         self.running_scenes = {}
         self.deleted_scenes_queue = []
@@ -55,7 +59,7 @@ class Client:
 
         self.pg_flag = 0
         if resizeable_window:
-            self.pg_flag = pygame.RESIZABLE | pygame.SCALED
+            self.pg_flag = pygame.RESIZABLE
 
         self.screen = pygame.Surface(window_size)
         self.window_size = window_size * scale_upon_startup
@@ -81,8 +85,7 @@ class Client:
 
     @property
     def window_size(self) -> pygame.Vector2:
-        window_rect = self.window.get_rect()
-        return pygame.Vector2(window_rect.width, window_rect.height)
+        return pygame.Vector2(self.window.get_size())
 
     @window_size.setter
     def window_size(self, value) -> None:
@@ -104,9 +107,19 @@ class Client:
     @property
     def scale(self) -> pygame.Vector2:
         return pygame.Vector2(
-            self.window_size.x / self.original_window_size.x,
-            self.window_size.y / self.original_window_size.y,
+            (self.window_size.x - self._screen_pos.x * 2) / self.original_window_size.x,
+            (self.window_size.y - self._screen_pos.y * 2) / self.original_window_size.y,
         )
+        
+    @property
+    def mouse_pos(self) -> pygame.Vector2:
+        scale = self.scale
+        mouse_pos = pygame.mouse.get_pos()
+        scaled_pos = pygame.Vector2(
+            (mouse_pos[0] - self._screen_pos.x) / scale.x,
+            (mouse_pos[1] - self._screen_pos.y) / scale.y
+        )
+        return scaled_pos
 
     @property
     def current_fps(self) -> float:
@@ -130,6 +143,23 @@ class Client:
 
             if self.running_scenes == []:
                 raise NoActiveSceneError
+            
+            if self.keep_aspect_ratio:
+                pg_event = pygame.event.get(
+                    eventtype=pygame.VIDEORESIZE
+                )
+                if pg_event != []:
+                    self.window = pygame.display.set_mode((
+                        pg_event[0].w, 
+                        pg_event[0].w * self.original_window_size.y / self.original_window_size.x),
+                        self.pg_flag
+                    )
+                    window_rect = self.window.get_rect()
+                    screen_rect = self._screen.get_rect()
+                    self._screen_pos = pygame.Vector2(
+                        window_rect.centerx - screen_rect.centerx,
+                        window_rect.centery - screen_rect.centery,
+                    )
 
             # Update all scenes
             for s in copy(self.running_scenes):
@@ -147,14 +177,9 @@ class Client:
                 except KeyError:
                     print(f'Tried deleting scene that does not exist: "{s}"')
 
-            window_rect = self.window.get_rect()
-            screen_rect = self._screen.get_rect()
             self.window.blit(
                 self._screen,
-                (
-                    window_rect.centerx - screen_rect.centerx,
-                    window_rect.centery - screen_rect.centery,
-                ),
+                self._screen_pos,
             )
             self.event_system.update()
             pygame.display.update()
