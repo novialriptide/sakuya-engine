@@ -41,9 +41,9 @@ class Scene:
         self.effects = []
         self.scroll_bgs = []
         self.collision_rects = []
-        self.camera = Camera()
         self.kwargs = kwargs
         self.clock = Clock()
+        self.camera = Camera(clock=self.clock)
         self.event_system = EventSystem(self.clock)
 
         self.screen_pos = pygame.Vector2(0, 0)
