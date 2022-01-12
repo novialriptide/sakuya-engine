@@ -135,10 +135,7 @@ class Client:
         last_time = time.time()
         while self.is_running:
             # Delta time
-            try:
-                self.delta_time = (time.time() - last_time) * 60
-            except ZeroDivisionError:
-                self.delta_time = 0
+            self.delta_time = (time.time() - last_time) * 60
             last_time = time.time()
 
             if self.running_scenes == []:
