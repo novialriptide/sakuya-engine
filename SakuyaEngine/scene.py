@@ -235,6 +235,11 @@ class Scene:
             if ef._destroy_queue:
                 self.effects.remove(ef)
 
+class SubScene(Scene):
+    def exit(self) -> None:
+        self.exit_scene.paused = False
+        self.exit_scene.clock.resume()
+        self.client.remove_scene(self.name)
 
 class SceneManager:
     def __init__(self, client: Client) -> None:
