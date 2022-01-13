@@ -141,22 +141,22 @@ class Client:
             if self.running_scenes == []:
                 raise NoActiveSceneError
             
-            if self.keep_aspect_ratio:
-                pg_event = pygame.event.get(
-                    eventtype=pygame.VIDEORESIZE
-                )
-                if pg_event != []:
+            pg_event = pygame.event.get(
+                eventtype=pygame.VIDEORESIZE
+            )
+            if pg_event != []:
+                if self.keep_aspect_ratio:
                     self.window = pygame.display.set_mode((
                         pg_event[0].w, 
                         pg_event[0].w * self.original_window_size.y / self.original_window_size.x),
                         self.pg_flag
                     )
-                    window_rect = self.window.get_rect()
-                    screen_rect = self._screen.get_rect()
-                    self._screen_pos = pygame.Vector2(
-                        window_rect.centerx - screen_rect.centerx,
-                        window_rect.centery - screen_rect.centery,
-                    )
+                window_rect = self.window.get_rect()
+                screen_rect = self._screen.get_rect()
+                self._screen_pos = pygame.Vector2(
+                    window_rect.centerx - screen_rect.centerx,
+                    window_rect.centery - screen_rect.centery,
+                )
 
             # Update all scenes
             for s in copy(self.running_scenes):
