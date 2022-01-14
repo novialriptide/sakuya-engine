@@ -55,6 +55,7 @@ class Client:
         self.pg_clock = pygame.time.Clock()
         self.max_fps = -1  # int
         self.delta_time = 0
+        self.delta_time_modifier = 1
         self.ticks_elapsed = 0
 
         self.pg_flag = 0
@@ -135,7 +136,7 @@ class Client:
         last_time = time.time()
         while self.is_running:
             # Delta time
-            self.delta_time = (time.time() - last_time) * 60
+            self.delta_time = (time.time() - last_time) * 60 * self.delta_time_modifier
             last_time = time.time()
 
             if self.running_scenes == []:
@@ -163,6 +164,7 @@ class Client:
                 s = self.running_scenes[s]["scene"]
                 if not s.paused:
                     s.update()
+                    s.clock.speed = self.delta_time_modifier
                     self.screen.fill((191, 64, 191))
                     self.screen.blit(s.screen, s.screen_pos)
 
@@ -181,6 +183,7 @@ class Client:
             self.event_system.update()
             pygame.display.update()
             self.pg_clock.tick(self.max_fps)
+            self.clock.speed = self.delta_time_modifier
             self.ticks_elapsed += 1
 
             if self.debug_caption:
