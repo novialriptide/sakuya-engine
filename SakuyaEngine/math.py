@@ -99,10 +99,10 @@ def eval_segment_intersection(
     """
     # NOTE: This function is a variant
     # from GameDen REWRITE for Novial's Gravity
-    x1, y1 = point1.x, point1.y
-    x2, y2 = point2.x, point2.y
-    x3, y3 = point3.x, point3.y
-    x4, y4 = point4.x, point4.y
+    x1, y1 = point1
+    x2, y2 = point2
+    x3, y3 = point3
+    x4, y4 = point4
 
     dem = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
     if dem == 0:
