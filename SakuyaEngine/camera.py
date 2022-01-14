@@ -8,16 +8,16 @@ import random
 class Camera:
     def __init__(
         self,
-        position: pygame.Vector2=pygame.Vector2(0, 0),
-        scroll: pygame.Vector2=pygame.Vector2(0, 0),
-        clock: Clock=None
+        position: pygame.Vector2 = pygame.Vector2(0, 0),
+        scroll: pygame.Vector2 = pygame.Vector2(0, 0),
+        clock: Clock = None,
     ) -> None:
         self.position = position
         self._position = position.copy()
         self.move_to_position = position.copy()
         self.scroll = scroll
         self.clock = clock
-        
+
         if self.clock is None:
             self.shake_until = pygame.time.get_ticks()
         else:
@@ -58,7 +58,11 @@ class Camera:
             )
             self.move_to_position = self._position + shake_vector
 
-        if self.shake_until is not None and self.shaking and current_ticks >= self.shake_until:
+        if (
+            self.shake_until is not None
+            and self.shaking
+            and current_ticks >= self.shake_until
+        ):
             self.shaking = False
             self.move_to_position = self._position
 

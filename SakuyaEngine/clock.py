@@ -12,11 +12,11 @@ class Clock:
     @property
     def running(self) -> bool:
         return self._running
-    
+
     @property
     def speed(self) -> float:
         return self._speed
-    
+
     @speed.setter
     def speed(self, speed) -> None:
         self._accum += (time.time() - self._started_running_at) * self._speed
@@ -35,6 +35,10 @@ class Clock:
 
     def get_time(self) -> float:
         if self._running:
-            return (self._accum + time.time() - self._started_running_at) * self._speed * 1000
+            return (
+                (self._accum + time.time() - self._started_running_at)
+                * self._speed
+                * 1000
+            )
         else:
             return self._accum * 1000

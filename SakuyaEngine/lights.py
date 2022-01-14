@@ -10,6 +10,7 @@ from .errors import NotImplementedError
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
+
 def light(
     surface: pygame.Surface,
     position: pygame_vector2,

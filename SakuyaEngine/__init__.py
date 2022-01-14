@@ -23,7 +23,7 @@ __all__ = [
     "scene",
     "text",
     "tile",
-    "waves"
+    "waves",
 ]
 
 print(

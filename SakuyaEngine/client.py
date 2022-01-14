@@ -25,7 +25,7 @@ class Client:
         resizeable_window: bool = True,
         scale_upon_startup: float = 1,
         debug_caption: bool = True,
-        keep_aspect_ratio: bool = True
+        keep_aspect_ratio: bool = True,
     ) -> None:
         """The game's main client.
 
@@ -111,14 +111,14 @@ class Client:
             (self.window_size.x - self._screen_pos.x * 2) / self.original_window_size.x,
             (self.window_size.y - self._screen_pos.y * 2) / self.original_window_size.y,
         )
-        
+
     @property
     def mouse_pos(self) -> pygame.Vector2:
         scale = self.scale
         mouse_pos = pygame.mouse.get_pos()
         scaled_pos = pygame.Vector2(
             (mouse_pos[0] - self._screen_pos.x) / scale.x,
-            (mouse_pos[1] - self._screen_pos.y) / scale.y
+            (mouse_pos[1] - self._screen_pos.y) / scale.y,
         )
         return scaled_pos
 
@@ -141,16 +141,18 @@ class Client:
 
             if self.running_scenes == []:
                 raise NoActiveSceneError
-            
-            pg_event = pygame.event.get(
-                eventtype=pygame.VIDEORESIZE
-            )
+
+            pg_event = pygame.event.get(eventtype=pygame.VIDEORESIZE)
             if pg_event != []:
                 if self.keep_aspect_ratio:
-                    self.window = pygame.display.set_mode((
-                        pg_event[0].w, 
-                        pg_event[0].w * self.original_window_size.y / self.original_window_size.x),
-                        self.pg_flag
+                    self.window = pygame.display.set_mode(
+                        (
+                            pg_event[0].w,
+                            pg_event[0].w
+                            * self.original_window_size.y
+                            / self.original_window_size.x,
+                        ),
+                        self.pg_flag,
                     )
                 window_rect = self.window.get_rect()
                 screen_rect = self._screen.get_rect()

@@ -4,6 +4,7 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 """
 from .clock import Clock
 
+
 class BaseEvent:
     """Do not use this."""
 
