@@ -2,28 +2,39 @@ import time
 
 
 class Clock:
-    def __init__(self):
+    def __init__(self) -> None:
         self._accum = 0
 
         self._started_running_at = time.time()
-        self._is_running = True
+        self._running = True
+        self._speed = 1
 
     @property
-    def is_running(self):
-        return self._is_running
+    def running(self) -> bool:
+        return self._running
+    
+    @property
+    def speed(self) -> float:
+        return self._speed
+    
+    @speed.setter
+    def speed(self, speed) -> None:
+        self._accum += (time.time() - self._started_running_at) * self._speed
+        self._started_running_at = time.time()
+        self._speed = speed
 
-    def resume(self):
-        if not self._is_running:
+    def resume(self) -> bool:
+        if not self._running:
             self._started_running_at = time.time()
-            self._is_running = True
+            self._running = True
 
-    def pause(self):
-        if self._is_running:
-            self._accum += time.time() - self._started_running_at
-            self._is_running = False
+    def pause(self) -> bool:
+        if self._running:
+            self._accum += (time.time() - self._started_running_at) * self._speed
+            self._running = False
 
-    def get_time(self):
-        if self._is_running:
-            return (self._accum + time.time() - self._started_running_at) * 1000
+    def get_time(self) -> float:
+        if self._running:
+            return (self._accum + time.time() - self._started_running_at) * self._speed * 1000
         else:
             return self._accum * 1000
