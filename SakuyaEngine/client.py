@@ -55,6 +55,7 @@ class Client:
         self.pg_clock = pygame.time.Clock()
         self.max_fps = -1  # int
         self.delta_time = 0
+        self.raw_delta_time = 0
         self.delta_time_modifier = 1
         self.ticks_elapsed = 0
 
@@ -126,9 +127,6 @@ class Client:
     def current_fps(self) -> float:
         return self.pg_clock.get_fps()
 
-    def get_delta_time(self):
-        return self.delta_time
-
     def main(self) -> None:
         """
         Main game loop
@@ -136,7 +134,8 @@ class Client:
         last_time = time.time()
         while self.is_running:
             # Delta time
-            self.delta_time = (time.time() - last_time) * 60 * self.delta_time_modifier
+            self.raw_delta_time = (time.time() - last_time) * 60
+            self.delta_time = self.raw_delta_time * self.delta_time_modifier
             last_time = time.time()
 
             if self.running_scenes == []:
