@@ -19,10 +19,17 @@ pip install .
 
 ## Questions & Answers
 1. Is this repository open for contributions?
+
 No, this repository is not contribution-friendly as the maintainer for this repository doesn't use pull requests to organize changes. 
+
 2. Can I use this for my game?
+
 Go for it, although there is no documentation and method names will be changing from time to time. I only recommend you use this as a reference. Please credit me if you're going to copy and paste it in your game.
+
 3. Why Sakuya?
+
 She's my favorite Touhou character and seeing that this engine was made for bullet hells, I found the name very fitting.
+
 4. Can SakuyaEngine work with Pyglet or Arcade?
+
 No, and it never will.
