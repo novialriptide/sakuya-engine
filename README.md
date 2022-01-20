@@ -1,10 +1,14 @@
 ![sakuya-img](https://c4.wallpaperflare.com/wallpaper/802/75/784/anime-anime-girls-izayoi-sakuya-touhou-wallpaper-preview.jpg)
 
-# Sakuya
+# SakuyaEngine
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/novialriptide/SakuyaEngine/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/novialriptide/SakuyaEngine/context:python)
 
-A game engine tool, named after a Touhou character, specifically made for bullet hells.
+An object-oriented game engine written in Python3 depending on pygame2 named after the iconic Touhou character, Sakuya. This game engine was originally made for bullet hell games, but now is focused on other genres as well.
+
+This engine supports Scene Management, Advanced Bullet Patterns, Primitive Particles, and an Advanced Clock System.
+
+Additional plans for this engine includes an Advanced Lighting Engine, Advanced Events, Documentation, and Multiplayer Support.
 
 ## Dependencies
 ```
