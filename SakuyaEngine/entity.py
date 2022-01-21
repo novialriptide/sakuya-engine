@@ -144,7 +144,7 @@ class Entity:
             out_sprite = base_sprite
 
         # Rotate sprite
-        direction = -self.angle - 90
+        direction = -self.angle + 360
         if self.direction != direction:
             self._sprite = pygame.transform.rotate(out_sprite, direction)
             self.direction = direction
