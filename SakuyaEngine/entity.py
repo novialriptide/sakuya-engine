@@ -126,15 +126,15 @@ class Entity:
     def sprite(self) -> pygame.Surface:
         out_sprite = None
         base_sprite = None
-        
+
         # Get sprite (Static vs Animation)
         cur_anim = self.anim_get(self.current_anim)
         if cur_anim is not None:
             base_sprite = cur_anim.sprite
-        
+
         if self.static_sprite is not None:
             base_sprite = self.static_sprite
-            
+
         if self.scale.x != 1 or self.scale.y != 1:
             width, height = base_sprite.get_size()
             scaled_sprite = pygame.transform.scale(
@@ -149,8 +149,8 @@ class Entity:
         if self.direction != direction:
             self._sprite = pygame.transform.rotate(out_sprite, direction)
             width, height = self.static_rect.size
-            self.rotation_offset.x = width/2 - self._sprite.get_width()/2
-            self.rotation_offset.y = height/2 - self._sprite.get_height()/2
+            self.rotation_offset.x = width / 2 - self._sprite.get_width() / 2
+            self.rotation_offset.y = height / 2 - self._sprite.get_height() / 2
             self.direction = direction
 
         return self._sprite
@@ -202,10 +202,10 @@ class Entity:
             self._static_rect.y = self.position.y
             self._static_rect.width = width
             self._static_rect.height = height
-            
+
         self._static_rect.x += self.rotation_offset.x
         self._static_rect.y += self.rotation_offset.y
-            
+
         return self._static_rect
 
     @property
@@ -239,7 +239,7 @@ class Entity:
     @property
     def abs_position(self) -> pygame.Vector2:
         return self.position + self.rotation_offset
-    
+
     @property
     def abs_center_position(self) -> pygame.Vector2:
         return self.position + self.rotation_offset + self.center_offset
@@ -427,7 +427,7 @@ class Entity:
             self.target_position = None
 
         collisions = self.move(velocity, collision_rects)
-        
+
         # Apply gravity?
         if g.y < 0 and collisions["bottom"]:
             self.velocity.y = 0
