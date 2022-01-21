@@ -236,6 +236,14 @@ class Entity:
         else:
             self._destroy_val = time + self._clock.get_time()
 
+    @property
+    def abs_position(self) -> pygame.Vector2:
+        return self.position + self.rotation_offset
+    
+    @property
+    def abs_center_position(self) -> pygame.Vector2:
+        return self.position + self.rotation_offset + self.center_offset
+
     def move(
         self, movement: pygame_vector2, collision_rects: List[pygame.Rect]
     ) -> bool:

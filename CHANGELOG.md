@@ -4,6 +4,7 @@
 2. Added `Client.raw_delta_time` to fetch the client's delta time without modifiers.
 3. Added `Entity.static_rect` which is a `pygame.Rect` that won't change size due to rotations.
 4. Added `Entity.rotation_offset`.
+5. Added `Entity.abs_position` and `Entity.abs_center_position`.
 
 ### New Improvements
 1. Working `pygame.SCALED` replacement so that the `Client.screen` will no longer have black bars upon screen resize.
