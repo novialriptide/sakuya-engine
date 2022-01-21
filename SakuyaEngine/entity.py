@@ -17,6 +17,7 @@ from .effect_particles import Particles
 from .bar import Bar
 from .math import vector2_move_toward
 
+
 class Entity:
     def __init__(
         self,
