@@ -252,7 +252,7 @@ class Entity:
                 test_rect.right = c.left
                 self.position.x = test_rect.x
                 hit["right"] = True
-            if movement.x < 0:
+            elif movement.x < 0:
                 test_rect.left = c.right
                 self.position.x = test_rect.x
                 hit["left"] = True
@@ -267,11 +267,11 @@ class Entity:
             if movement.y > 0:
                 test_rect.bottom = c.top
                 self.position.y = test_rect.y
-                hit["top"] = True
-            if movement.y < 0:
+                hit["bottom"] = True
+            elif movement.y < 0:
                 test_rect.top = c.bottom
                 self.position.y = test_rect.y
-                hit["bottom"] = True
+                hit["top"] = True
 
         return hit
 
