@@ -1,6 +1,7 @@
 ![sakuya-img](https://c4.wallpaperflare.com/wallpaper/802/75/784/anime-anime-girls-izayoi-sakuya-touhou-wallpaper-preview.jpg)
 
 # SakuyaEngine
+[![Documentation Status](https://readthedocs.org/projects/sakuya/badge/?version=latest)](https://sakuya.readthedocs.io/en/latest/?badge=latest)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/novialriptide/SakuyaEngine/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/novialriptide/SakuyaEngine/context:python)
 
