@@ -62,11 +62,3 @@ def text2(
 
 alphabetchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 specialchars = ",./;'[]\\-=<>?:\"{}|!@#$%^&*()"
-
-
-def text3(
-    text: str, size: int, font: str, color: Tuple[int, int, int]
-) -> pygame.Surface:
-    transparent_background_color = (255, 43, 243)
-    separate_color = (255, 43, 243)
-    raise NotImplementedError()
