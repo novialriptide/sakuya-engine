@@ -110,6 +110,7 @@ class Entity:
         self._sprite = None
         self.direction = 0
         self.angle = 0
+        self.rotation_offset = pygame.Vector2(0, 0)
 
     @property
     def clock(self) -> Clock:
@@ -147,6 +148,9 @@ class Entity:
         direction = -self.angle + 360
         if self.direction != direction:
             self._sprite = pygame.transform.rotate(out_sprite, direction)
+            width, height = self.static_rect.size
+            self.rotation_offset.x = width/2 - self._sprite.get_width()/2
+            self.rotation_offset.y = height/2 - self._sprite.get_height()/2
             self.direction = direction
 
         return self._sprite
@@ -164,6 +168,8 @@ class Entity:
             self._rect.y = self.position.y
             self._rect.width = 1
             self._rect.height = 1
+        self._rect.x += self.rotation_offset.x
+        self._rect.y += self.rotation_offset.y
         return self._rect
 
     @property
@@ -197,6 +203,9 @@ class Entity:
             self._static_rect.width = width
             self._static_rect.height = height
             
+        self._static_rect.x += self.rotation_offset.x
+        self._static_rect.y += self.rotation_offset.y
+            
         return self._static_rect
 
     @property
@@ -207,12 +216,12 @@ class Entity:
         else:
             r = self.rect
             width, height = r.width, r.height
-        return pygame.Vector2(width / 2, height / 2)
+        return pygame.Vector2(width / 2, height / 2) + self.rotation_offset
 
     @property
     def center_position(self) -> pygame.Vector2:
         width, height = self.sprite.get_size()
-        return self.position + pygame.Vector2(width / 2, height / 2)
+        return self.position + self.center_offset
 
     def destroy(self, time: int) -> None:
         """Set the destruction time.
