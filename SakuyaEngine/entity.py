@@ -106,6 +106,9 @@ class Entity:
         self.draw_healthbar = draw_healthbar
 
         self.static_sprite = static_sprite
+        self._sprite = None
+        self.direction = 0
+        self.angle = 0
 
     @property
     def clock(self) -> Clock:
@@ -119,26 +122,33 @@ class Entity:
 
     @property
     def sprite(self) -> pygame.Surface:
-        if self.static_sprite is not None:
-            if self.scale.x != 1 or self.scale.y != 1:
-                width, height = self.static_sprite.get_size()
-                scaled_sprite = pygame.transform.scale(
-                    self.static_sprite, (self.scale.x * width, self.scale.y * height)
-                )
-                return scaled_sprite
-            else:
-                return self.static_sprite
-
+        out_sprite = None
+        base_sprite = None
+        
+        # Get sprite (Static vs Animation)
         cur_anim = self.anim_get(self.current_anim)
         if cur_anim is not None:
-            if self.scale.x != 1 or self.scale.y != 1:
-                width, height = cur_anim.sprite.get_size()
-                scaled_sprite = pygame.transform.scale(
-                    cur_anim.sprite, (self.scale.x * width, self.scale.y * height)
-                )
-                return scaled_sprite
-            else:
-                return cur_anim.sprite
+            base_sprite = cur_anim.sprite
+        
+        if self.static_sprite is not None:
+            base_sprite = self.static_sprite
+            
+        if self.scale.x != 1 or self.scale.y != 1:
+            width, height = base_sprite.get_size()
+            scaled_sprite = pygame.transform.scale(
+                base_sprite, (self.scale.x * width, self.scale.y * height)
+            )
+            out_sprite = scaled_sprite
+        else:
+            out_sprite = base_sprite
+
+        # Rotate sprite
+        direction = -self.angle - 90
+        if self.direction != direction:
+            self._sprite = pygame.transform.rotate(out_sprite, direction)
+            self.direction = direction
+
+        return self._sprite
 
     @property
     def rect(self) -> pygame.Rect:

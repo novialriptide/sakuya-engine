@@ -59,18 +59,6 @@ class Bullet(Entity):
             self._sprite_width, self._sprite_height = r.width, r.height
 
     @property
-    def sprite(self) -> pygame.Surface:
-        if self._sprite is None:
-            return None
-
-        direction = -self.angle + 360
-        if self.direction != direction:
-            self._sprite = pygame.transform.rotate(super().sprite, direction)
-            self.direction = direction
-
-        return self._sprite
-
-    @property
     def custom_hitbox(self) -> pygame.Rect:
         hb_size = self.custom_hitbox_size
         self._custom_hitbox_rect.x = (
