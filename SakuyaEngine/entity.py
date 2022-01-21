@@ -106,6 +106,7 @@ class Entity:
         self.draw_healthbar = draw_healthbar
 
         self.static_sprite = static_sprite
+        self._static_rect = pygame.Rect(0, 0, 0, 0)
         self._sprite = None
         self.direction = 0
         self.angle = 0
@@ -181,6 +182,24 @@ class Entity:
         return self._custom_hitbox_rect
 
     @property
+    def static_rect(self) -> pygame.Rect:
+        curr_anim = self.anim_get(self.current_anim)
+        if self.static_sprite is not None:
+            width, height = self.static_sprite.get_size()
+            self._static_rect.x = self.position.x
+            self._static_rect.y = self.position.y
+            self._static_rect.width = width
+            self._static_rect.height = height
+        elif curr_anim is not None:
+            width, height = curr_anim.sprite.get_size()
+            self._static_rect.x = self.position.x
+            self._static_rect.y = self.position.y
+            self._static_rect.width = width
+            self._static_rect.height = height
+            
+        return self._static_rect
+
+    @property
     def center_offset(self) -> pygame.Vector2:
         s = self.sprite
         if s is not None:
@@ -222,7 +241,7 @@ class Entity:
         """
         hit = {"top": False, "bottom": False, "left": False, "right": False}
         self.position.x += movement.x
-        test_rect = self.rect.copy()
+        test_rect = self.static_rect.copy()
         verified_collisions = []
         for c in collision_rects:
             if test_rect.colliderect(c):
@@ -239,7 +258,7 @@ class Entity:
                 hit["left"] = True
 
         self.position.y += movement.y
-        test_rect = self.rect.copy()
+        test_rect = self.static_rect.copy()
         verified_collisions = []
         for c in collision_rects:
             if test_rect.colliderect(c):
@@ -395,7 +414,7 @@ class Entity:
             self.target_position = None
 
         collisions = self.move(velocity, collision_rects)
-
+        
         # Apply gravity?
         if g.y < 0 and collisions["bottom"]:
             self.velocity.y = 0
