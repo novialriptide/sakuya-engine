@@ -7,7 +7,8 @@
 ### New Improvements
 1. Working `pygame.SCALED` replacement so that the `Client.screen` will no longer have black bars upon screen resize.
 2. `Entity` sprites are now rotatable.
-3. Fixed `Entity.move()` collisions
+3. Fixed `Entity.move()` collisions.
+4. Removed `Controller` in `Entity.update()` for a more customizable experience.
 
 ## version 2.4.0
 ### New Features

@@ -392,10 +392,6 @@ class Entity:
             if self.velocity.y > 0:
                 self.velocity.y = min(self.velocity.y, term_vec)
 
-        # Controller movement
-        if self.controller is not None:
-            self.velocity = self.controller.movement * self.speed
-
         g = gravity
         if not self.obey_gravity:
             g = pygame.Vector2(0, 0)
