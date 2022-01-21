@@ -3,7 +3,6 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from __future__ import annotations
-from typing import TypeVar, Callable
 
 import pygame
 
@@ -18,9 +17,6 @@ from .effect_particles import Particles
 from .bar import Bar
 from .math import vector2_move_toward
 
-pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
-
-
 class Entity:
     def __init__(
         self,
@@ -28,23 +24,23 @@ class Entity:
         tags: List[str] = [],
         scale: int = 1,
         max_health: float = 100,
-        position: pygame_vector2 = pygame.Vector2(0, 0),
+        position: pygame.Vector2 = pygame.Vector2(0, 0),
         controller: BaseController = None,
         has_collision: bool = True,
         has_rigidbody: bool = False,
         enable_terminal_velocity: bool = False,
         obey_gravity: bool = False,
         speed: float = 0,
-        custom_hitbox_size: pygame_vector2 = pygame.Vector2(0, 0),
+        custom_hitbox_size: pygame.Vector2 = pygame.Vector2(0, 0),
         particle_systems: List[Particles] = [],
         bullet_spawners: List[BulletSpawner] = [],
         update_bullet_spawners: bool = True,
         static_sprite: pygame.Surface = None,
         healthbar_update_speed: float = 1000,
-        healthbar_position_offset: pygame_vector2 = pygame.Vector2(0, 0),
+        healthbar_position_offset: pygame.Vector2 = pygame.Vector2(0, 0),
         draw_healthbar: bool = True,
-        target_position: pygame_vector2 or None = None,
-        destroy_position: pygame_vector2 or None = None,
+        target_position: pygame.Vector2 or None = None,
+        destroy_position: pygame.Vector2 or None = None,
         disable_bulletspawner_while_movement: bool = True,
         clock: Clock or None = None,
         gravity_scale: float = 1,
@@ -245,7 +241,7 @@ class Entity:
         return self.position + self.rotation_offset + self.center_offset
 
     def move(
-        self, movement: pygame_vector2, collision_rects: List[pygame.Rect]
+        self, movement: pygame.Vector2, collision_rects: List[pygame.Rect]
     ) -> bool:
         """Moves the position
 
