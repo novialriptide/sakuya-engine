@@ -20,11 +20,13 @@ class Particle(BaseEffect):
         color: Tuple[int, int, int],
         velocity: pygame_vector2,
         destroy_time: int,
+        obey_gravity: bool = False,
     ) -> None:
 
         self.position = position
         self.color = color
         self.velocity = velocity
+        self.obey_gravity = obey_gravity
 
         self._enable_destroy = True
         self._destroy_val = destroy_time
@@ -42,7 +44,8 @@ class Particle(BaseEffect):
         if self._enable_destroy and self._destroy_val <= current_time:
             self._destroy_queue = True
 
-        self.velocity += gravity
+        if self.obey_gravity:
+            self.velocity += gravity
         self.position += self.velocity * delta_time
 
 
@@ -56,6 +59,7 @@ class Particles:
         colors: List[Tuple[int, int, int]] = [],
         offset: pygame_vector2 = pygame.Vector2(0, 0),
         position: pygame_vector2 = pygame.Vector2(0, 0),
+        obey_gravity: bool = False,
     ) -> None:
         self.particles = []
         self.velocity = velocity
@@ -65,6 +69,7 @@ class Particles:
         self.lifetime = lifetime
         self.offset = offset
         self.position = position
+        self.obey_gravity = obey_gravity
 
     def render(
         self, surface: pygame.Surface, offset: pygame.Vector2 = pygame.Vector2(0, 0)
@@ -94,6 +99,7 @@ class Particles:
                     self.velocity.x + random_spread_x, self.velocity.y + random_spread_y
                 ),
                 destroy_time,
+                obey_gravity=self.obey_gravity,
             )
             self.particles.append(par)
 

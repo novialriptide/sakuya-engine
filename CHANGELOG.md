@@ -5,6 +5,7 @@
 3. Added `Entity.static_rect` which is a `pygame.Rect` that won't change size due to rotations.
 4. Added `Entity.rotation_offset`.
 5. Added `Entity.abs_position` and `Entity.abs_center_position`.
+6. Added `Particles.obey_gravity`.
 
 ### New Improvements
 1. Working `pygame.SCALED` replacement so that the `Client.screen` will no longer have black bars upon screen resize.
