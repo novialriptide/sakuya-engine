@@ -22,7 +22,7 @@ def vector2_ratio_yx(vector: pygame_vector2) -> float:
 
 
 def vector2_move_toward(
-    origin: pygame_vector2, target: pygame_vector2, speed: float
+    origin: pygame_vector2, target: pygame_vector2, distance: float
 ) -> pygame_vector2:
     """Moves towards the target Vector2 by the movement speed.
 
@@ -31,16 +31,16 @@ def vector2_move_toward(
     Parameters:
         origin: The original position
         target: The target position.
-        speed: The movement speed.
+        distance: The movement distance.
 
     """
     delta = target - origin
     dist = delta.magnitude()
 
-    if dist <= speed or dist == 0:
+    if dist <= distance or dist == 0:
         return target
 
-    return origin + delta / dist * speed
+    return origin + delta / dist * distance
 
 
 def get_angle(origin: pygame_vector2, target: pygame_vector2) -> float:
