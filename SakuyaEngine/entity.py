@@ -214,7 +214,6 @@ class Entity:
 
     @property
     def center_position(self) -> pygame.Vector2:
-        width, height = self.sprite.get_size()
         return self.position + self.center_offset
 
     def destroy(self, time: int) -> None:
