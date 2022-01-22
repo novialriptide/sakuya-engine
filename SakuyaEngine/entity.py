@@ -200,9 +200,6 @@ class Entity:
             self._static_rect.width = width
             self._static_rect.height = height
 
-        self._static_rect.x += self.rotation_offset.x
-        self._static_rect.y += self.rotation_offset.y
-
         return self._static_rect
 
     @property
