@@ -13,22 +13,22 @@ class BaseEvent:
         self.method = method
         self.args = args
         self.kwargs = kwargs
+        self.execute_time = None
+        self.clock = None
 
 
 class WaitEvent(BaseEvent):
     def __init__(self, name, time: int, method, args=[], kwargs={}):
         super().__init__(name, method, args=args, kwargs=kwargs)
-        self.clock = None
         self.time = time
-        self.execute_time = None
-
 
 class RepeatEvent(BaseEvent):
-    def __init__(self, name, method, args=[], kwargs={}):
+    def __init__(self, name, method, args=[], kwargs={}, wait_time: int or None = None):
         """The method must return false if it wishes to be removed
         from the event list.
         """
         super().__init__(name, method, args=args, kwargs=kwargs)
+        self.wait_time = wait_time
 
 
 class EventSystem:
@@ -61,9 +61,15 @@ class EventSystem:
                     output["cancelled"].append(m.name)
 
             if isinstance(m, RepeatEvent):
-                if not m.method(*m.args, **m.kwargs):
-                    self._methods.remove(m)
-                    output["cancelled"].append(m.name)
+                if m.clock is None:
+                    m.clock = self.clock
+                    m.execute_time = m.wait_time + self.clock.get_time()
+
+                if self.clock.get_time() >= m.execute_time or m.wait_time is None:
+                    m.execute_time = m.wait_time + self.clock.get_time()
+                    if not m.method(*m.args, **m.kwargs):
+                        self._methods.remove(m)
+                        output["cancelled"].append(m.name)
 
             output["executed"].append(m.name)
 
