@@ -66,7 +66,7 @@ class TileMap:
         self.rows = rows
         self.map_layers = []
         self.tile_set = tile_set
-        self._surface = pygame.Surface(
+        self._surface = pygame.Surface( # lgtm [py/call/wrong-arguments]
             columns * tile_set.px_width, rows * tile_set.px_height
         )
         self.add_layer()
