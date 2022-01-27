@@ -37,7 +37,7 @@ class Button:
 
     def is_pressing_mouseup(self, point: pygame.Vector2) -> bool:
         return (
-            pygame.mouse.get_pressed()[1] and self.is_hovering(point)
+            pygame.mouse.get_pressed()[0] and self.is_hovering(point)
         ) or self.is_pressing_key
 
     def is_pressing_mousedown_instant(self, point: pygame.Vector2) -> bool:

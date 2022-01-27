@@ -13,7 +13,8 @@
 
 ### Bug Fixes / Typing Fixes
 1. Working `pygame.SCALED` replacement so that the `Client.screen` will no longer have black bars upon screen resize.
-3. Fixed `Entity.move()` collisions.
+2. Fixed `Entity.move()` collisions.
+3. Fixed `Button.is_pressing_mouseup()`.
 
 ## version 2.4.0
 ### New Features
