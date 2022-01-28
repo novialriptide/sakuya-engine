@@ -1,5 +1,5 @@
 MAJOR = 2
 MINOR = 5
 PATCH = 0
-ALPHA = ".dev2"
+ALPHA = ""
 GAME_VERSION = f"{MAJOR}.{MINOR}.{PATCH}{ALPHA}"
