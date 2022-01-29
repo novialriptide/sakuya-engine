@@ -251,3 +251,24 @@ class BaseEntity:
             self.velocity.x = 0
         if g.x < 0 and collisions["left"]:
             self.velocity.x = 0
+
+    def on_col_top(self) -> None:
+        pass
+    
+    def on_col_bottom(self) -> None:
+        pass
+    
+    def on_col_right(self) -> None:
+        pass
+    
+    def on_col_left(self) -> None:
+        pass
+    
+    def on_awake(self) -> None:
+        pass
+    
+    def on_destroy(self) -> None:
+        pass
+    
+    def on_update(self) -> None:
+        pass
