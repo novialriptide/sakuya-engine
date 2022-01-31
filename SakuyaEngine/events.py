@@ -22,6 +22,7 @@ class WaitEvent(BaseEvent):
         super().__init__(name, method, args=args, kwargs=kwargs)
         self.time = time
 
+
 class RepeatEvent(BaseEvent):
     def __init__(self, name, method, args=[], kwargs={}, wait_time: int or None = None):
         """The method must return false if it wishes to be removed
