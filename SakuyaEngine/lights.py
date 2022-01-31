@@ -20,7 +20,9 @@ def light(
 ):
     position -= pygame.Vector2(radius, radius)
     for d in range(brightness):
-        circle_surf = pygame.Surface((radius * 2, radius * 2)) # lgtm [py/call/wrong-arguments]
+        circle_surf = pygame.Surface(
+            (radius * 2, radius * 2)
+        )  # lgtm [py/call/wrong-arguments]
         pygame.draw.circle(
             circle_surf, color, (radius, radius), radius * (d / brightness)
         )
@@ -36,7 +38,9 @@ def shadow(
     offset=pygame.Vector2(0, 0),
 ):
     position += offset
-    circle_surf = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA) # lgtm [py/call/wrong-arguments]
+    circle_surf = pygame.Surface(
+        (radius * 2, radius * 2), pygame.SRCALPHA
+    )  # lgtm [py/call/wrong-arguments]
     pygame.draw.circle(circle_surf, (0, 0, 0, darkness), (radius, radius), radius)
     position -= pygame.Vector2(radius, radius)
     surface.blit(circle_surf, position)
