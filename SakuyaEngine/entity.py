@@ -77,7 +77,7 @@ class BaseEntity:
             self.direction = direction
 
         return self._sprite
-    
+
     @sprite.setter
     def sprite(self, value: pygame.Surface) -> None:
         self._sprite = value
@@ -248,21 +248,21 @@ class BaseEntity:
 
     def on_col_top(self) -> None:
         pass
-    
+
     def on_col_bottom(self) -> None:
         pass
-    
+
     def on_col_right(self) -> None:
         pass
-    
+
     def on_col_left(self) -> None:
         pass
-    
+
     def on_awake(self) -> None:
         pass
-    
+
     def on_destroy(self) -> None:
         pass
-    
+
     def on_update(self) -> None:
         pass
