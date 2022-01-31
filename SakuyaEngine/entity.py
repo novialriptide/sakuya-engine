@@ -3,74 +3,35 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from __future__ import annotations
+from typing import List
 
 import pygame
 
-from typing import List
-from copy import copy
-
-from .clock import Clock
-from .animation import Animation
-from .physics import gravity
-from .controllers import BaseController
-from .effect_particles import Particles
-from .bar import Bar
-from .math import vector2_move_toward
+from .locals import DEFAULT_TEXTURE
 
 
-class Entity:
+class BaseEntity:
     def __init__(
         self,
         name: str = None,
         tags: List[str] = [],
-        scale: int = 1,
-        max_health: float = 100,
+        scale: float = 1,
         position: pygame.Vector2 = pygame.Vector2(0, 0),
-        controller: BaseController = None,
-        has_collision: bool = True,
-        has_rigidbody: bool = False,
-        enable_terminal_velocity: bool = False,
+        terminal_velocity: bool = False,
         obey_gravity: bool = False,
         speed: float = 0,
         custom_hitbox_size: pygame.Vector2 = pygame.Vector2(0, 0),
-        particle_systems: List[Particles] = [],
-        bullet_spawners: List[BulletSpawner] = [],
-        update_bullet_spawners: bool = True,
-        static_sprite: pygame.Surface = None,
-        healthbar_update_speed: float = 1000,
-        healthbar_position_offset: pygame.Vector2 = pygame.Vector2(0, 0),
-        draw_healthbar: bool = True,
-        target_position: pygame.Vector2 or None = None,
-        destroy_position: pygame.Vector2 or None = None,
-        disable_bulletspawner_while_movement: bool = True,
-        clock: Clock or None = None,
         gravity_scale: float = 1,
     ):
-        self._clock = None
-
         self.name = name
         self.tags = tags
         self.scale = pygame.Vector2(1, 1) * scale
-
-        # Animations
-        self.animations = {}
-        self.current_anim = None
-
-        # Positions & Movement
-        self.position = position
-        self.target_position = target_position
-
-        # Controller
-        if controller is not None:
-            self.controller = controller()
-        if controller is None:
-            self.controller = None
+        self._clock = None
 
         # Collisions & Physics
-        self.has_collision = has_collision
-        self.has_rigidbody = has_rigidbody
+        self.position = position
         self.obey_gravity = obey_gravity
-        self.enable_terminal_velocity = enable_terminal_velocity
+        self.terminal_velocity = terminal_velocity
         self.custom_hitbox_size = custom_hitbox_size
         self.speed = speed
         self.terminal_velocity = 10.0
@@ -79,78 +40,47 @@ class Entity:
         self._rect = pygame.Rect(0, 0, 0, 0)
         self._custom_hitbox_rect = pygame.Rect(0, 0, 0, 0)
         self.gravity_scale = gravity_scale
-
-        # Systems
-        self.particle_systems = particle_systems
-        self.bullet_spawners = bullet_spawners
-        self.update_bullet_spawners = update_bullet_spawners
-        self.disable_bulletspawner_while_movement = disable_bulletspawner_while_movement
+        self.gravity = pygame.Vector2(1, 0)
 
         # Destroy
         self._destroy_val = 0
         self._enable_destroy = False
         self._destroy_queue = False
-        self.destroy_position = destroy_position
-        self.points_upon_death = 0
 
-        # Health
-        self.current_health = max_health
-        self.max_health = max_health
-
-        # Health Bar
-        self.healthbar = Bar(max_health, healthbar_update_speed)
-        self.healthbar_position_offset = healthbar_position_offset
-        self.draw_healthbar = draw_healthbar
-
-        self.static_sprite = static_sprite
+        # Rotations & Static Objects
         self._static_rect = pygame.Rect(0, 0, 0, 0)
-        self._sprite = None
+        self._sprite = DEFAULT_TEXTURE
         self.direction = 0
         self.angle = 0
         self.rotation_offset = pygame.Vector2(0, 0)
 
     @property
-    def clock(self) -> Clock:
-        return self._clock
-
-    @clock.setter
-    def clock(self, value: Clock) -> None:
-        self._clock = value
-        self.next_fire_ticks = self._clock.get_time()
-        self.next_reset_ticks = self._clock.get_time()
-
-    @property
     def sprite(self) -> pygame.Surface:
         out_sprite = None
-        base_sprite = None
-
-        # Get sprite (Static vs Animation)
-        cur_anim = self.anim_get(self.current_anim)
-        if cur_anim is not None:
-            base_sprite = cur_anim.sprite
-
-        if self.static_sprite is not None:
-            base_sprite = self.static_sprite
-
         if self.scale.x != 1 or self.scale.y != 1:
-            width, height = base_sprite.get_size()
+            width, height = self._sprite.get_size()
             scaled_sprite = pygame.transform.scale(
-                base_sprite, (self.scale.x * width, self.scale.y * height)
+                self._sprite, (self.scale.x * width, self.scale.y * height)
             )
             out_sprite = scaled_sprite
         else:
-            out_sprite = base_sprite
+            out_sprite = self._sprite
 
         # Rotate sprite
         direction = -self.angle + 360
         if self.direction != direction:
             self._sprite = pygame.transform.rotate(out_sprite, direction)
-            width, height = self.static_rect.size
-            self.rotation_offset.x = width / 2 - self._sprite.get_width() / 2
-            self.rotation_offset.y = height / 2 - self._sprite.get_height() / 2
+            rect_width, rect_height = self.static_rect.size
+            sprite_width, sprite_height = self._sprite.get_size()
+            self.rotation_offset.x = rect_width / 2 - sprite_width / 2
+            self.rotation_offset.y = rect_height / 2 - sprite_height / 2
             self.direction = direction
 
         return self._sprite
+
+    @sprite.setter
+    def sprite(self, value: pygame.Surface) -> None:
+        self._sprite = value
 
     @property
     def rect(self) -> pygame.Rect:
@@ -224,10 +154,7 @@ class Entity:
 
         """
         self._enable_destroy = True
-        if self._clock is None:
-            self._destroy_val = time + pygame.time.get_ticks()
-        else:
-            self._destroy_val = time + self._clock.get_time()
+        self._destroy_val = time + self._clock.get_time()
 
     @property
     def abs_position(self) -> pygame.Vector2:
@@ -240,15 +167,6 @@ class Entity:
     def move(
         self, movement: pygame.Vector2, collision_rects: List[pygame.Rect]
     ) -> bool:
-        """Moves the position
-
-        Parameters:
-            movement: value to add to position
-
-        Returns:
-            If true, the position has been updated
-
-        """
         hit = {"top": False, "bottom": False, "left": False, "right": False}
         self.position.x += movement.x
         test_rect = self.static_rect.copy()
@@ -285,114 +203,19 @@ class Entity:
 
         return hit
 
-    def anim_get(self, animation_name: str) -> Animation:
-        if animation_name is not None:
-            return self.animations[animation_name]
-        if animation_name is None:
-            return None
-
-    def anim_set(self, animation_name: str) -> bool:
-        """Assign an animation to be played
-
-        Parameters:
-            animation_name: Animation to be played
-
-        Returns:
-            If true, playing the animation was successful
-
-        """
-        self.current_anim = animation_name
-
-    def anim_add(self, animation: Animation) -> None:
-        """Adds an animation
-
-        Parameters:
-            animation: Animation to be added
-
-        """
-        self.animations[animation.name] = copy(animation)
-
-    def anim_remove(self, animation_name: str) -> bool:
-        """Removes an animation
-
-        Parameters:
-            animation_name: Animation to be removed
-
-        Returns:
-            If True, removing the animation was successful
-
-        """
-        raise NotImplementedError
-
-    def copy(self) -> Entity:
-        """Returns a copy of the entity
-
-        You should not use Python3's copy.copy() method since
-        it will interfere with the same entities animations
-
-        """
-        e = copy(self)
-        new_anims = {}
-        new_particles = []
-        new_bullet_spawners = []
-        new_healthbar = copy(e.healthbar)
-        for a in self.animations.keys():
-            new_anims[a] = copy(self.anim_get(a))
-
-        for p in self.particle_systems:
-            new_particles.append(copy(p))
-
-        for bs in self.bullet_spawners:
-            new_bullet_spawners.append(copy(bs))
-
-        e.animations = new_anims
-        e.particle_systems = new_particles
-        e.bullet_spawners = new_bullet_spawners
-        e.healthbar = new_healthbar
-
-        return e
-
-    def update(
+    def advance_frame(
         self, delta_time: float, collision_rects: List[pygame.Rect] = []
     ) -> None:
-        """Updates the position, animation, etc
-
-        Parameters:
-            delta_time: the game's delta time
-
-        """
         # Destroy
-        if self._clock is None:
-            if self._enable_destroy and self._destroy_val <= pygame.time.get_ticks():
-                self._destroy_queue = True
-        else:
-            if self._enable_destroy and self._destroy_val <= self._clock.get_time():
-                self._destroy_queue = True
+        if self._enable_destroy and self._destroy_val <= self._clock.get_time():
+            self._destroy_queue = True
 
         if self.destroy_position == self.position:
             self._destroy_queue = True
 
-        # Update Particles
-        for ps in self.particle_systems:
-            ps.position = self.position
-            ps.update(delta_time)
-
-        # Update Animation
-        if self.current_anim is not None:
-            self.anim_get(self.current_anim).update(delta_time)
-
-        # Update HealthBar
-        self.healthbar.current_health = self.current_health
-        self.healthbar.update(delta_time)
-
-        # Update bullet spawners
-        for b in self.bullet_spawners:
-            if self._clock is not None and b.clock is None:
-                b.clock = self._clock
-
         # Apply terminal velocity
         term_vec = self.terminal_velocity * delta_time
-        if self.enable_terminal_velocity:
+        if self.terminal_velocity:
             if self.velocity.x < 0:
                 self.velocity.x = max(self.velocity.x, term_vec)
             if self.velocity.x > 0:
@@ -402,7 +225,7 @@ class Entity:
             if self.velocity.y > 0:
                 self.velocity.y = min(self.velocity.y, term_vec)
 
-        g = gravity
+        g = self.gravity
         if not self.obey_gravity:
             g = pygame.Vector2(0, 0)
 
@@ -410,14 +233,6 @@ class Entity:
         self.velocity += self.acceleration + g
 
         velocity = self.velocity * delta_time
-
-        if self.target_position is not None:
-            self.position = vector2_move_toward(
-                self.position, self.target_position, self.speed * delta_time
-            )
-
-        if self.position == self.target_position:
-            self.target_position = None
 
         collisions = self.move(velocity, collision_rects)
 
@@ -430,3 +245,24 @@ class Entity:
             self.velocity.x = 0
         if g.x < 0 and collisions["left"]:
             self.velocity.x = 0
+
+    def on_col_top(self) -> None:
+        pass
+
+    def on_col_bottom(self) -> None:
+        pass
+
+    def on_col_right(self) -> None:
+        pass
+
+    def on_col_left(self) -> None:
+        pass
+
+    def on_awake(self) -> None:
+        pass
+
+    def on_destroy(self) -> None:
+        pass
+
+    def on_update(self) -> None:
+        pass
