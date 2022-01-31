@@ -26,6 +26,7 @@ class BaseEntity:
         self.name = name
         self.tags = tags
         self.scale = pygame.Vector2(1, 1) * scale
+        self._clock = None
 
         # Collisions & Physics
         self.position = position
@@ -153,10 +154,7 @@ class BaseEntity:
 
         """
         self._enable_destroy = True
-        if self._clock is None:
-            self._destroy_val = time + pygame.time.get_ticks()
-        else:
-            self._destroy_val = time + self._clock.get_time()
+        self._destroy_val = time + self._clock.get_time()
 
     @property
     def abs_position(self) -> pygame.Vector2:
@@ -209,12 +207,8 @@ class BaseEntity:
         self, delta_time: float, collision_rects: List[pygame.Rect] = []
     ) -> None:
         # Destroy
-        if self._clock is None:
-            if self._enable_destroy and self._destroy_val <= pygame.time.get_ticks():
-                self._destroy_queue = True
-        else:
-            if self._enable_destroy and self._destroy_val <= self._clock.get_time():
-                self._destroy_queue = True
+        if self._enable_destroy and self._destroy_val <= self._clock.get_time():
+            self._destroy_queue = True
 
         if self.destroy_position == self.position:
             self._destroy_queue = True
