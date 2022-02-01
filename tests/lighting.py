@@ -12,17 +12,24 @@ client = Client(
 )
 scene_manager = SceneManager(client)
 
+bg = pygame.image.load("resources\sakuya_background.jpg")
+
 
 class TestScene(Scene):
     def on_awake(self):
         self.lightroom = LightRoom(self)
-        self.lightroom.add_point_light(pygame.Vector2(50, 50), 25)
 
     def update(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
         self.screen.fill((0, 0, 255))
+        self.screen.blit(bg, (0, 0))
+
+        self.lightroom.reset()
+        screen_size = pygame.Vector2(self.client.screen.get_size())
+        self.lightroom.draw_point_light(screen_size / 2, 130)
+        # self.lightroom.draw_spot_light(screen_size / 2, 250, 100, 64)
         self.screen.blit(self.lightroom.screen, (0, 0))
 
 
