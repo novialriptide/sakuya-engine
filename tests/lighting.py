@@ -1,9 +1,11 @@
+from math import degrees
 import pygame
 import sys
 from SakuyaEngine.client import Client
 from SakuyaEngine.scene import SceneManager
 from SakuyaEngine.scene import Scene
 from SakuyaEngine.lights import LightRoom
+from SakuyaEngine.math import get_angle
 
 client = Client(
     f"SakuyaEngine Client Test Lighting",
@@ -24,12 +26,15 @@ class TestScene(Scene):
             if event.type == pygame.QUIT:
                 sys.exit()
         self.screen.fill((0, 0, 255))
-        self.screen.blit(bg, (0, 0))
+        self.screen.blit(bg, (-200, -100))
 
-        self.lightroom.reset()
         screen_size = pygame.Vector2(self.client.screen.get_size())
-        self.lightroom.draw_point_light(screen_size / 2, 130)
-        # self.lightroom.draw_spot_light(screen_size / 2, 250, 100, 64)
+        self.lightroom.draw_point_light(screen_size / 2, 35)
+
+        dir = degrees(get_angle(self.client.mouse_pos, screen_size / 2)) + 180
+        self.lightroom.draw_spot_light(screen_size / 2, 150, dir, 45)
+        dir = degrees(get_angle(self.client.mouse_pos, screen_size / 3)) + 180
+        self.lightroom.draw_spot_light(screen_size / 3, 150, dir, 45)
         self.screen.blit(self.lightroom.screen, (0, 0))
 
 
