@@ -3,27 +3,27 @@ SakuyaEngine // GameDen // GameDen Rewrite (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from __future__ import annotations
-from typing import TypeVar, Callable
+from typing import Tuple, List, Union
 
 import math
 import pygame
 
 from .errors import NegativeSpeedError, LineSegmentLinesError
 
-pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
+vector2 = Union[pygame.Vector2, Tuple[float, float]]
 
 
-def vector2_ratio_xy(vector: pygame_vector2) -> float:
+def vector2_ratio_xy(vector: vector2) -> float:
     return vector.x / vector.y
 
 
-def vector2_ratio_yx(vector: pygame_vector2) -> float:
+def vector2_ratio_yx(vector: vector2) -> float:
     return vector.y / vector.x
 
 
 def vector2_move_toward(
-    origin: pygame_vector2, target: pygame_vector2, distance: float
-) -> pygame_vector2:
+    origin: vector2, target: vector2, distance: float
+) -> vector2:
     """Moves towards the target Vector2 by the movement speed.
 
     Must be put in a loop until its reached its target.
@@ -43,7 +43,7 @@ def vector2_move_toward(
     return origin + delta / dist * distance
 
 
-def get_angle(origin: pygame_vector2, target: pygame_vector2) -> float:
+def get_angle(origin: vector2, target: vector2) -> float:
     """Returns an angle in radians of the object to look at from the origin point
 
     Parameters:
@@ -80,10 +80,10 @@ def move_toward(origin: float, target: float, speed: float) -> float:
 
 
 def eval_segment_intersection(
-    point1: pygame_vector2,
-    point2: pygame_vector2,
-    point3: pygame_vector2,
-    point4: pygame_vector2,
+    point1: vector2,
+    point2: vector2,
+    point3: vector2,
+    point4: vector2,
 ) -> pygame.Vector2:
     """Evaluates if 2 line segments collide with each other.
 
@@ -118,3 +118,19 @@ def eval_segment_intersection(
         return pygame.Vector2(x1 + t * (x2 - x1), y1 + t * (y2 - y1))
     else:
         raise LineSegmentLinesError
+
+def eval_segment_intersection(point1: vector2, point2: vector2, rect: pygame.Rect):
+    pass
+
+
+def rect_to_lines(
+    rect: pygame.Rect,
+) -> List[
+    vector2, vector2, vector2, vector2
+]:
+    return [
+        (rect.bottomleft, rect.bottomright),
+        (rect.bottomleft, rect.topleft),
+        (rect.bottomright, rect.topright),
+        (rect.topleft, rect.topright),
+    ]
