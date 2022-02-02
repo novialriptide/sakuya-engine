@@ -2,6 +2,7 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
+from typing import List
 from .scene import Scene
 
 import pygame
@@ -45,6 +46,7 @@ class LightRoom:
         direction: int,
         spread: int,
         noise: int = 0,
+        collisions: List[pygame.mask.Mask] = [],
     ) -> None:
         """Draws a spotlight.
 
@@ -81,6 +83,10 @@ class LightRoom:
         self._inner_points.append(inner_points)
 
     def draw_point_light(
-        self, position: pygame.Vector2, radius: int, noise: int = 0
+        self,
+        position: pygame.Vector2,
+        radius: int,
+        noise: int = 0,
+        collisions: List[pygame.mask.Mask] = [],
     ) -> None:
         self.draw_spot_light(position, radius, 0, 360, noise=noise)
