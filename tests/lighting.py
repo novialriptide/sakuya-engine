@@ -15,6 +15,7 @@ client = Client(
 scene_manager = SceneManager(client)
 
 bg = pygame.image.load("resources\sakuya_background.jpg")
+bg = pygame.transform.scale(bg, pygame.Vector2(bg.get_size()) / 2)
 
 
 class TestScene(Scene):
@@ -25,17 +26,18 @@ class TestScene(Scene):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-        self.screen.fill((0, 0, 255))
-        self.screen.blit(bg, (-200, -100))
-
         screen_size = pygame.Vector2(self.client.screen.get_size())
+
+        self.screen.fill((0, 0, 255))
+        self.screen.blit(bg, pygame.Vector2(bg.get_size()) / -2 + screen_size / 2)
+
         self.lightroom.draw_point_light(screen_size / 2, 35)
 
         dir = degrees(get_angle(self.client.mouse_pos, screen_size / 2)) + 180
-        self.lightroom.draw_spot_light(screen_size / 2, 150, dir, 45)
+        self.lightroom.draw_spot_light(screen_size / 2, 150, dir, 65)
         dir = degrees(get_angle(self.client.mouse_pos, screen_size / 3)) + 180
         self.lightroom.draw_spot_light(screen_size / 3, 150, dir, 45)
-        self.screen.blit(self.lightroom.screen, (0, 0))
+        self.screen.blit(self.lightroom.surface, (0, 0))
 
 
 scene_manager.register_scene(TestScene)

@@ -15,18 +15,19 @@ class LightRoom:
         self._screen.fill((0, 0, 0))
 
         self._outer_color = (0, 0, 100)
+        self._mid_color = (0, 0, 175)
         self._inner_color = (0, 0, 255)
 
         self._outer_points = []
         self._inner_points = []
 
     @property
-    def screen(self) -> pygame.Surface:
+    def surface(self) -> pygame.Surface:
         self._screen.fill((0, 0, 0))
-        for points1 in self._outer_points:
-            pygame.draw.polygon(self._screen, self._outer_color, points1)
-        for points2 in self._inner_points:
-            pygame.draw.polygon(self._screen, self._inner_color, points2)
+        for outer_points in self._outer_points:
+            pygame.draw.polygon(self._screen, self._outer_color, outer_points)
+        for inner_points in self._inner_points:
+            pygame.draw.polygon(self._screen, self._inner_color, inner_points)
 
         screen_array = pygame.PixelArray(self._screen)
         screen_array.replace(self._outer_color, (0, 0, 0, 50))
@@ -54,8 +55,8 @@ class LightRoom:
             spread: Angle width of the spotlight in degrees.
 
         """
-        points1 = [position]
-        points2 = [position]
+        outer_points = [position]
+        inner_points = [position]
 
         angle1 = int(direction - spread / 2)
         angle2 = int(direction + spread / 2)
@@ -69,15 +70,15 @@ class LightRoom:
                 int((length + rand_x) * math.cos(n * math.pi / 180)),
                 int((length + rand_y) * math.sin(n * math.pi / 180)),
             )
-            points1.append(position + point1)
+            outer_points.append(position + point1)
             point2 = pygame.Vector2(
-                int((length * 0.66 + rand_x) * math.cos(n * math.pi / 180)),
-                int((length * 0.66 + rand_y) * math.sin(n * math.pi / 180)),
+                int((length * 0.5 + rand_x) * math.cos(n * math.pi / 180)),
+                int((length * 0.5 + rand_y) * math.sin(n * math.pi / 180)),
             )
-            points2.append(position + point2)
+            inner_points.append(position + point2)
 
-        self._outer_points.append(points1)
-        self._inner_points.append(points2)
+        self._outer_points.append(outer_points)
+        self._inner_points.append(inner_points)
 
     def draw_point_light(
         self, position: pygame.Vector2, radius: int, noise: int = 0
