@@ -53,6 +53,10 @@ class Scene:
     @property
     def name(self) -> str:
         return self.__class__.__name__
+    
+    def add_entity(self, entity: Entity) -> None:
+        self.entities.append(entity)
+        entity.on_awake()
 
     def on_awake(self, **kwargs) -> None:
         """Will be called upon startup.
@@ -208,25 +212,12 @@ class Scene:
                 bg.position.y = bg_rect.height
 
         for entity in self.entities[:]:
-            entity.update(delta_time, collision_rects=collision_rects)
+            entity.advance_frame(delta_time, collision_rects=collision_rects)
             if entity._destroy_queue:
                 self.entities.remove(entity)
 
-            # Update Bullet Spawners
-            for bs in entity.bullet_spawners:
-                bs.position = entity.position + entity.center_offset
-                if entity.update_bullet_spawners:
-                    if (
-                        entity.disable_bulletspawner_while_movement
-                        and entity.target_position is not None
-                        or entity.destroy_position is not None
-                    ):
-                        continue
-                    new_bullets = bs.update(delta_time)
-                    self.bullets.extend(new_bullets)
-
         for bullet in self.bullets[:]:
-            bullet.update(delta_time)
+            bullet.advance_frame(delta_time)
             if bullet._destroy_queue:
                 self.bullets.remove(bullet)
 
