@@ -21,7 +21,7 @@ bg = pygame.transform.scale(bg, pygame.Vector2(bg.get_size()) / 2)
 class TestScene(Scene):
     def on_awake(self):
         self.lightroom = LightRoom(self)
-        self.collisions = [[pygame.Vector2(50, 20), pygame.Vector2(50, 50)]]
+        self.collisions = [[pygame.Vector2(75, 35), pygame.Vector2(75, 75)]]
 
     def update(self):
         for event in pygame.event.get():
