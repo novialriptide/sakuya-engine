@@ -21,9 +21,7 @@ def vector2_ratio_yx(vector: vector2) -> float:
     return vector.y / vector.x
 
 
-def vector2_move_toward(
-    origin: vector2, target: vector2, distance: float
-) -> vector2:
+def vector2_move_toward(origin: vector2, target: vector2, distance: float) -> vector2:
     """Moves towards the target Vector2 by the movement speed.
 
     Must be put in a loop until its reached its target.
@@ -97,8 +95,6 @@ def eval_segment_intersection(
         Line 1's intersecting point on line 2.
 
     """
-    # NOTE: This function is a variant
-    # from GameDen REWRITE for Novial's Gravity
     x1, y1 = point1
     x2, y2 = point2
     x3, y3 = point3
@@ -106,28 +102,15 @@ def eval_segment_intersection(
 
     dem = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
     if dem == 0:
-        raise LineSegmentLinesError
+        return point2
 
-    t1 = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)
-    t = t1 / dem
-
-    u1 = (x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)
-    u = -(u1 / dem)
-
-    if t >= 0 and t <= 1 and u >= 0 and u <= 1:
-        return pygame.Vector2(x1 + t * (x2 - x1), y1 + t * (y2 - y1))
-    else:
-        raise LineSegmentLinesError
-
-def eval_segment_intersection(point1: vector2, point2: vector2, rect: pygame.Rect):
-    pass
+    u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / dem
+    return pygame.Vector2(x3 + u * (x4 - x3), y3 + u * (y4 - y3))
 
 
 def rect_to_lines(
     rect: pygame.Rect,
-) -> List[
-    vector2, vector2, vector2, vector2
-]:
+) -> List[vector2, vector2, vector2, vector2]:
     return [
         (rect.bottomleft, rect.bottomright),
         (rect.bottomleft, rect.topleft),

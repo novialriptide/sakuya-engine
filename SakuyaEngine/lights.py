@@ -2,7 +2,8 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
-from typing import List
+from SakuyaEngine.errors import LineSegmentLinesError
+from .math import eval_segment_intersection, rect_to_lines
 from .scene import Scene
 
 import pygame
@@ -46,7 +47,7 @@ class LightRoom:
         direction: int,
         spread: int,
         noise: int = 0,
-        collisions: List[pygame.mask.Mask] = [],
+        collisions=[],
     ) -> None:
         """Draws a spotlight.
 
@@ -68,10 +69,12 @@ class LightRoom:
             if noise != 0:
                 rand_x = random.randint(-noise, noise)
                 rand_y = random.randint(-noise, noise)
+
             point1 = pygame.Vector2(
                 int((length + rand_x) * math.cos(n * math.pi / 180)),
                 int((length + rand_y) * math.sin(n * math.pi / 180)),
             )
+
             outer_points.append(position + point1)
             point2 = pygame.Vector2(
                 int((length * 0.5 + rand_x) * math.cos(n * math.pi / 180)),
@@ -87,6 +90,8 @@ class LightRoom:
         position: pygame.Vector2,
         radius: int,
         noise: int = 0,
-        collisions: List[pygame.mask.Mask] = [],
+        collisions=[],
     ) -> None:
-        self.draw_spot_light(position, radius, 0, 360, noise=noise)
+        self.draw_spot_light(
+            position, radius, 0, 360, noise=noise, collisions=collisions
+        )
