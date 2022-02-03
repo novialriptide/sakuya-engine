@@ -10,7 +10,7 @@ import pygame
 from .locals import DEFAULT_TEXTURE
 
 
-class BaseEntity:
+class Entity:
     def __init__(
         self,
         name: str = None,

@@ -6,7 +6,7 @@ from typing import List
 
 from .events import EventSystem, WaitEvent
 from .scene import Scene
-from .entity import BaseEntity
+from .entity import Entity
 
 import pygame
 import json
