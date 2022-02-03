@@ -9,14 +9,14 @@ from .clock import Clock
 import pygame
 import math
 
-from .entity import Entity
+from .entity import BaseEntity
 from .animation import split_image
 from .math import get_angle
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
 
-class Bullet(Entity):
+class Bullet(BaseEntity):
     def __init__(
         self,
         angle: float = 0,
