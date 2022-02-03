@@ -122,9 +122,7 @@ def raycast(coord1: pygame.Vector2, coord2: pygame.Vector2, walls):
     highest_point_length = line_length
     for wall in walls:
         try:
-            c = eval_segment_intersection(
-                coord1, coord2, wall[0], wall[1]
-            )
+            c = eval_segment_intersection(coord1, coord2, wall[0], wall[1])
             c_length = math.sqrt((x1 - c[0]) ** 2 + (y1 - c[1]) ** 2)
             if highest_point_length > c_length:
                 highest_point = c

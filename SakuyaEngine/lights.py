@@ -74,9 +74,7 @@ class LightRoom:
                 int((length + rand_y) * math.sin(n * math.pi / 180)),
             )
 
-            outer_point = raycast(
-                position, position + point1, collisions
-            )
+            outer_point = raycast(position, position + point1, collisions)
 
             outer_points.append(outer_point)
             point2 = pygame.Vector2(
@@ -84,10 +82,8 @@ class LightRoom:
                 int((length * 0.5 + rand_y) * math.sin(n * math.pi / 180)),
             )
 
-            inner_point = raycast(
-                position, position + point2, collisions
-            )
-            
+            inner_point = raycast(position, position + point2, collisions)
+
             inner_points.append(inner_point)
 
         self._outer_points.append(outer_points)
