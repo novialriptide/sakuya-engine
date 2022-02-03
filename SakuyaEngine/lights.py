@@ -3,7 +3,7 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from SakuyaEngine.errors import LineSegmentLinesError
-from .math import eval_segment_intersection, rect_to_lines
+from .math import eval_segment_intersection
 from .scene import Scene
 
 import pygame
@@ -75,7 +75,16 @@ class LightRoom:
                 int((length + rand_y) * math.sin(n * math.pi / 180)),
             )
 
-            outer_points.append(position + point1)
+            outer_point = position + point1
+            for c in collisions:
+                test_outer_point = eval_segment_intersection(
+                    position, position + point1, c[0], c[1]
+                )
+                if outer_point.magnitude() > test_outer_point.magnitude():
+                    print(test_outer_point, outer_point)
+                    outer_point = test_outer_point
+
+            outer_points.append(outer_point)
             point2 = pygame.Vector2(
                 int((length * 0.5 + rand_x) * math.cos(n * math.pi / 180)),
                 int((length * 0.5 + rand_y) * math.sin(n * math.pi / 180)),
