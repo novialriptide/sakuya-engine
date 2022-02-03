@@ -8,7 +8,7 @@ from typing import Tuple, List, Union
 import math
 import pygame
 
-from .errors import NegativeSpeedError, LineSegmentLinesError
+from .errors import NegativeSpeedError
 
 vector2 = Union[pygame.Vector2, Tuple[float, float]]
 
