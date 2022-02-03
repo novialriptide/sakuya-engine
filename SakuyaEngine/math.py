@@ -104,8 +104,28 @@ def eval_segment_intersection(
     if dem == 0:
         return point2
 
-    u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / dem
-    return pygame.Vector2(x3 + u * (x4 - x3), y3 + u * (y4 - y3))
+    t = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)
+    u = (x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)
+    t /= dem
+    u /= dem
+    if 0 < t < 1 and 0 < u < 1:
+        return pygame.Vector2(x3 + u * (x4 - x3), y3 + u * (y4 - y3))
+    else:
+        return point2
+
+
+def collide_segments(
+    point1,
+    point2,
+    point3,
+    point4,
+):
+    def ccw(a, b, c):
+        return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x)
+
+    return ccw(point1, point3, point4) != ccw(point2, point3, point4) and ccw(
+        point1, point2, point3
+    ) != ccw(point1, point2, point4)
 
 
 def rect_to_lines(
