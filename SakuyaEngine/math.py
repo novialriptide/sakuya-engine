@@ -3,27 +3,25 @@ SakuyaEngine // GameDen // GameDen Rewrite (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from __future__ import annotations
-from typing import TypeVar, Callable
+from typing import Tuple, List, Union
 
 import math
 import pygame
 
-from .errors import NegativeSpeedError, LineSegmentLinesError
+from .errors import NegativeSpeedError
 
-pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
+vector2 = Union[pygame.Vector2, Tuple[float, float]]
 
 
-def vector2_ratio_xy(vector: pygame_vector2) -> float:
+def vector2_ratio_xy(vector: vector2) -> float:
     return vector.x / vector.y
 
 
-def vector2_ratio_yx(vector: pygame_vector2) -> float:
+def vector2_ratio_yx(vector: vector2) -> float:
     return vector.y / vector.x
 
 
-def vector2_move_toward(
-    origin: pygame_vector2, target: pygame_vector2, distance: float
-) -> pygame_vector2:
+def vector2_move_toward(origin: vector2, target: vector2, distance: float) -> vector2:
     """Moves towards the target Vector2 by the movement speed.
 
     Must be put in a loop until its reached its target.
@@ -43,7 +41,7 @@ def vector2_move_toward(
     return origin + delta / dist * distance
 
 
-def get_angle(origin: pygame_vector2, target: pygame_vector2) -> float:
+def get_angle(origin: vector2, target: vector2) -> float:
     """Returns an angle in radians of the object to look at from the origin point
 
     Parameters:
@@ -80,10 +78,10 @@ def move_toward(origin: float, target: float, speed: float) -> float:
 
 
 def eval_segment_intersection(
-    point1: pygame_vector2,
-    point2: pygame_vector2,
-    point3: pygame_vector2,
-    point4: pygame_vector2,
+    point1: vector2,
+    point2: vector2,
+    point3: vector2,
+    point4: vector2,
 ) -> pygame.Vector2:
     """Evaluates if 2 line segments collide with each other.
 
@@ -97,8 +95,6 @@ def eval_segment_intersection(
         Line 1's intersecting point on line 2.
 
     """
-    # NOTE: This function is a variant
-    # from GameDen REWRITE for Novial's Gravity
     x1, y1 = point1
     x2, y2 = point2
     x3, y3 = point3
@@ -106,15 +102,53 @@ def eval_segment_intersection(
 
     dem = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
     if dem == 0:
-        raise LineSegmentLinesError
+        return point2
 
-    t1 = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)
-    t = t1 / dem
-
-    u1 = (x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)
-    u = -(u1 / dem)
-
-    if t >= 0 and t <= 1 and u >= 0 and u <= 1:
-        return pygame.Vector2(x1 + t * (x2 - x1), y1 + t * (y2 - y1))
+    t = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)
+    u = (x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)
+    t /= dem
+    u /= dem
+    if 0 < t < 1 and 0 < u < 1:
+        return pygame.Vector2(x3 + u * (x4 - x3), y3 + u * (y4 - y3))
     else:
-        raise LineSegmentLinesError
+        return point2
+
+
+def raycast(coord1: pygame.Vector2, coord2: pygame.Vector2, walls):
+    x1, y1 = coord1
+    x2, y2 = coord2
+    line_length = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    highest_point = coord2
+    sort_point_length = line_length
+    for wall in walls:
+        c = eval_segment_intersection(coord1, coord2, wall[0], wall[1])
+        c_length = math.sqrt((x1 - c[0]) ** 2 + (y1 - c[1]) ** 2)
+        if sort_point_length > c_length:
+            highest_point = c
+            sort_point_length = c_length
+    return pygame.Vector2(highest_point)
+
+
+def collide_segments(
+    point1,
+    point2,
+    point3,
+    point4,
+):
+    def ccw(a, b, c):
+        return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x)
+
+    return ccw(point1, point3, point4) != ccw(point2, point3, point4) and ccw(
+        point1, point2, point3
+    ) != ccw(point1, point2, point4)
+
+
+def rect_to_lines(
+    rect: pygame.Rect,
+) -> List[vector2, vector2, vector2, vector2]:
+    return [
+        (rect.bottomleft, rect.bottomright),
+        (rect.bottomleft, rect.topleft),
+        (rect.bottomright, rect.topright),
+        (rect.topleft, rect.topright),
+    ]
