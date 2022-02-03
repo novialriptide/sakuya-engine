@@ -1,3 +1,8 @@
+## version 3.0.0
+### New Features
+1. Added `LightRoom`.
+
+
 ## version 2.5.0
 ### New Features
 1. Added `Client.delta_time_modifier` to manipulate the game's clockspeed.
