@@ -80,7 +80,7 @@ class Scene:
         """
         pass
 
-    def update(self, delta_time, **kwargs) -> None:
+    def update(self, **kwargs) -> None:
         """Will be called upon every frame. Calling advance_frame() is recommended.
 
         Must be overrided.
