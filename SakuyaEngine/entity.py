@@ -8,6 +8,7 @@ from typing import List
 import pygame
 
 from .locals import DEFAULT_TEXTURE
+from .animation import Animation
 
 
 class Entity:
@@ -41,6 +42,11 @@ class Entity:
         self._custom_hitbox_rect = pygame.Rect(0, 0, 0, 0)
         self.gravity_scale = gravity_scale
         self.gravity = pygame.Vector2(1, 0)
+
+        # Animations
+        self.animations = {}
+        self.current_anim = None
+        self.static_sprite = None
 
         # Destroy
         self._destroy_val = 0
@@ -209,12 +215,47 @@ class Entity:
 
         return hit
 
+    def anim_get(self, animation_name: str) -> Animation:
+        if animation_name is not None:
+            return self.animations[animation_name]
+        if animation_name is None:
+            return None
+
+    def anim_set(self, animation_name: str) -> bool:
+        """Assign an animation to be played
+        Parameters:
+            animation_name: Animation to be played
+        Returns:
+            If true, playing the animation was successful
+        """
+        self.current_anim = animation_name
+
+    def anim_add(self, animation: Animation) -> None:
+        """Adds an animation
+        Parameters:
+            animation: Animation to be added
+        """
+        self.animations[animation.name] = copy(animation)
+
+    def anim_remove(self, animation_name: str) -> bool:
+        """Removes an animation
+        Parameters:
+            animation_name: Animation to be removed
+        Returns:
+            If True, removing the animation was successful
+        """
+        raise NotImplementedError
+
     def advance_frame(
         self, delta_time: float, collision_rects: List[pygame.Rect] = []
     ) -> None:
         # Destroy
         if self._enable_destroy and self._destroy_val <= self._clock.get_time():
             self._destroy_queue = True
+
+        # Update Animation
+        if self.current_anim is not None:
+            self.anim_get(self.current_anim).update(delta_time)
 
         # Apply terminal velocity
         term_vec = self.terminal_velocity * delta_time
