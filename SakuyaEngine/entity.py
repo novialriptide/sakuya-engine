@@ -53,7 +53,7 @@ class Entity:
         self.direction = 0
         self.angle = 0
         self.rotation_offset = pygame.Vector2(0, 0)
-        
+
         self.on_awake()
 
     @property
