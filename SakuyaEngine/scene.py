@@ -182,9 +182,7 @@ class Scene:
                     bg.sprite, (bg.position.x, bg.position.y + bg_rect.height)
                 )
 
-    def advance_frame(
-        self, collision_rects: List[pygame.Rect] = []
-    ) -> None:
+    def advance_frame(self, collision_rects: List[pygame.Rect] = []) -> None:
         """Updates the entities inside the world, such as
         physics & animation
 
@@ -192,7 +190,7 @@ class Scene:
 
         """
         delta_time = self.client.delta_time
-        
+
         self.camera.update(delta_time)
 
         for p in self.particle_systems:
