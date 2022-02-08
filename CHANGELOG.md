@@ -1,7 +1,11 @@
 ## version 3.0.0
 ### New Features
 1. Added `LightRoom`.
-
+2. Added `rect_to_lines()`.
+3. Added `Entity` events.
+4. Added `raycast()`.
+5. Reworked `eval_segment_intersection()`.
+6. Added `collide_segments()`.
 
 ## version 2.5.0
 ### New Features
