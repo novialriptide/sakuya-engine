@@ -18,7 +18,6 @@ class Entity:
         tags: List[str] = [],
         scale: float = 1,
         position: pygame.Vector2 = pygame.Vector2(0, 0),
-        terminal_velocity: bool = False,
         obey_gravity: bool = False,
         speed: float = 0,
         custom_hitbox_size: pygame.Vector2 = pygame.Vector2(0, 0),
@@ -32,10 +31,8 @@ class Entity:
         # Collisions & Physics
         self.position = position
         self.obey_gravity = obey_gravity
-        self.terminal_velocity = terminal_velocity
         self.custom_hitbox_size = custom_hitbox_size
         self.speed = speed
-        self.terminal_velocity = 10.0
         self.velocity = pygame.Vector2(0, 0)
         self.acceleration = pygame.Vector2(0, 0)
         self._rect = pygame.Rect(0, 0, 0, 0)
@@ -256,18 +253,6 @@ class Entity:
         # Update Animation
         if self.current_anim is not None:
             self.anim_get(self.current_anim).update(delta_time)
-
-        # Apply terminal velocity
-        term_vec = self.terminal_velocity * delta_time
-        if self.terminal_velocity:
-            if self.velocity.x < 0:
-                self.velocity.x = max(self.velocity.x, term_vec)
-            if self.velocity.x > 0:
-                self.velocity.x = min(self.velocity.x, term_vec)
-            if self.velocity.y < 0:
-                self.velocity.y = max(self.velocity.y, term_vec)
-            if self.velocity.y > 0:
-                self.velocity.y = min(self.velocity.y, term_vec)
 
         g = self.gravity
         if not self.obey_gravity:
