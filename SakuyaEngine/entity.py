@@ -216,9 +216,6 @@ class Entity:
         if self._enable_destroy and self._destroy_val <= self._clock.get_time():
             self._destroy_queue = True
 
-        if self.destroy_position == self.position:
-            self._destroy_queue = True
-
         # Apply terminal velocity
         term_vec = self.terminal_velocity * delta_time
         if self.terminal_velocity:
