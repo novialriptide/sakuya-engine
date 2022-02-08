@@ -114,7 +114,18 @@ def eval_segment_intersection(
         return point2
 
 
-def raycast(coord1: pygame.Vector2, coord2: pygame.Vector2, walls):
+def raycast(coord1: pygame.Vector2, coord2: pygame.Vector2, walls: List[Tuple(float, float)]):
+    """Casts a ray from coord1 to coord2.
+    
+    Parameters:
+        coord1: Starting position.
+        coord2: End position.
+        walls: List of tuples with 2 floats.
+
+    Returns:
+        pygame.Vector2: Finalized point (coord2 if no collision detected).
+
+    """
     x1, y1 = coord1
     x2, y2 = coord2
     line_length = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
