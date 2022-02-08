@@ -53,7 +53,7 @@ class Scene:
     @property
     def name(self) -> str:
         return self.__class__.__name__
-    
+
     def add_entity(self, entity: Entity) -> None:
         self.entities.append(entity)
         entity.on_awake()

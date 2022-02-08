@@ -114,9 +114,11 @@ def eval_segment_intersection(
         return point2
 
 
-def raycast(coord1: pygame.Vector2, coord2: pygame.Vector2, walls: List[Tuple(float, float)]):
+def raycast(
+    coord1: pygame.Vector2, coord2: pygame.Vector2, walls: List[Tuple(float, float)]
+):
     """Casts a ray from coord1 to coord2.
-    
+
     Parameters:
         coord1: Starting position.
         coord2: End position.
@@ -137,6 +139,7 @@ def raycast(coord1: pygame.Vector2, coord2: pygame.Vector2, walls: List[Tuple(fl
         if sort_point_length > c_length:
             highest_point = c
             sort_point_length = c_length
+
     return pygame.Vector2(highest_point)
 
 
