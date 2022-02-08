@@ -53,6 +53,8 @@ class Entity:
         self.direction = 0
         self.angle = 0
         self.rotation_offset = pygame.Vector2(0, 0)
+        
+        self.on_awake()
 
     @property
     def sprite(self) -> pygame.Surface:
@@ -180,10 +182,12 @@ class Entity:
                 test_rect.right = c.left
                 self.position.x = test_rect.x
                 hit["right"] = True
+                self.on_col_right()
             elif movement.x < 0:
                 test_rect.left = c.right
                 self.position.x = test_rect.x
                 hit["left"] = True
+                self.on_col_left()
 
         self.position.y += movement.y
         test_rect = self.static_rect.copy()
@@ -196,10 +200,12 @@ class Entity:
                 test_rect.bottom = c.top
                 self.position.y = test_rect.y
                 hit["bottom"] = True
+                self.on_col_bottom()
             elif movement.y < 0:
                 test_rect.top = c.bottom
                 self.position.y = test_rect.y
                 hit["top"] = True
+                self.on_col_top()
 
         return hit
 

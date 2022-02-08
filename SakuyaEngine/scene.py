@@ -81,7 +81,7 @@ class Scene:
         pass
 
     def update(self, **kwargs) -> None:
-        """Will be called upon every frame. Calling advance_frame() is recommended.
+        """Will be called upon every frame.
 
         Must be overrided.
 
@@ -213,12 +213,16 @@ class Scene:
 
         for entity in self.entities[:]:
             entity.advance_frame(delta_time, collision_rects=collision_rects)
+            entity.on_update()
             if entity._destroy_queue:
+                entity.on_destroy()
                 self.entities.remove(entity)
 
         for bullet in self.bullets[:]:
             bullet.advance_frame(delta_time)
+            bullet.on_update()
             if bullet._destroy_queue:
+                bullet.on_destroy()
                 self.bullets.remove(bullet)
 
         for ef in self.effects[:]:
