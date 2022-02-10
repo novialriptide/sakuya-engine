@@ -22,6 +22,7 @@ class Entity:
         speed: float = 0,
         custom_hitbox_size: pygame.Vector2 = pygame.Vector2(0, 0),
         gravity_scale: float = 1,
+        static_sprite: pygame.Surface = None
     ):
         self.name = name
         self.tags = tags
@@ -43,7 +44,7 @@ class Entity:
         # Animations
         self.animations = {}
         self.current_anim = None
-        self.static_sprite = None
+        self.static_sprite = static_sprite
 
         # Destroy
         self._destroy_val = 0
