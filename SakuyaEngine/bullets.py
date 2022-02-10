@@ -39,7 +39,6 @@ class Bullet(Entity):
             custom_hitbox_size=custom_hitbox_size,
             name=name,
             static_sprite=static_sprite,
-            clock=clock,
         )
         self.angle = angle
         self.speed = speed
@@ -50,6 +49,7 @@ class Bullet(Entity):
         self.direction = 0
         self._sprite = static_sprite
         self.sound_upon_fire = sound_upon_fire
+        self.clock = clock
 
         s = self.sprite
         if s is not None:
