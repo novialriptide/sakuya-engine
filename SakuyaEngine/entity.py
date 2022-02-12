@@ -4,6 +4,7 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 """
 from __future__ import annotations
 from typing import List
+from copy import copy
 
 import pygame
 
@@ -53,7 +54,7 @@ class Entity:
 
         # Rotations & Static Objects
         self._static_rect = pygame.Rect(0, 0, 0, 0)
-        self._sprite = DEFAULT_TEXTURE
+        self._sprite = None
         self.direction = 0
         self.angle = 0
         self.rotation_offset = pygame.Vector2(0, 0)
@@ -63,14 +64,16 @@ class Entity:
     @property
     def sprite(self) -> pygame.Surface:
         out_sprite = None
+        sprite = self.anim_get(self.current_anim).sprite
         if self.scale.x != 1 or self.scale.y != 1:
             width, height = self._sprite.get_size()
             scaled_sprite = pygame.transform.scale(
-                self._sprite, (self.scale.x * width, self.scale.y * height)
+                sprite, (self.scale.x * width, self.scale.y * height)
             )
             out_sprite = scaled_sprite
         else:
-            out_sprite = self._sprite
+            out_sprite = sprite
+
 
         # Rotate sprite
         direction = -self.angle + 360
