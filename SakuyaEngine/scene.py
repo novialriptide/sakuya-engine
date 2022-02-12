@@ -182,7 +182,7 @@ class Scene:
                     bg.sprite, (bg.position.x, bg.position.y + bg_rect.height)
                 )
 
-    def advance_frame(self, collision_rects: List[pygame.Rect] = []) -> None:
+    def advance_frame(self) -> None:
         """Updates the entities inside the world, such as
         physics & animation
 
@@ -209,7 +209,7 @@ class Scene:
                 bg.position.y = bg_rect.height
 
         for entity in self.entities[:]:
-            entity.advance_frame(delta_time, collision_rects=collision_rects)
+            entity.advance_frame(delta_time, collision_rects=self.collision_rects)
             entity.on_update()
             if entity._destroy_queue:
                 entity.on_destroy()
