@@ -23,7 +23,7 @@ class Entity:
         speed: float = 0,
         custom_hitbox_size: pygame.Vector2 = pygame.Vector2(0, 0),
         gravity_scale: float = 1,
-        static_sprite: pygame.Surface = None
+        static_sprite: pygame.Surface = None,
     ):
         self.name = name
         self.tags = tags
@@ -73,7 +73,6 @@ class Entity:
             out_sprite = scaled_sprite
         else:
             out_sprite = sprite
-
 
         # Rotate sprite
         direction = -self.angle + 360

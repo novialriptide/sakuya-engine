@@ -30,7 +30,7 @@ class LightRoom:
         for inner_points in self._inner_points:
             pygame.draw.polygon(self._screen, self._inner_color, inner_points)
 
-        screen_array = pygame.PixelArray(self._screen) # lgtm [py/call/wrong-arguments]
+        screen_array = pygame.PixelArray(self._screen)  # lgtm [py/call/wrong-arguments]
         screen_array.replace(self._outer_color, (0, 0, 0, 50))
         screen_array.replace(self._inner_color, (0, 0, 0, 0))
 
