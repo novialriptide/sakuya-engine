@@ -57,6 +57,8 @@ class LightRoom:
             spread: Angle width of the spotlight in degrees.
 
         """
+        # TODO: Optimize by using this article: https://www.redblobgames.com/articles/visibility/
+        
         outer_points = [position]
         inner_points = [position]
 
