@@ -6,6 +6,7 @@
 4. Added `raycast()`.
 5. Reworked `eval_segment_intersection()`.
 6. Added `collide_segments()`.
+7. Added `draw_pie()`.
 
 ## version 2.5.0
 ### New Features

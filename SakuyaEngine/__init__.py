@@ -10,6 +10,7 @@ __all__ = [
     "animation",
     "bar",
     "bullets",
+    "draw",
     "entity",
     "errors",
     "events",
