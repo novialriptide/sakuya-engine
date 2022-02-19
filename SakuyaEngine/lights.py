@@ -2,12 +2,13 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
-from .math import raycast
+from copy import copy
+from .math import get_angle
 from .scene import Scene
+from .draw import draw_pie
 
 import pygame
 import math
-import random
 
 
 class LightRoom:
@@ -15,27 +16,32 @@ class LightRoom:
         self._screen = scene.screen.copy().convert_alpha()
         self._screen.fill((0, 0, 0))
 
+        self._crop_color = (0, 0, 0)
         self._outer_color = (0, 0, 100)
         self._mid_color = (0, 0, 175)
         self._inner_color = (0, 0, 255)
 
-        self._outer_points = []
-        self._inner_points = []
+        self.outer_light_surfs = []
+        self.inner_light_surfs = []
+        self.outer_shadow_points = []
 
     @property
     def surface(self) -> pygame.Surface:
         self._screen.fill((0, 0, 0))
-        for outer_points in self._outer_points:
-            pygame.draw.polygon(self._screen, self._outer_color, outer_points)
-        for inner_points in self._inner_points:
-            pygame.draw.polygon(self._screen, self._inner_color, inner_points)
+        for out_surf in self.outer_light_surfs:
+            self._screen.blit(out_surf["surf"], out_surf["position"])
+        for in_surf in self.inner_light_surfs:
+            self._screen.blit(in_surf["surf"], in_surf["position"])
+        for points in self.outer_shadow_points:
+            pygame.draw.polygon(self._screen, self._crop_color, points)
 
         screen_array = pygame.PixelArray(self._screen)  # lgtm [py/call/wrong-arguments]
         screen_array.replace(self._outer_color, (0, 0, 0, 50))
         screen_array.replace(self._inner_color, (0, 0, 0, 0))
 
-        self._outer_points = []
-        self._inner_points = []
+        self.outer_light_surfs = []
+        self.inner_light_surfs = []
+        self.outer_shadow_points = []
 
         return self._screen
 
@@ -45,7 +51,6 @@ class LightRoom:
         length: int,
         direction: int,
         spread: int,
-        noise: int = 0,
         collisions=[],
     ) -> None:
         """Draws a spotlight.
@@ -57,47 +62,46 @@ class LightRoom:
             spread: Angle width of the spotlight in degrees.
 
         """
-        # TODO: Optimize by using this article: https://www.redblobgames.com/articles/visibility/
+        start_angle = int(direction - spread / 2)
+        end_angle = int(direction + spread / 2)
+
+        outer_surf = pygame.Surface((length * 2, length * 2))
+        draw_pie(outer_surf, self._outer_color, (length, length), length, start_angle, end_angle)
+        self.outer_light_surfs.append(
+            {"surf": outer_surf, "position": position - pygame.Vector2(length, length)}
+        )
+        outer_surf.set_colorkey((0, 0, 0))
         
-        outer_points = [position]
-        inner_points = [position]
+        inner_surf = pygame.Surface((length * 2, length * 2))
+        draw_pie(inner_surf, self._inner_color, (length, length), int(length / 2), start_angle, end_angle)
+        self.inner_light_surfs.append(
+            {"surf": inner_surf, "position": position - pygame.Vector2(length, length)}
+        )
+        inner_surf.set_colorkey((0, 0, 0))
 
-        angle1 = int(direction - spread / 2)
-        angle2 = int(direction + spread / 2)
-        for n in range(angle1, angle2):
-            rand_x = 0
-            rand_y = 0
-            if noise != 0:
-                rand_x = random.randint(-noise, noise)
-                rand_y = random.randint(-noise, noise)
+        for line in collisions:
+            points = list(copy(line))
+            angle1 = get_angle(position, line[0])
+            angle2 = get_angle(position, line[1])
 
-            point1 = pygame.Vector2(
-                int((length + rand_x) * math.cos(n * math.pi / 180)),
-                int((length + rand_y) * math.sin(n * math.pi / 180)),
+            point1 = (
+                int(length * 2 * math.cos(angle1)),
+                int(length * 2 * math.sin(angle1)),
+            )
+            point2 = (
+                int(length * 2 * math.cos(angle2)),
+                int(length * 2 * math.sin(angle2)),
             )
 
-            outer_point = raycast(position, position + point1, collisions)
+            points.append(pygame.Vector2(line[1]) + point2)
+            points.append(pygame.Vector2(line[0]) + point1)
 
-            outer_points.append(outer_point)
-            point2 = pygame.Vector2(
-                int((length * 0.5 + rand_x) * math.cos(n * math.pi / 180)),
-                int((length * 0.5 + rand_y) * math.sin(n * math.pi / 180)),
-            )
-
-            inner_point = raycast(position, position + point2, collisions)
-
-            inner_points.append(inner_point)
-
-        self._outer_points.append(outer_points)
-        self._inner_points.append(inner_points)
+            self.outer_shadow_points.append(points)
 
     def draw_point_light(
         self,
         position: pygame.Vector2,
         radius: int,
-        noise: int = 0,
         collisions=[],
     ) -> None:
-        self.draw_spot_light(
-            position, radius, 0, 360, noise=noise, collisions=collisions
-        )
+        self.draw_spot_light(position, radius, 0, 360, collisions=collisions)
