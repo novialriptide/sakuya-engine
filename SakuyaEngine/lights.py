@@ -66,14 +66,28 @@ class LightRoom:
         end_angle = int(direction + spread / 2)
 
         outer_surf = pygame.Surface((length * 2, length * 2))
-        draw_pie(outer_surf, self._outer_color, (length, length), length, start_angle, end_angle)
+        draw_pie(
+            outer_surf,
+            self._outer_color,
+            (length, length),
+            length,
+            start_angle,
+            end_angle,
+        )
         self.outer_light_surfs.append(
             {"surf": outer_surf, "position": position - pygame.Vector2(length, length)}
         )
         outer_surf.set_colorkey((0, 0, 0))
-        
+
         inner_surf = pygame.Surface((length * 2, length * 2))
-        draw_pie(inner_surf, self._inner_color, (length, length), int(length / 2), start_angle, end_angle)
+        draw_pie(
+            inner_surf,
+            self._inner_color,
+            (length, length),
+            int(length / 2),
+            start_angle,
+            end_angle,
+        )
         self.inner_light_surfs.append(
             {"surf": inner_surf, "position": position - pygame.Vector2(length, length)}
         )
