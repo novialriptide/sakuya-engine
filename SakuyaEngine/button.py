@@ -24,49 +24,11 @@ class Button:
         self._pressed_down_times = 0
 
     @property
-    def is_pressing_key(self) -> bool:
+    def pressed_key(self) -> bool:
         if self.key is not None:
             return pygame.key.get_pressed()[self.key] == 1
         else:
             return False
-
-    def is_pressing_mousedown(self, point: pygame.Vector2) -> bool:
-        return (
-            pygame.mouse.get_pressed()[0] and self.is_hovering(point)
-        ) or self.is_pressing_key
-
-    def is_pressing_mouseup(self, point: pygame.Vector2) -> bool:
-        return (
-            pygame.mouse.get_pressed()[0] and self.is_hovering(point)
-        ) or self.is_pressing_key
-
-    def is_pressing_mousedown_instant(self, point: pygame.Vector2) -> bool:
-        eval = self.is_pressing_mousedown(point)
-
-        if not eval:
-            self._pressed_down_times = 0
-
-        if eval:
-            self._pressed_down_times += 1
-
-        if self._pressed_down_times > 1 and eval:
-            return False
-
-        return eval
-
-    def is_pressing_mouseup_instant(self, point: pygame.Vector2) -> bool:
-        eval = self.is_pressing_mouseup(point)
-
-        if not eval:
-            self._pressed_up_times = 0
-
-        if eval:
-            self._pressed_up_times += 1
-
-        if self._pressed_up_times > 1 and eval:
-            return False
-
-        return eval
 
     def is_hovering(self, point: pygame.Vector2) -> bool:
         return self.rect.collidepoint(point)

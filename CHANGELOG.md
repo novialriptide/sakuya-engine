@@ -7,8 +7,9 @@
 5. Reworked `eval_segment_intersection()`.
 6. Added `collide_segments()`.
 7. Added `draw_pie()`.
-8. Removed need for `collision_rects` in `Scene.advance_frame()`
-9. Renamed `tests` folder to `examples`
+8. Removed need for `collision_rects` in `Scene.advance_frame()`.
+9. Renamed `tests` folder to `examples`.
+10. Removed inaccurate mouse presses in `Button`.
 
 ## version 2.5.0
 ### New Features
