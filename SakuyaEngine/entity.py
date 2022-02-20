@@ -58,6 +58,7 @@ class Entity:
         self.direction = 0
         self.angle = 0
         self.rotation_offset = pygame.Vector2(0, 0)
+        self.alpha = 255
 
         self.on_awake()
 
@@ -83,7 +84,8 @@ class Entity:
             self.rotation_offset.x = rect_width / 2 - sprite_width / 2
             self.rotation_offset.y = rect_height / 2 - sprite_height / 2
             self.direction = direction
-
+        
+        self._sprite.set_alpha(self.alpha)
         return self._sprite
 
     @sprite.setter

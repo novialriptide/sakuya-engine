@@ -10,6 +10,7 @@
 8. Removed need for `collision_rects` in `Scene.advance_frame()`.
 9. Renamed `tests` folder to `examples`.
 10. Removed inaccurate mouse presses in `Button`.
+11. Added `Entity.alpha`.
 
 ## version 2.5.0
 ### New Features
