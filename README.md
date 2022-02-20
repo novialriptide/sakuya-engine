@@ -25,7 +25,7 @@ pip install .
 ## Questions & Answers
 1. Is this repository open for contributions?
 
-No, this repository is not contribution-friendly as the maintainer for this repository doesn't use pull requests to organize changes. 
+No, this repository is not contribution-friendly as the maintainer for this repository doesn't use pull requests to organize changes. Furthermore, this is an engine that is personally used by the maintainer and if there is code introduced that the maintainer does not understand, there'll be delays during development of a new game.
 
 2. Can I use this for my game?
 
