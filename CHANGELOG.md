@@ -8,6 +8,7 @@
 6. Added `collide_segments()`.
 7. Added `draw_pie()`.
 8. Removed need for `collision_rects` in `Scene.advance_frame()`
+9. Renamed `tests` folder to `examples`
 
 ## version 2.5.0
 ### New Features
