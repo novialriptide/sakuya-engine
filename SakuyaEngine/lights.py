@@ -24,14 +24,28 @@ class LightRoom:
         self.outer_light_surfs = []
         self.inner_light_surfs = []
         self.outer_shadow_points = []
+        
+        self.alpha = 1
 
     @property
     def surface(self) -> pygame.Surface:
         self._screen.fill((0, 0, 0))
         for out_surf in self.outer_light_surfs:
-            self._screen.blit(out_surf["surf"], out_surf["position"])
+            out_surf_keys = out_surf.keys()
+            if "surf" in out_surf_keys:
+                self._screen.blit(out_surf["surf"], out_surf["position"])
+
+            elif "func" in out_surf_keys:
+                out_surf["func"]()
+
         for in_surf in self.inner_light_surfs:
-            self._screen.blit(in_surf["surf"], in_surf["position"])
+            in_surf_keys = in_surf.keys()
+            if "surf" in in_surf_keys:
+                self._screen.blit(in_surf["surf"], in_surf["position"])
+            
+            elif "func" in in_surf_keys:
+                in_surf["func"]()
+            
         for points in self.outer_shadow_points:
             pygame.draw.polygon(self._screen, self._crop_color, points)
 
@@ -43,6 +57,7 @@ class LightRoom:
         self.inner_light_surfs = []
         self.outer_shadow_points = []
 
+        self._screen.set_alpha(self.alpha * 255)
         return self._screen
 
     def draw_spot_light(
@@ -119,3 +134,31 @@ class LightRoom:
         collisions=[],
     ) -> None:
         self.draw_spot_light(position, radius, 0, 360, collisions=collisions)
+
+    def draw_area_light(
+        self,
+        position1: pygame.Vector2,
+        position2: pygame.Vector2,
+        length: int,
+        direction: float,
+    ) -> None:
+        # TODO: Make this work with collisions
+        
+        direction = math.radians(direction)
+        position_offset1 = pygame.Vector2(length * math.cos(direction), length * math.sin(direction))
+        points1 = [position1, position2, position2 + position_offset1, position1 + position_offset1]
+        def draw_outer_surf():
+            pygame.draw.polygon(self._screen, self._outer_color, points1)
+        
+        self.outer_light_surfs.append(
+            {"func": draw_outer_surf, "position": None}
+        )
+        
+        position_offset2 = pygame.Vector2(length / 2 * math.cos(direction), length / 2 * math.sin(direction))
+        points2 = [position1, position2, position2 + position_offset2, position1 + position_offset2]
+        def draw_inner_surf():
+            pygame.draw.polygon(self._screen, self._inner_color, points2)
+        
+        self.inner_light_surfs.append(
+            {"func": draw_inner_surf, "position": None}
+        )
