@@ -82,7 +82,7 @@ class Entity:
             self.rotation_offset.x = rect_width / 2 - sprite_width / 2
             self.rotation_offset.y = rect_height / 2 - sprite_height / 2
             self.direction = direction
-        
+
         self._sprite.set_alpha(self.alpha)
         return self._sprite
 
