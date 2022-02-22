@@ -60,8 +60,6 @@ class Entity:
         self.rotation_offset = pygame.Vector2(0, 0)
         self.alpha = 255
 
-        self.on_awake()
-
     @property
     def sprite(self) -> pygame.Surface:
         out_sprite = None
@@ -292,11 +290,11 @@ class Entity:
     def on_col_left(self) -> None:
         pass
 
-    def on_awake(self) -> None:
+    def on_awake(self, scene) -> None:
         pass
 
-    def on_destroy(self) -> None:
+    def on_destroy(self, scene) -> None:
         pass
 
-    def on_update(self) -> None:
+    def on_update(self, scene) -> None:
         pass

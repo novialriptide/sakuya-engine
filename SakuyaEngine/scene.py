@@ -56,7 +56,7 @@ class Scene:
 
     def add_entity(self, entity: Entity) -> None:
         self.entities.append(entity)
-        entity.on_awake()
+        entity.on_awake(self)
 
     def on_awake(self, **kwargs) -> None:
         """Will be called upon startup.
@@ -210,9 +210,9 @@ class Scene:
 
         for entity in self.entities[:]:
             entity.advance_frame(delta_time, collision_rects=self.collision_rects)
-            entity.on_update()
+            entity.on_update(self)
             if entity._destroy_queue:
-                entity.on_destroy()
+                entity.on_destroy(self)
                 self.entities.remove(entity)
 
         for bullet in self.bullets[:]:
