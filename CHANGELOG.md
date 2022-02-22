@@ -11,6 +11,7 @@
 9. Renamed `tests` folder to `examples`.
 10. Removed inaccurate mouse presses in `Button`.
 11. Added `Entity.alpha`.
+12. Added `Clock.reset()`.
 
 ## version 2.5.0
 ### New Features
