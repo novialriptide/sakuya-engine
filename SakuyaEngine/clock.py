@@ -22,7 +22,7 @@ class Clock:
         self._accum += (time.time() - self._started_running_at) * self._speed
         self._started_running_at = time.time()
         self._speed = speed
-    
+
     def reset(self) -> None:
         self._accum = 0
         self._started_running_at = time.time()

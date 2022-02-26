@@ -29,7 +29,7 @@ def draw_pie(
     if start_angle == -180 and end_angle == 180:
         pygame.draw.circle(surface, color, position, radius)
         return None
-    
+
     points = [position]
     for angle in range(start_angle, end_angle):
         angle = math.radians(angle)
