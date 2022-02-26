@@ -12,6 +12,7 @@
 10. Removed inaccurate mouse presses in `Button`.
 11. Added `Entity.alpha`.
 12. Added `Clock.reset()`.
+13. Added `Entity.ignore_collisions`
 
 ## version 2.5.0
 ### New Features

@@ -24,6 +24,7 @@ class Entity:
         custom_hitbox_size: pygame.Vector2 = pygame.Vector2(0, 0),
         gravity_scale: float = 1,
         static_sprite: pygame.Surface = None,
+        ignore_collisions: bool = False,
     ):
         self.name = name
         self.tags = tags
@@ -41,6 +42,7 @@ class Entity:
         self._custom_hitbox_rect = pygame.Rect(0, 0, 0, 0)
         self.gravity_scale = gravity_scale
         self.gravity = pygame.Vector2(1, 0)
+        self.ignore_collisions = ignore_collisions
 
         # Animations
         self.animations = {}
@@ -265,6 +267,9 @@ class Entity:
         self.velocity += self.acceleration + g
 
         velocity = self.velocity * delta_time
+
+        if self.ignore_collisions:
+            collision_rects = []
 
         collisions = self.move(velocity, collision_rects)
 
