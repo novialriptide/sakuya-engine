@@ -26,6 +26,7 @@ class Client:
         scale_upon_startup: float = 1,
         debug_caption: bool = True,
         keep_aspect_ratio: bool = True,
+        mouse_image: pygame.image = None,
     ) -> None:
         """The game's main client.
 
@@ -47,6 +48,7 @@ class Client:
         self.window_icon = window_icon
         self.original_aspect_ratio = window_size.x / window_size.y  # float
         self.keep_aspect_ratio = keep_aspect_ratio
+        self.mouse_image = mouse_image
 
         self.running_scenes = {}
         self.deleted_scenes_queue = []
@@ -67,6 +69,11 @@ class Client:
         self.window_size = window_size * scale_upon_startup
 
         pygame.display.set_caption(self._window_name)
+
+        if self.mouse_image:
+            pygame.mouse.set_cursor(
+                (8, 8), (0, 0), (0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0)
+            )
 
         if self.window_icon is None:
             pass  # add sakuya as a default icon
@@ -177,10 +184,11 @@ class Client:
                 except KeyError:
                     print(f'Tried deleting scene that does not exist: "{s}"')
 
-            self.window.blit(
-                self._screen,
-                self._screen_pos,
-            )
+            if self.mouse_pos:
+                self.screen.blit(self.mouse_image, self.mouse_pos)
+
+            self.window.blit(self._screen, self._screen_pos)
+
             self.event_system.update()
             pygame.display.update()
             self.pg_clock.tick(self.max_fps)

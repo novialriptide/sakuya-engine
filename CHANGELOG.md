@@ -13,6 +13,7 @@
 11. Added `Entity.alpha`.
 12. Added `Clock.reset()`.
 13. Added `Entity.ignore_collisions`
+14. Added custom mouse pointer image support.
 
 ## version 2.5.0
 ### New Features
