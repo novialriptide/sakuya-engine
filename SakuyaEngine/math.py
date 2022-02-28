@@ -21,26 +21,6 @@ def vector2_ratio_yx(vector: vector2) -> float:
     return vector.y / vector.x
 
 
-def vector2_move_toward(origin: vector2, target: vector2, distance: float) -> vector2:
-    """Moves towards the target Vector2 by the movement speed.
-
-    Must be put in a loop until its reached its target.
-
-    Parameters:
-        origin: The original position
-        target: The target position.
-        distance: The movement distance.
-
-    """
-    delta = target - origin
-    dist = delta.magnitude()
-
-    if dist <= distance or dist == 0:
-        return target
-
-    return origin + delta / dist * distance
-
-
 def get_angle(origin: vector2, target: vector2) -> float:
     """Returns an angle in radians of the object to look at from the origin point
 

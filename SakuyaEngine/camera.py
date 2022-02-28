@@ -1,5 +1,4 @@
 from .clock import Clock
-from .math import vector2_move_toward
 
 import pygame
 import random
@@ -66,6 +65,4 @@ class Camera:
             self.shaking = False
             self.move_to_position = self._position
 
-        self.position = vector2_move_toward(
-            self.position, self.move_to_position, self.shake_speed
-        )
+        self.position.move_towards(self.move_to_position, self.shake_speed)

@@ -14,6 +14,7 @@
 12. Added `Clock.reset()`.
 13. Added `Entity.ignore_collisions`
 14. Added custom mouse pointer image support.
+15. Removed `vector2_move_toward()` in favor of pygame's new `.move_towards()`.
 
 ## version 2.5.0
 ### New Features
