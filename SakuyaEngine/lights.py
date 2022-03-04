@@ -12,8 +12,12 @@ import math
 
 
 class LightRoom:
-    def __init__(self, scene: Scene):
-        self._screen = scene.screen.copy().convert_alpha()
+    def __init__(self, scene: Scene, size: pygame.Vector2 = None):
+        if size is None:
+            self._screen = scene.screen.copy().convert_alpha()
+        else:
+            self._screen = pygame.Surface(size)
+        
         self._screen.fill((0, 0, 0))
 
         self._crop_color = (0, 0, 0)
