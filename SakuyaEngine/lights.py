@@ -16,7 +16,7 @@ class LightRoom:
         if size is None:
             self._screen = scene.screen.copy().convert_alpha()
         else:
-            self._screen = pygame.Surface(size)
+            self._screen = pygame.Surface(size).convert_alpha()
         
         self._screen.fill((0, 0, 0))
 
@@ -118,12 +118,12 @@ class LightRoom:
             angle2 = get_angle(position, line[1])
 
             point1 = (
-                int(length * 2 * math.cos(angle1)),
-                int(length * 2 * math.sin(angle1)),
+                int(length * 5 * math.cos(angle1)),
+                int(length * 5 * math.sin(angle1)),
             )
             point2 = (
-                int(length * 2 * math.cos(angle2)),
-                int(length * 2 * math.sin(angle2)),
+                int(length * 5 * math.cos(angle2)),
+                int(length * 5 * math.sin(angle2)),
             )
 
             points.append(pygame.Vector2(line[1]) + point2)
