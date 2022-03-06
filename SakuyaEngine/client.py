@@ -70,7 +70,7 @@ class Client:
 
         pygame.display.set_caption(self._window_name)
 
-        if self.mouse_image:
+        if self.mouse_image is not None:
             pygame.mouse.set_cursor(
                 (8, 8), (0, 0), (0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0)
             )
@@ -184,7 +184,7 @@ class Client:
                 except KeyError:
                     print(f'Tried deleting scene that does not exist: "{s}"')
 
-            if self.mouse_pos:
+            if self.mouse_image is not None and self.mouse_pos:
                 self.screen.blit(self.mouse_image, self.mouse_pos)
 
             self.window.blit(self._screen, self._screen_pos)
