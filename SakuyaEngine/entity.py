@@ -7,6 +7,7 @@ from typing import List
 from copy import copy
 
 import pygame
+import math
 
 from .locals import DEFAULT_TEXTURE
 from .animation import Animation
@@ -177,9 +178,18 @@ class Entity:
     def move(
         self, movement: pygame.Vector2, collision_rects: List[pygame.Rect]
     ) -> bool:
+        def special_round(val: float) -> int:
+            if val > 0:
+                return math.ceil(val)
+            elif val < 0:
+                return math.floor(val)
+            elif val == 0:
+                return 0
+        
         hit = {"top": False, "bottom": False, "left": False, "right": False}
-        self.position.x += movement.x
         test_rect = self.static_rect.copy()
+        self.position.x += movement.x
+        test_rect.x += special_round(movement.x)
         verified_collisions = []
         for c in collision_rects:
             if test_rect.colliderect(c):
@@ -198,7 +208,7 @@ class Entity:
             self.position.x = test_rect.x
 
         self.position.y += movement.y
-        test_rect = self.static_rect.copy()
+        test_rect.y += special_round(movement.y)
         verified_collisions = []
         for c in collision_rects:
             if test_rect.colliderect(c):
