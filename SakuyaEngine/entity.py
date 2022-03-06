@@ -188,14 +188,14 @@ class Entity:
         for c in verified_collisions:
             if movement.x > 0:
                 test_rect.right = c.left
-                self.position.x = test_rect.x
                 hit["right"] = True
                 self.on_col_right()
             elif movement.x < 0:
                 test_rect.left = c.right
-                self.position.x = test_rect.x
                 hit["left"] = True
                 self.on_col_left()
+
+            self.position.x = test_rect.x
 
         self.position.y += movement.y
         test_rect = self.static_rect.copy()
@@ -206,14 +206,14 @@ class Entity:
         for c in verified_collisions:
             if movement.y > 0:
                 test_rect.bottom = c.top
-                self.position.y = test_rect.y
                 hit["bottom"] = True
                 self.on_col_bottom()
             elif movement.y < 0:
                 test_rect.top = c.bottom
-                self.position.y = test_rect.y
                 hit["top"] = True
                 self.on_col_top()
+
+            self.position.y = test_rect.y
 
         return hit
 
