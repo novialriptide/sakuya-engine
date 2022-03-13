@@ -15,6 +15,7 @@
 13. Added `Entity.ignore_collisions`
 14. Added custom mouse pointer image support.
 15. Removed `vector2_move_toward()` in favor of pygame's new `.move_towards()`.
+16. Added `Fonts`
 
 ## version 2.5.0
 ### New Features
