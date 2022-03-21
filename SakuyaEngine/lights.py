@@ -2,7 +2,9 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
+from typing import Tuple
 from copy import copy
+
 from .math import get_angle
 from .scene import Scene
 from .draw import draw_pie
@@ -28,6 +30,8 @@ class LightRoom:
         self.outer_light_surfs = []
         self.inner_light_surfs = []
         self.outer_shadow_points = []
+        
+        self.color_light_surfs = []
 
         self.alpha = 1
 
@@ -50,16 +54,21 @@ class LightRoom:
             elif "func" in in_surf_keys:
                 in_surf["func"]()
 
-        for points in self.outer_shadow_points:
-            pygame.draw.polygon(self._screen, self._crop_color, points)
-
         screen_array = pygame.PixelArray(self._screen)  # lgtm [py/call/wrong-arguments]
         screen_array.replace(self._outer_color, (0, 0, 0, 50))
         screen_array.replace(self._inner_color, (0, 0, 0, 0))
+        screen_array.close()
+
+        for color_surf in self.color_light_surfs:
+            self._screen.blit(color_surf["surf"], color_surf["position"])
+
+        for points in self.outer_shadow_points:
+            pygame.draw.polygon(self._screen, self._crop_color, points)
 
         self.outer_light_surfs = []
         self.inner_light_surfs = []
         self.outer_shadow_points = []
+        self.color_light_surfs = []
 
         self._screen.set_alpha(self.alpha * 255)
         return self._screen
@@ -71,6 +80,7 @@ class LightRoom:
         direction: int,
         spread: int,
         collisions=[],
+        color: Tuple[int, int, int, int] = (255, 255, 255, 25),
     ) -> None:
         """Draws a spotlight.
 
@@ -84,7 +94,7 @@ class LightRoom:
         start_angle = int(direction - spread / 2)
         end_angle = int(direction + spread / 2)
 
-        outer_surf = pygame.Surface((length * 2, length * 2))
+        outer_surf = pygame.Surface((length * 2, length * 2)).convert_alpha()
         draw_pie(
             outer_surf,
             self._outer_color,
@@ -93,12 +103,30 @@ class LightRoom:
             start_angle,
             end_angle,
         )
+        outer_surf_array = pygame.PixelArray(outer_surf)  # lgtm [py/call/wrong-arguments]
+        outer_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
+        
+        color_surf = pygame.Surface((length * 2, length * 2)).convert_alpha()
+        draw_pie(
+            color_surf,
+            color,
+            (length, length),
+            length,
+            start_angle,
+            end_angle,
+        )
+        outer_surf_array = pygame.PixelArray(color_surf)  # lgtm [py/call/wrong-arguments]
+        outer_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
+        
+        self.color_light_surfs.append(
+            {"surf": color_surf, "position": position - pygame.Vector2(length, length)}
+        )
+
         self.outer_light_surfs.append(
             {"surf": outer_surf, "position": position - pygame.Vector2(length, length)}
         )
-        outer_surf.set_colorkey((0, 0, 0))
 
-        inner_surf = pygame.Surface((length * 2, length * 2))
+        inner_surf = pygame.Surface((length * 2, length * 2)).convert_alpha()
         draw_pie(
             inner_surf,
             self._inner_color,
@@ -107,10 +135,12 @@ class LightRoom:
             start_angle,
             end_angle,
         )
+        inner_light_array = pygame.PixelArray(inner_surf)  # lgtm [py/call/wrong-arguments]
+        inner_light_array.replace((0, 0, 0), (0, 0, 0, 0))
+
         self.inner_light_surfs.append(
             {"surf": inner_surf, "position": position - pygame.Vector2(length, length)}
         )
-        inner_surf.set_colorkey((0, 0, 0))
 
         for line in collisions:
             points = list(copy(line))
@@ -136,8 +166,9 @@ class LightRoom:
         position: pygame.Vector2,
         radius: int,
         collisions=[],
+        color: Tuple[int, int, int, int] = (255, 255, 255, 25),
     ) -> None:
-        self.draw_spot_light(position, radius, 0, 360, collisions=collisions)
+        self.draw_spot_light(position, radius, 0, 360, collisions=collisions, color=color)
 
     def draw_area_light(
         self,
@@ -145,6 +176,7 @@ class LightRoom:
         position2: pygame.Vector2,
         length: int,
         direction: float,
+        color: Tuple[int, int, int, int] = (255, 255, 255, 25),
     ) -> None:
         direction = math.radians(direction)
         position_offset1 = pygame.Vector2(
