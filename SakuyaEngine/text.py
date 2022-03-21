@@ -15,6 +15,11 @@ class Font:
     """Handles pixel font without artifacts
     """
     def __init__(self, alphabet_path: str = None, numbers_path: str = None, special_path: str = None) -> None:
+        """Initialize Font object.
+        
+        Warning: The height for each image should all be the same.
+
+        """
         self.alphabet_path = alphabet_path
         self.numbers_path = numbers_path
         self.special_path = special_path
