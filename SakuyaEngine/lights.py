@@ -146,8 +146,6 @@ class LightRoom:
         length: int,
         direction: float,
     ) -> None:
-        # TODO: Make this work with collisions
-
         direction = math.radians(direction)
         position_offset1 = pygame.Vector2(
             length * math.cos(direction), length * math.sin(direction)
