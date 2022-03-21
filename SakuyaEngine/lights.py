@@ -19,7 +19,7 @@ class LightRoom:
             self._screen = scene.screen.copy().convert_alpha()
         else:
             self._screen = pygame.Surface(size).convert_alpha()
-        
+
         self._screen.fill((0, 0, 0))
 
         self._crop_color = (0, 0, 0)
@@ -30,7 +30,7 @@ class LightRoom:
         self.outer_light_surfs = []
         self.inner_light_surfs = []
         self.outer_shadow_points = []
-        
+
         self.color_light_surfs = []
 
         self.alpha = 1
@@ -103,9 +103,11 @@ class LightRoom:
             start_angle,
             end_angle,
         )
-        outer_surf_array = pygame.PixelArray(outer_surf)  # lgtm [py/call/wrong-arguments]
+        outer_surf_array = pygame.PixelArray(
+            outer_surf
+        )  # lgtm [py/call/wrong-arguments]
         outer_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
-        
+
         color_surf = pygame.Surface((length * 2, length * 2)).convert_alpha()
         draw_pie(
             color_surf,
@@ -115,9 +117,11 @@ class LightRoom:
             start_angle,
             end_angle,
         )
-        outer_surf_array = pygame.PixelArray(color_surf)  # lgtm [py/call/wrong-arguments]
+        outer_surf_array = pygame.PixelArray(
+            color_surf
+        )  # lgtm [py/call/wrong-arguments]
         outer_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
-        
+
         self.color_light_surfs.append(
             {"surf": color_surf, "position": position - pygame.Vector2(length, length)}
         )
@@ -135,7 +139,9 @@ class LightRoom:
             start_angle,
             end_angle,
         )
-        inner_light_array = pygame.PixelArray(inner_surf)  # lgtm [py/call/wrong-arguments]
+        inner_light_array = pygame.PixelArray(
+            inner_surf
+        )  # lgtm [py/call/wrong-arguments]
         inner_light_array.replace((0, 0, 0), (0, 0, 0, 0))
 
         self.inner_light_surfs.append(
@@ -168,7 +174,9 @@ class LightRoom:
         collisions=[],
         color: Tuple[int, int, int, int] = (255, 255, 255, 25),
     ) -> None:
-        self.draw_spot_light(position, radius, 0, 360, collisions=collisions, color=color)
+        self.draw_spot_light(
+            position, radius, 0, 360, collisions=collisions, color=color
+        )
 
     def draw_area_light(
         self,

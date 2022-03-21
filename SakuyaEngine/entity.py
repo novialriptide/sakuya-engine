@@ -185,7 +185,7 @@ class Entity:
                 return math.floor(val)
             elif val == 0:
                 return 0
-        
+
         hit = {"top": False, "bottom": False, "left": False, "right": False}
         test_rect = self.static_rect.copy()
         self.position.x += movement.x
