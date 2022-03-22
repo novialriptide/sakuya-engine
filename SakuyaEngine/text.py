@@ -26,37 +26,41 @@ class Font:
         Warning: The height for each image should all be the same.
 
         """
+        self.database = {}
         self.alphabet_path = alphabet_path
         self.numbers_path = numbers_path
         self.special_path = special_path
 
         if self.alphabet_path is not None:
             self._alphabet_surface = pygame.image.load(self.alphabet_path)
+            self._iterate_font_surf(self._alphabet_surface, ALPHABET_CHARS)
 
         if self.numbers_path is not None:
             self._numbers_surface = pygame.image.load(self.numbers_path)
+            self._iterate_font_surf(self._numbers_surface, NUMBER_CHARS)
 
         if self.special_path is not None:
             self._special_surface = pygame.image.load(self.special_path)
+            self._iterate_font_surf(self._special_surface, SPECIAL_CHARS)
 
-        self.database = {}
-
+    def _iterate_font_surf(self, surface: pygame.Surface, chars: str) -> None:
         start = 0
         width = 0
-        alphabet_height = self._alphabet_surface.get_height()
+        alphabet_height = surface.get_height()
         char = 0
-        for pixel in range(self._alphabet_surface.get_width()):
-            if self._alphabet_surface.get_at((pixel, 0)) == CHAR_COLOR:
+        chars = list(chars)
+        for pixel in range(surface.get_width()):
+            if surface.get_at((pixel, 0)) == CHAR_COLOR:
                 width += 1
-            elif self._alphabet_surface.get_at((pixel, 0)) != CHAR_COLOR:
-                self.database[ALPHABET_CHARS[char]] = self._alphabet_surface.subsurface(
+            elif surface.get_at((pixel, 0)) != CHAR_COLOR:
+                self.database[chars[char]] = surface.subsurface(
                     (start, 1, width, alphabet_height - 1)
                 ).convert_alpha()
                 start += width + 1
                 width = 0
                 char += 1
 
-            if char == len(list(ALPHABET_CHARS)):
+            if char == len(chars):
                 break
 
     def text(
