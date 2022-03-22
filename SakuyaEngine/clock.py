@@ -2,11 +2,11 @@ import time
 
 
 class Clock:
-    def __init__(self) -> None:
+    def __init__(self, pause_upon_start: bool = False) -> None:
         self._accum = 0
 
         self._started_running_at = time.time()
-        self._running = True
+        self._running = not pause_upon_start
         self._speed = 1
 
     @property
