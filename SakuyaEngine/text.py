@@ -66,7 +66,6 @@ class Font:
     def text(
         self,
         text,
-        scale: int = 1,
         dist: int = 1,
         space_dist: int = 2,
         color: Tuple[int, int, int] = (255, 255, 255),
