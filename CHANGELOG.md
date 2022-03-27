@@ -17,6 +17,7 @@
 15. Removed `vector2_move_toward()` in favor of pygame's new `.move_towards()`.
 16. Added `Fonts`.
 17. Added `pause_upon_start` kwarg for `Clock`.
+18. Added `Clock.set_time()`.
 
 ## version 2.5.0
 ### New Features

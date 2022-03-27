@@ -46,3 +46,6 @@ class Clock:
             )
         else:
             return self._accum * 1000
+
+    def set_time(self, val) -> None:
+        self._accum = val
