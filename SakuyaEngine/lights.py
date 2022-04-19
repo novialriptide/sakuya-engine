@@ -116,21 +116,19 @@ class LightRoom:
             start_angle,
             end_angle,
         )
-        outer_surf_array = pygame.PixelArray(
-            color_surf
-        )  # lgtm [py/call/wrong-arguments]
-        outer_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
+        color_surf_array = pygame.PixelArray(color_surf)
+        color_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
 
-        outer_shadow_points = []
+        shadow_points = []
         for line in collisions:
             points = list(copy(line))
             angle1 = get_angle(position, line[0])
-            angle2 = get_angle(position, line[1])
-
             point1 = (
                 int(length * 2 * math.cos(angle1)),
                 int(length * 2 * math.sin(angle1)),
             )
+
+            angle2 = get_angle(position, line[1])
             point2 = (
                 int(length * 2 * math.cos(angle2)),
                 int(length * 2 * math.sin(angle2)),
@@ -139,21 +137,22 @@ class LightRoom:
             points.append(pygame.Vector2(line[1]) + point2)
             points.append(pygame.Vector2(line[0]) + point1)
 
-            outer_shadow_points.append(points)
+            shadow_points.append(points)
 
+        surf_position = position - pygame.Vector2(length, length)
         self.color_light_surfs.append(
             {
                 "surf": color_surf,
-                "position": position - pygame.Vector2(length, length),
-                "shadow_points": outer_shadow_points,
+                "position": surf_position,
+                "shadow_points": shadow_points,
             }
         )
 
         self.outer_light_surfs.append(
             {
                 "surf": outer_surf,
-                "position": position - pygame.Vector2(length, length),
-                "shadow_points": outer_shadow_points,
+                "position": surf_position,
+                "shadow_points": shadow_points,
             }
         )
 
