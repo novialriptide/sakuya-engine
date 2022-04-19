@@ -22,7 +22,7 @@ class LightRoom:
 
         self._screen.fill((0, 0, 0))
 
-        self._crop_color = (0, 0, 0)
+        self._crop_color = (0, 255, 0)
         self._outer_color = (0, 0, 100)
         self._mid_color = (0, 0, 175)
         self._inner_color = (0, 0, 255)
@@ -128,12 +128,12 @@ class LightRoom:
             angle2 = get_angle(position, line[1])
 
             point1 = (
-                int(length * 1.2 * math.cos(angle1)),
-                int(length * 1.2 * math.sin(angle1)),
+                int(length * 2 * math.cos(angle1)),
+                int(length * 2 * math.sin(angle1)),
             )
             point2 = (
-                int(length * 1.2 * math.cos(angle2)),
-                int(length * 1.2 * math.sin(angle2)),
+                int(length * 2 * math.cos(angle2)),
+                int(length * 2 * math.sin(angle2)),
             )
 
             points.append(pygame.Vector2(line[1]) + point2)
