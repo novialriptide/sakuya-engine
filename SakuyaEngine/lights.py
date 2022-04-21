@@ -48,9 +48,7 @@ class LightRoom:
                 for p in out_surf["shadow_points"]:
                     pygame.draw.polygon(surf, self._crop_color, p)
 
-                    surf_array = pygame.PixelArray(
-                        surf
-                    )  # lgtm [py/call/wrong-arguments]
+                    surf_array = pygame.PixelArray(surf)
                     surf_array.replace(self._crop_color, (0, 0, 0, 0))
                     surf_array.close()
 
@@ -65,7 +63,7 @@ class LightRoom:
         for s in surfs:
             self._screen.blit(s, (0, 0))
 
-        screen_array = pygame.PixelArray(self._screen)  # lgtm [py/call/wrong-arguments]
+        screen_array = pygame.PixelArray(self._screen)
         screen_array.replace(self._outer_color, (0, 0, 0, 50))
         screen_array.close()
 
@@ -102,9 +100,7 @@ class LightRoom:
             start_angle,
             end_angle,
         )
-        outer_surf_array = pygame.PixelArray(
-            outer_surf
-        )  # lgtm [py/call/wrong-arguments]
+        outer_surf_array = pygame.PixelArray(outer_surf)
         outer_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
 
         color_surf = pygame.Surface((length * 2, length * 2)).convert_alpha()
