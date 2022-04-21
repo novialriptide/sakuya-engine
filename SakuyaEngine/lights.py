@@ -116,10 +116,8 @@ class LightRoom:
             start_angle,
             end_angle,
         )
-        outer_surf_array = pygame.PixelArray(
-            color_surf
-        )  # lgtm [py/call/wrong-arguments]
-        outer_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
+        color_surf_array = pygame.PixelArray(color_surf)
+        color_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
 
         shadow_points = []
         for line in collisions:
