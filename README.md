@@ -1,40 +1,45 @@
-![sakuya-img](https://c4.wallpaperflare.com/wallpaper/802/75/784/anime-anime-girls-izayoi-sakuya-touhou-wallpaper-preview.jpg)
+<div align="center">
+    <h1>SakuyaEngine</h1>
+    <p>Game engine for all of your pygame needs</p>
+    <img src="https://img.shields.io/github/license/novialriptide/SakuyaEngine" alt="License">
+    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code Style">
+    <img src="https://img.shields.io/github/stars/novialriptide/SakuyaEngine" alt="Stars">
+    <img src="https://img.shields.io/tokei/lines/github/novialriptide/SakuyaEngine" alt="Lines">
+</div>
 
-# SakuyaEngine
-[![Documentation Status](https://readthedocs.org/projects/sakuya/badge/?version=latest)](https://sakuya.readthedocs.io/en/latest/?badge=latest)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/novialriptide/SakuyaEngine/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/novialriptide/SakuyaEngine/context:python)
+## About
 
 An object-oriented game engine written in Python3 depending on pygame2 named after the iconic Touhou character, Sakuya. This game engine was originally made for bullet hell games, but now is focused on other genres as well.
 
-This engine supports Scene Management, Advanced Bullet Patterns, Primitive Particles, and an Advanced Clock System.
-
-Additional plans for this engine includes an Advanced Lighting Engine, Advanced Events, Documentation, and Multiplayer Support.
-
-## Dependencies
-```
-pygame>=2.1.2
-```
+This engine supports Scene Management, Advanced Bullet Management, Primitive Particles, an Advanced Clock System, Lights, etc.
 
 ## Installation
 ```
-pip install -r requirements.txt
 pip install .
 ```
 
 ## Questions & Answers
-1. Is this repository open for contributions?
-
-No, this repository is not contribution-friendly as the maintainer for this repository doesn't use pull requests to organize changes. Furthermore, this is an engine that is personally used by the maintainer and if there is code introduced that the maintainer does not understand, there'll be delays during development of a new game.
-
-2. Can I use this for my game?
+1. Can I use this for my game?
 
 Go for it, although there is no documentation and method names will be changing from time to time. I only recommend you use this as a reference. Please credit me if you're going to copy and paste it in your game.
 
-3. Why Sakuya?
+2. Why Sakuya?
 
 She's my favorite Touhou character and seeing that this engine was made for bullet hells, I found the name very fitting.
 
-4. Can SakuyaEngine work with Pyglet or Arcade?
+3. Can SakuyaEngine work with Pyglet or Arcade?
 
 No, and it never will.
+
+4. Will SakuyaEngine be uploaded to PyPi?
+
+I don't think it belongs on PyPi, as this engine is completely built ontop of pygame. I'll have to think about it.
+
+## Official SakuyaEngine Projects
+ - https://github.com/novialriptide/Helix
+ - https://github.com/novialriptide/Stalker
+
+
+
+
+
