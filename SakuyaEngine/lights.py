@@ -1,74 +1,69 @@
-"""
-SakuyaEngine (c) 2020-2021 Andrew Hong
-This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
-"""
-from typing import Tuple
-from copy import copy
+from typing import Tuple, List
 
-from .math import get_angle
 from .scene import Scene
+from .math import get_angle
 from .draw import draw_pie
 
-import pygame
 import math
+import copy
+import pygame
 
 
 class LightRoom:
-    def __init__(self, scene: Scene, size: pygame.Vector2 = None):
-        if size is None:
-            self._screen = scene.screen.copy().convert_alpha()
-        else:
-            self._screen = pygame.Surface(size).convert_alpha()
+    def __init__(
+        self,
+        scene: Scene,
+        shadow_color: Tuple[int, int, int] = (0, 0, 0),
+        alpha: int = 1,
+    ) -> None:
+        self.shadow_color = shadow_color
+        self._scene = scene
+        self._surface = scene.screen.copy().convert_alpha()
+        self._surface.fill((0, 0, 200))
+        self.alpha = alpha
 
-        self._screen.fill((0, 0, 0))
+        self._light_surfs = []
+        self._outer_color = (0, 255, 0)
 
-        self._crop_color = (0, 255, 0)
-        self._outer_color = (0, 0, 100)
-        self._mid_color = (0, 0, 175)
-        self._inner_color = (0, 0, 255)
-
-        self.outer_light_surfs = []
-
-        self.color_light_surfs = []
-
-        self.alpha = 1
+    @property
+    def scene(self) -> Scene:
+        return self._scene
 
     @property
     def surface(self) -> pygame.Surface:
-        self._screen.fill((0, 0, 0))
-        surfs = []
-        for out_surf in self.outer_light_surfs:
-            out_surf_keys = out_surf.keys()
-            if "surf" in out_surf_keys:
-                surf = pygame.Surface(
-                    (self._screen.get_width(), self._screen.get_height())
-                ).convert_alpha()
-                surf.fill((0, 0, 0, 0))
-                surf.blit(out_surf["surf"], out_surf["position"])
-                for p in out_surf["shadow_points"]:
-                    pygame.draw.polygon(surf, self._crop_color, p)
+        self._surface.fill((0, 0, 200, 255))
+        for s in self._light_surfs:
+            self._surface.blit(s, (0, 0))
+        self._light_surfs = []
 
-                    surf_array = pygame.PixelArray(surf)
-                    surf_array.replace(self._crop_color, (0, 0, 0, 0))
-                    surf_array.close()
+        return self._surface
 
-                surfs.append(surf)
+    def _draw_shadows(
+        self,
+        surface: pygame.Surface,
+        origin_position: pygame.Vector2,
+        length: int,
+        collisions: List[Tuple[int, int]] = [],
+    ) -> None:
+        shadow_points = []
+        for line in collisions:
+            points = list(copy.copy(line))
 
-            elif "func" in out_surf_keys:
-                out_surf["func"]()
+            angle1 = get_angle(origin_position, line[1])
+            point1 = pygame.Vector2(math.cos(angle1), math.sin(angle1))
+            point1 *= length * 2
 
-        self.outer_light_surfs = []
-        self.color_light_surfs = []
+            points.append(pygame.Vector2(line[1]) + point1)
 
-        for s in surfs:
-            self._screen.blit(s, (0, 0))
+            angle2 = get_angle(origin_position, line[0])
+            point2 = pygame.Vector2(math.cos(angle2), math.sin(angle2))
+            point2 *= length * 2
+            points.append(pygame.Vector2(line[0]) + point2)
 
-        screen_array = pygame.PixelArray(self._screen)
-        screen_array.replace(self._outer_color, (0, 0, 0, 50))
-        screen_array.close()
+            shadow_points.append(points)
 
-        self._screen.set_alpha(self.alpha * 255)
-        return self._screen
+        for p in shadow_points:
+            pygame.draw.polygon(surface, self.shadow_color, p)
 
     def draw_spot_light(
         self,
@@ -76,87 +71,28 @@ class LightRoom:
         length: int,
         direction: int,
         spread: int,
-        collisions=[],
+        collisions: List[Tuple[int, int]] = [],
         color: Tuple[int, int, int, int] = (255, 255, 255, 25),
     ) -> None:
-        """Draws a spotlight.
-
-        Parameters:
-            position: Position of the spotlight.
-            length: Length of the spotlight.
-            direction: Direction of the spotlight in degrees.
-            spread: Angle width of the spotlight in degrees.
-
-        """
         start_angle = int(direction - spread / 2)
         end_angle = int(direction + spread / 2)
+        light_pos = position
 
-        outer_surf = pygame.Surface((length * 2, length * 2)).convert_alpha()
-        draw_pie(
-            outer_surf,
-            self._outer_color,
-            (length, length),
-            length,
-            start_angle,
-            end_angle,
-        )
-        outer_surf_array = pygame.PixelArray(outer_surf)
-        outer_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
+        surface = self._surface.copy().convert_alpha()
+        surface.fill((0, 0, 0, 0))
+        draw_pie(surface, self._outer_color, light_pos, length, start_angle, end_angle)
+        self._draw_shadows(surface, light_pos, length, collisions=collisions)
 
-        color_surf = pygame.Surface((length * 2, length * 2)).convert_alpha()
-        draw_pie(
-            color_surf,
-            color,
-            (length, length),
-            length,
-            start_angle,
-            end_angle,
-        )
-        color_surf_array = pygame.PixelArray(color_surf)
-        color_surf_array.replace((0, 0, 0), (0, 0, 0, 0))
+        # surf_array = pygame.PixelArray(surface)
+        # surf_array.replace(self._outer_color, color)
 
-        shadow_points = []
-        for line in collisions:
-            points = list(copy(line))
-            angle1 = get_angle(position, line[0])
-            point1 = (
-                int(length * 2 * math.cos(angle1)),
-                int(length * 2 * math.sin(angle1)),
-            )
-
-            angle2 = get_angle(position, line[1])
-            point2 = (
-                int(length * 2 * math.cos(angle2)),
-                int(length * 2 * math.sin(angle2)),
-            )
-
-            points.append(pygame.Vector2(line[1]) + point2)
-            points.append(pygame.Vector2(line[0]) + point1)
-
-            shadow_points.append(points)
-
-        surf_position = position - pygame.Vector2(length, length)
-        self.color_light_surfs.append(
-            {
-                "surf": color_surf,
-                "position": surf_position,
-                "shadow_points": shadow_points,
-            }
-        )
-
-        self.outer_light_surfs.append(
-            {
-                "surf": outer_surf,
-                "position": surf_position,
-                "shadow_points": shadow_points,
-            }
-        )
+        self._light_surfs.append(surface)
 
     def draw_point_light(
         self,
         position: pygame.Vector2,
         radius: int,
-        collisions=[],
+        collisions: List[Tuple[int, int]] = [],
         color: Tuple[int, int, int, int] = (255, 255, 255, 25),
     ) -> None:
         self.draw_spot_light(
@@ -170,19 +106,5 @@ class LightRoom:
         length: int,
         direction: float,
         color: Tuple[int, int, int, int] = (255, 255, 255, 25),
-    ) -> None:
-        direction = math.radians(direction)
-        position_offset1 = pygame.Vector2(
-            length * math.cos(direction), length * math.sin(direction)
-        )
-        points1 = [
-            position1,
-            position2,
-            position2 + position_offset1,
-            position1 + position_offset1,
-        ]
-
-        def draw_outer_surf():
-            pygame.draw.polygon(self._screen, self._outer_color, points1)
-
-        self.outer_light_surfs.append({"func": draw_outer_surf, "position": None})
+    ):
+        pass
