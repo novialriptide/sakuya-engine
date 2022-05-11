@@ -1,4 +1,4 @@
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 from .scene import Scene
 from .math import get_angle
@@ -13,12 +13,18 @@ class LightRoom:
     def __init__(
         self,
         scene: Scene,
+        force_size: Union[None, Tuple[int, int]] = None,
         shadow_color: Tuple[int, int, int] = (0, 0, 0),
         alpha: int = 1,
     ) -> None:
         self.shadow_color = shadow_color
         self._scene = scene
-        self._surface = scene.screen.copy().convert_alpha()
+
+        if force_size is None:
+            self._surface = scene.screen.copy().convert_alpha()
+        else:
+            self._surface = pygame.Surface(force_size)
+
         self._surface.fill((0, 0, 200))
         self.alpha = alpha
 
