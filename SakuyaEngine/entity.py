@@ -9,7 +9,6 @@ from copy import copy
 import pygame
 import math
 
-from .locals import DEFAULT_TEXTURE
 from .animation import Animation
 
 

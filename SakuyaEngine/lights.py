@@ -1,8 +1,9 @@
-from typing import Tuple, List, Union
+from typing import Generic, Literal, Tuple, List, Union
 
 from .scene import Scene
 from .math import get_angle
 from .draw import draw_pie
+from .locals import HINDERED_VISION_MODE, UNHINDERED_VISION_MODE
 
 import math
 import copy
@@ -15,6 +16,9 @@ class LightRoom:
         scene: Scene,
         force_size: Union[None, Tuple[int, int]] = None,
         shadow_color: Tuple[int, int, int] = (0, 0, 0),
+        mode: Generic[
+            HINDERED_VISION_MODE, UNHINDERED_VISION_MODE
+        ] = HINDERED_VISION_MODE,
         alpha: int = 1,
     ) -> None:
         self.shadow_color = shadow_color
@@ -23,13 +27,15 @@ class LightRoom:
         if force_size is None:
             self._surface = scene.screen.copy().convert_alpha()
         else:
-            self._surface = pygame.Surface(force_size)
+            self._surface = pygame.Surface(force_size).convert_alpha()
 
-        self._surface.fill((0, 0, 200))
+        self.mode = mode
         self.alpha = alpha
 
+        self._surface.fill(self.shadow_color)
         self._light_surfs = []
-        self._outer_color = (0, 255, 0)
+        self._base_light_color = (0, 255, 0)
+        self._crop_color = (255, 0, 0)
 
     @property
     def scene(self) -> Scene:
@@ -37,9 +43,18 @@ class LightRoom:
 
     @property
     def surface(self) -> pygame.Surface:
-        self._surface.fill((0, 0, 200, 255))
+        if self.mode is HINDERED_VISION_MODE:
+            self._surface.fill(self.shadow_color)
+
         for s in self._light_surfs:
-            self._surface.blit(s, (0, 0))
+            self._surface.blit(s["crop_surf"], (0, 0))
+
+        surf_array = pygame.PixelArray(self._surface)
+        surf_array.replace(self._base_light_color, (0, 0, 255, 0))
+        surf_array.close()
+
+        for s in self._light_surfs:
+            self._surface.blit(s["color_surf"], (0, 0))
         self._light_surfs = []
 
         return self._surface
@@ -69,7 +84,7 @@ class LightRoom:
             shadow_points.append(points)
 
         for p in shadow_points:
-            pygame.draw.polygon(surface, self.shadow_color, p)
+            pygame.draw.polygon(surface, self._crop_color, p)
 
     def draw_spot_light(
         self,
@@ -84,15 +99,27 @@ class LightRoom:
         end_angle = int(direction + spread / 2)
         light_pos = position
 
-        surface = self._surface.copy().convert_alpha()
-        surface.fill((0, 0, 0, 0))
-        draw_pie(surface, self._outer_color, light_pos, length, start_angle, end_angle)
-        self._draw_shadows(surface, light_pos, length, collisions=collisions)
+        color_surf = self._surface.copy().convert_alpha()
+        color_surf.fill((0, 0, 0, 0))
+        draw_pie(
+            color_surf,
+            self._base_light_color,
+            light_pos,
+            length,
+            start_angle,
+            end_angle,
+        )
+        self._draw_shadows(color_surf, light_pos, length, collisions=collisions)
 
-        # surf_array = pygame.PixelArray(surface)
-        # surf_array.replace(self._outer_color, color)
+        surf_array = pygame.PixelArray(color_surf)
+        surf_array.replace(self._crop_color, (0, 0, 0, 0))
 
-        self._light_surfs.append(surface)
+        crop_surf = color_surf.copy()
+
+        surf_array.replace(self._base_light_color, color)
+        surf_array.close()
+
+        self._light_surfs.append({"color_surf": color_surf, "crop_surf": crop_surf})
 
     def draw_point_light(
         self,
