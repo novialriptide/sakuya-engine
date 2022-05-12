@@ -1,9 +1,10 @@
 <div align="left">
     <h1>SakuyaEngine</h1>
+    <img src="https://img.shields.io/github/workflow/status/novialriptide/SakuyaEngine/Lint" alt="Lint">
     <img src="https://img.shields.io/github/license/novialriptide/SakuyaEngine" alt="License">
+    <img src="https://img.shields.io/lgtm/alerts/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18" alt="Total Alerts">
+    <img src="https://img.shields.io/lgtm/grade/python/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18" alt="Code Quality">
     <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code Style">
-    <img src="https://img.shields.io/lgtm/alerts/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18" alt ="Total Alerts">
-    <img src="https://img.shields.io/lgtm/grade/python/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18" alt ="Code Quality">
     <img src="https://img.shields.io/tokei/lines/github/novialriptide/SakuyaEngine" alt="Lines">
 </div>
 
@@ -20,8 +21,8 @@ pip install .
 ```
 
 ## Official SakuyaEngine Projects
- - https://github.com/novialriptide/Helix
- - https://github.com/novialriptide/Stalker
+ - https://github.com/novialriptide/Helix (v2.5.0)
+ - https://github.com/novialriptide/Stalker (v3.0.0.dev1)
 
 
 ## Questions & Answers
