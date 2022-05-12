@@ -1,4 +1,4 @@
-from typing import Generic, Literal, Tuple, List, Union
+from typing import Generic, Tuple, List, Union
 
 from .scene import Scene
 from .math import get_angle
@@ -55,6 +55,7 @@ class LightRoom:
 
         for s in self._light_surfs:
             self._surface.blit(s["color_surf"], (0, 0))
+
         self._light_surfs = []
 
         return self._surface
