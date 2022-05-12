@@ -65,7 +65,7 @@ class LightRoom:
         surface: pygame.Surface,
         origin_position: pygame.Vector2,
         length: int,
-        collisions: List[Tuple[int, int]] = [],
+        collisions: List[Tuple[Tuple[int, int], Tuple[int, int]]] = [],
     ) -> None:
         shadow_points = []
         for line in collisions:
@@ -93,9 +93,20 @@ class LightRoom:
         length: int,
         direction: int,
         spread: int,
-        collisions: List[Tuple[int, int]] = [],
+        collisions: List[Tuple[Tuple[int, int], Tuple[int, int]]] = [],
         color: Tuple[int, int, int, int] = (255, 255, 255, 25),
     ) -> None:
+        """Draws a spotlight.
+
+        Parameters:
+            position: Position of the spotlight.
+            length: Length of the spotlight.
+            direction: Direction of the spotlight in degrees.
+            spread: Angle width of the spotlight in degrees.
+            collisions: Light colliders.
+            color: The light's color.
+
+        """
         start_angle = int(direction - spread / 2)
         end_angle = int(direction + spread / 2)
         light_pos = position
@@ -126,9 +137,18 @@ class LightRoom:
         self,
         position: pygame.Vector2,
         radius: int,
-        collisions: List[Tuple[int, int]] = [],
+        collisions: List[Tuple[Tuple[int, int], Tuple[int, int]]] = [],
         color: Tuple[int, int, int, int] = (255, 255, 255, 25),
     ) -> None:
+        """Draws a pointlight.
+
+        Parameters:
+            position: Position of the pointlight.
+            radius: Radius of the pointlight.
+            collisions: Light colliders.
+            color: The light's color.
+
+        """
         self.draw_spot_light(
             position, radius, 0, 360, collisions=collisions, color=color
         )
@@ -139,6 +159,43 @@ class LightRoom:
         position2: pygame.Vector2,
         length: int,
         direction: float,
+        collisions: List[Tuple[Tuple[int, int], Tuple[int, int]]] = [],
         color: Tuple[int, int, int, int] = (255, 255, 255, 25),
     ):
-        pass
+        """Draws a pointlight.
+
+        Parameters:
+            position1: The first position.
+            position2: The second position.
+            length: The area light's length.
+            direction: The direction of the area light in degrees.
+            collisions: Light colliders.
+            color: The light's color.
+
+        """
+        direction = math.radians(direction)
+        position_offset = pygame.Vector2(
+            math.cos(direction), math.sin(direction)
+        ) * length
+        points1 = [
+            position1,
+            position2,
+            position2 + position_offset,
+            position1 + position_offset,
+        ]
+
+        color_surf = self._surface.copy().convert_alpha()
+        color_surf.fill((0, 0, 0, 0))
+        pygame.draw.polygon(color_surf, self._base_light_color, points1)
+        pos = (position1 + position2) / 2
+        self._draw_shadows(color_surf, pos, length, collisions=collisions)
+
+        surf_array = pygame.PixelArray(color_surf)
+        surf_array.replace(self._crop_color, (0, 0, 0, 0))
+
+        crop_surf = color_surf.copy()
+
+        surf_array.replace(self._base_light_color, color)
+        surf_array.close()
+
+        self._light_surfs.append({"color_surf": color_surf, "crop_surf": crop_surf})
