@@ -174,9 +174,9 @@ class LightRoom:
 
         """
         direction = math.radians(direction)
-        position_offset = pygame.Vector2(
-            math.cos(direction), math.sin(direction)
-        ) * length
+        position_offset = (
+            pygame.Vector2(math.cos(direction), math.sin(direction)) * length
+        )
         points1 = [
             position1,
             position2,
