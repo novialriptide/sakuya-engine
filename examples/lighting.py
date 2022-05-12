@@ -1,26 +1,22 @@
 from math import degrees
 import pygame
 import sys
-from SakuyaEngine.client import Client
-from SakuyaEngine.scene import SceneManager
-from SakuyaEngine.scene import Scene
-from SakuyaEngine.lights import LightRoom
-from SakuyaEngine.math import get_angle
+import SakuyaEngine as engine
 
-client = Client(
+client = engine.Client(
     f"SakuyaEngine Client Test Lighting",
     pygame.Vector2(256 * 1.5, 224 * 1.5),
     debug_caption=True,
 )
-scene_manager = SceneManager(client)
+scene_manager = engine.SceneManager(client)
 
 bg = pygame.image.load("resources\sakuya_background.jpg")
 bg = pygame.transform.scale(bg, pygame.Vector2(bg.get_size()) / 2)
 
 
-class TestScene(Scene):
+class TestScene(engine.Scene):
     def on_awake(self):
-        self.lightroom = LightRoom(self)
+        self.lightroom = engine.LightRoom(self)
         self.collisions = [[pygame.Vector2(75, 35), pygame.Vector2(75, 75)]]
 
     def update(self):
@@ -34,11 +30,11 @@ class TestScene(Scene):
 
         self.lightroom.draw_point_light(screen_size / 2, 35, collisions=self.collisions)
 
-        dir = degrees(get_angle(self.client.mouse_pos, screen_size / 2)) + 180
+        dir = degrees(engine.get_angle(self.client.mouse_pos, screen_size / 2)) + 180
         self.lightroom.draw_spot_light(
             screen_size / 2, 150, dir, 65, collisions=self.collisions
         )
-        dir = degrees(get_angle(self.client.mouse_pos, screen_size / 3)) + 180
+        dir = degrees(engine.get_angle(self.client.mouse_pos, screen_size / 3)) + 180
         self.lightroom.draw_spot_light(
             screen_size / 3, 150, dir, 45, collisions=self.collisions
         )

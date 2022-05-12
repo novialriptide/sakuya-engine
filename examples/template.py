@@ -1,19 +1,17 @@
 import pygame
 import sys
-from SakuyaEngine.client import Client
-from SakuyaEngine.scene import SceneManager
-from SakuyaEngine.scene import Scene
+import SakuyaEngine as engine
 
-client = Client(
+client = engine.Client(
     f"SakuyaEngine Client Test Template",
     pygame.Vector2(256 * 1.5, 224 * 1.5),
     debug_caption=False,
 )
-scene_manager = SceneManager(client)
+scene_manager = engine.SceneManager(client)
 client.max_fps = 60
 
 
-class TestScene(Scene):
+class TestScene(engine.Scene):
     def on_awake(self):
         pass
 
