@@ -6,6 +6,7 @@ from .__version__ import GAME_VERSION
 from .ai import *
 from .bar import *
 from .bullets import *
+from .button import *
 from .camera import *
 from .client import *
 from .clock import *
