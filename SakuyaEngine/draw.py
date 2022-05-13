@@ -3,6 +3,8 @@ from typing import Tuple
 import pygame
 import math
 
+__all__ = ["draw_pie"]
+
 
 def draw_pie(
     surface: pygame.Surface,

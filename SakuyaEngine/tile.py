@@ -6,6 +6,8 @@ import pygame
 
 from typing import List
 
+__all__ = ["TileSet", "TileMap"]
+
 
 def crop_tile_image(
     image: pygame.Surface, x: int, y: int, width: int, height: int

@@ -8,6 +8,8 @@ import pygame
 import typing
 import json
 
+__all__ = ["Animation"]
+
 
 class Animation:
     def __init__(self, name: str, sprites: typing.List[pygame.Surface], fps: int = 16):
@@ -28,21 +30,3 @@ class Animation:
 
             if self.current_frame >= len(self.sprites):
                 self.current_frame = 0
-
-
-def load_anim_dict(data: dict) -> Animation:
-    return Animation(
-        data["name"],
-        sprites=split_image(
-            pygame.image.load(data["sprites"]["image"]),
-            px_width=data["sprites"]["width"],
-            px_height=data["sprites"]["height"],
-        ),
-        fps=data["fps"],
-    )
-
-
-def load_anim_json(json_path: str) -> Animation:
-    data = json.load(open(json_path))
-
-    return load_anim_dict(data)

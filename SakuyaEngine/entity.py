@@ -11,6 +11,8 @@ import math
 
 from .animation import Animation
 
+__all__ = ["Entity"]
+
 
 class Entity:
     def __init__(

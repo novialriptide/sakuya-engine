@@ -9,6 +9,8 @@ import math
 import copy
 import pygame
 
+__all__ = ["LightRoom"]
+
 
 class LightRoom:
     def __init__(

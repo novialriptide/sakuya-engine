@@ -1,5 +1,7 @@
 import time
 
+__all__ = ["Clock"]
+
 
 class Clock:
     def __init__(self, pause_upon_start: bool = False) -> None:

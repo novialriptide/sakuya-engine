@@ -11,6 +11,8 @@ SPECIAL_CHARS = ",./;'[]\\-=<>?:\"{}|!@#$%^&*()"
 
 CHAR_COLOR = (228, 0, 255)
 
+__all__ = ["Font"]
+
 
 class Font:
     """Handles pixel font without artifacts"""

@@ -15,6 +15,8 @@ from .events import EventSystem
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
+__all__ = ["Client"]
+
 
 class Client:
     def __init__(

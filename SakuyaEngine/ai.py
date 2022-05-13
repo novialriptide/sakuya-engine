@@ -6,6 +6,8 @@ import typing
 import random
 import pygame
 
+__all__ = ["Decision", "AI"]
+
 
 class Decision:
     def __init__(self, method, chance: float):

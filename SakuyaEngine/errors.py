@@ -3,6 +3,16 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 
+__all__ = [
+    "NotImplementedError",
+    "NegativeSpeedError",
+    "EntityNotInScene",
+    "NoActiveSceneError",
+    "SceneNotActiveError",
+    "NotEnoughArgumentsError",
+    "LineSegmentLinesError",
+]
+
 
 class Error(Exception):
     pass

@@ -10,6 +10,16 @@ import pygame
 
 from .errors import NegativeSpeedError
 
+__all__ = [
+    "vector2_ratio_xy",
+    "vector2_ratio_yx",
+    "get_angle",
+    "move_toward",
+    "raycast",
+    "collide_segments",
+    "rect_to_lines",
+]
+
 vector2 = Union[pygame.Vector2, Tuple[float, float]]
 
 

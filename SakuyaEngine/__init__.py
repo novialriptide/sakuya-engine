@@ -27,7 +27,6 @@ from .tile import *
 
 from pygame import __version__ as pg_ver
 
-
 print(
     f"sakuya engine {GAME_VERSION} by novial (using pygame {pg_ver})\nsource code: https://github.com/novialriptide/Sakuya"
 )

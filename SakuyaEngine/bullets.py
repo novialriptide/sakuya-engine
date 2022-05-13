@@ -15,6 +15,8 @@ from .math import get_angle
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)
 
+__all__ = ["Bullet", "BulletSpawner"]
+
 
 class Bullet(Entity):
     def __init__(
@@ -345,33 +347,3 @@ class BulletSpawner:
             self.is_active = True
 
         return bullets
-
-
-def load_bullet_dict(data: dict) -> Bullet:
-    if "custom_hitbox_size" in data.keys():
-        data["custom_hitbox_size"] = pygame.Vector2(data["custom_hitbox_size"])
-
-    if "position" in data.keys():
-        data["position"] = pygame.Vector2(data["position"])
-
-    if "static_sprite" in data.keys():
-        ss_data = data["static_sprite"]
-        sprites = split_image(
-            pygame.image.load(ss_data["path"]),
-            px_width=ss_data["width"],
-            px_height=ss_data["height"],
-        )
-        index = ss_data["index"]
-        data["static_sprite"] = sprites[index]
-
-    return Bullet(**data)
-
-
-def load_bulletspawner_dict(data: dict) -> BulletSpawner:
-    bullet = load_bullet_dict(data["bullet"])
-    del data["bullet"]
-
-    if "position_offset" in data.keys():
-        data["position_offset"] = pygame.Vector2(data["position_offset"])
-
-    return BulletSpawner(bullet, **data)

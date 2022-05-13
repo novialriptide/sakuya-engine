@@ -13,15 +13,7 @@ from .errors import EntityNotInScene
 from .events import EventSystem
 from .clock import Clock
 
-
-class ScrollBackgroundSprite:
-    def __init__(
-        self, sprite: pygame.Surface, scroll: pygame.Vector2, infinite: bool = False
-    ) -> None:
-        self.sprite = sprite
-        self.scroll = scroll
-        self.infinite = infinite
-        self.position = pygame.Vector2(0, 0)
+__all__ = ["Scene", "SubScene", "SceneManager"]
 
 
 class Scene:

@@ -4,6 +4,8 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 """
 from .math import move_toward
 
+__all__ = ["Bar"]
+
 
 class Bar:
     def __init__(self, max_val, update_speed, init_val: float = 0):

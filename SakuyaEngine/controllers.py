@@ -4,6 +4,8 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 """
 import pygame
 
+__all__ = ["BaseController"]
+
 
 class BaseController:
     """Base class of a controller for a Player or Artificial Intelligence"""

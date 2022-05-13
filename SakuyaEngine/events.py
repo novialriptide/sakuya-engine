@@ -4,6 +4,8 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 """
 from .clock import Clock
 
+__all__ = ["WaitEvent", "RepeatEvent", "EventSystem"]
+
 
 class BaseEvent:
     """Do not use this."""

@@ -11,6 +11,8 @@ import pygame
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 pygame_surface = TypeVar("pygame_surface", Callable, pygame.Surface)
 
+__all__ = ["EnlargingCircle"]
+
 
 class EnlargingCircle(BaseEffect):
     def __init__(

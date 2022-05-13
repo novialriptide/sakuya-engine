@@ -6,6 +6,8 @@ from typing import List, Tuple
 import pygame
 from math import *
 
+__all__ = ["Button"]
+
 
 class Button:
     def __init__(

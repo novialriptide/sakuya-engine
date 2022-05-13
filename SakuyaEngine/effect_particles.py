@@ -12,6 +12,8 @@ from .effects import BaseEffect
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
+__all__ = ["Particle", "Particles"]
+
 
 class Particle(BaseEffect):
     def __init__(

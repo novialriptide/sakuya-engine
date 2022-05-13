@@ -3,6 +3,8 @@ from .clock import Clock
 import pygame
 import random
 
+__all__ = ["Camera"]
+
 
 class Camera:
     def __init__(
