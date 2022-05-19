@@ -4,6 +4,7 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 """
 from .__version__ import GAME_VERSION
 from .ai import *
+from .animation import *
 from .bar import *
 from .bullets import *
 from .button import *

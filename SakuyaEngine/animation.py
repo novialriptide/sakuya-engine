@@ -2,17 +2,15 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
-from .tile import split_image
+from typing import List
 
 import pygame
-import typing
-import json
 
 __all__ = ["Animation"]
 
 
 class Animation:
-    def __init__(self, name: str, sprites: typing.List[pygame.Surface], fps: int = 16):
+    def __init__(self, name: str, sprites: List[pygame.Surface], fps: int = 16):
         self.name = name
         self.sprites = sprites
         self.fps = fps

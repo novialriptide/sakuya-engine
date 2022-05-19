@@ -10,7 +10,7 @@ import pygame
 import math
 
 from .entity import Entity
-from .animation import split_image
+from .tile import split_image
 from .math import get_angle
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.math.Vector2)

@@ -6,7 +6,7 @@ import pygame
 
 from typing import List
 
-__all__ = ["TileSet", "TileMap"]
+__all__ = ["split_image", "TileSet", "TileMap"]
 
 
 def crop_tile_image(
