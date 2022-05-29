@@ -85,6 +85,8 @@ class Client:
             # won't show up until you compile the program.
             pygame.display.set_icon(self.window_icon)
 
+        self.events = []
+
     @property
     def window_name(self) -> str:
         return self._window_name
@@ -150,24 +152,24 @@ class Client:
             if self.running_scenes == []:
                 raise NoActiveSceneError
 
-            pg_event = pygame.event.get(eventtype=pygame.VIDEORESIZE)
-            if pg_event != []:
-                if self.keep_aspect_ratio:
-                    self.window = pygame.display.set_mode(
-                        (
-                            pg_event[0].w,
-                            pg_event[0].w
+            self.events = pygame.event.get()
+            for event in self.events:
+                if event.type == pygame.VIDEORESIZE:
+                    if self.keep_aspect_ratio:
+                        new_height = (
+                            event.w
                             * self.original_window_size.y
-                            / self.original_window_size.x,
-                        ),
-                        self.pg_flag,
+                            / self.original_window_size.x
+                        )
+                        self.window = pygame.display.set_mode(
+                            (event.w, new_height), self.pg_flag
+                        )
+                    window_rect = self.window.get_rect()
+                    screen_rect = self._screen.get_rect()
+                    self._screen_pos = pygame.Vector2(
+                        window_rect.centerx - screen_rect.centerx,
+                        window_rect.centery - screen_rect.centery,
                     )
-                window_rect = self.window.get_rect()
-                screen_rect = self._screen.get_rect()
-                self._screen_pos = pygame.Vector2(
-                    window_rect.centerx - screen_rect.centerx,
-                    window_rect.centery - screen_rect.centery,
-                )
 
             # Update all scenes
             for s in copy(self.running_scenes):

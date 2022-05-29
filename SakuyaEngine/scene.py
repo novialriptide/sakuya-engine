@@ -46,6 +46,11 @@ class Scene:
     def name(self) -> str:
         return self.__class__.__name__
 
+    @property
+    def events(self) -> List[pygame.event.Event]:
+        """Returns a list of active pygame Events."""
+        return self.client.events
+
     def add_entity(self, entity: Entity) -> None:
         self.entities.append(entity)
         entity.on_awake(self)
