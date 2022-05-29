@@ -3,7 +3,6 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from copy import copy
-from math import pi
 from typing import TypeVar, Callable
 
 import pygame
@@ -28,7 +27,7 @@ class Client:
         scale_upon_startup: float = 1,
         debug_caption: bool = True,
         keep_aspect_ratio: bool = True,
-        mouse_image: pygame.image = None,
+        mouse_image: pygame.Surface = None,
     ) -> None:
         """The game's main client.
 
