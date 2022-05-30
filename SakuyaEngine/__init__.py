@@ -23,6 +23,7 @@ from .lights import *
 from .locals import *
 from .math import *
 from .scene import *
+from .sounds import *
 from .text import *
 from .tile import *
 

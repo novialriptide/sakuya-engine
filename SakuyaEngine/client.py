@@ -57,6 +57,7 @@ class Client:
         self.deleted_scenes_queue = []
         self.scene_manager = SceneManager(self)
 
+        self.sound_manager = SoundManager(self)
 
         self.pg_clock = pygame.time.Clock()
         self.max_fps = -1  # int
