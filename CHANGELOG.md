@@ -18,6 +18,7 @@
 16. Added `Fonts`.
 17. Added `pause_upon_start` kwarg for `Clock`.
 18. Added `Clock.set_time()`.
+19. Added `Sound` and `SoundManager`
 
 ## version 2.5.0
 ### New Features

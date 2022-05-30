@@ -6,12 +6,10 @@ from copy import copy
 from typing import TypeVar, Callable
 
 import pygame
-import time
 
 from .clock import Clock
 from .errors import NoActiveSceneError, SceneNotActiveError
 from .events import EventSystem
-from .sounds import SoundManager
 from .scene import SceneManager
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
@@ -57,7 +55,7 @@ class Client:
         self.deleted_scenes_queue = []
         self.scene_manager = SceneManager(self)
 
-        self.sound_manager = SoundManager(self)
+        self.sounds = {}
 
         self.pg_clock = pygame.time.Clock()
         self.max_fps = 0
