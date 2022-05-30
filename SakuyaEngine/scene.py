@@ -7,17 +7,16 @@ from typing import List
 import pygame
 
 from .camera import Camera
-from .client import Client
 from .entity import Entity
 from .errors import EntityNotInScene
 from .events import EventSystem
 from .clock import Clock
 
-__all__ = ["Scene", "SubScene", "SceneManager"]
+__all__ = ["Scene", "SubScene"]
 
 
 class Scene:
-    def __init__(self, client: Client, **kwargs) -> None:
+    def __init__(self, client: "Client", **kwargs) -> None:
         """The base class for a scene
 
         This class must be inherited by another class in order to work properly.
@@ -233,7 +232,7 @@ class SubScene(Scene):
 
 
 class SceneManager:
-    def __init__(self, client: Client) -> None:
+    def __init__(self, client: "Client") -> None:
         """The scene manager which is used to register scenes
 
         Parameters:

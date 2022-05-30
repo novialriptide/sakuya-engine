@@ -11,6 +11,8 @@ import time
 from .clock import Clock
 from .errors import NoActiveSceneError, SceneNotActiveError
 from .events import EventSystem
+from .sounds import SoundManager
+from .scene import SceneManager
 
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
@@ -53,14 +55,14 @@ class Client:
 
         self.running_scenes = {}
         self.deleted_scenes_queue = []
-        self.scene_manager = None  # SceneManager
+        self.scene_manager = SceneManager(self)
+
 
         self.pg_clock = pygame.time.Clock()
         self.max_fps = -1  # int
         self.delta_time = 0
         self.raw_delta_time = 0
         self.delta_time_modifier = 1
-        self.ticks_elapsed = 0
 
         self.pg_flag = 0
         if resizeable_window:
@@ -141,12 +143,12 @@ class Client:
         """
         Main game loop
         """
-        last_time = time.time()
         while self.is_running:
             # Delta time
-            self.raw_delta_time = (time.time() - last_time) * 60
+            self.raw_delta_time = self.pg_clock.tick(self.max_fps) / 1000 * self.max_fps
+            print(self.raw_delta_time)
+            self.clock.speed = self.delta_time_modifier
             self.delta_time = self.raw_delta_time * self.delta_time_modifier
-            last_time = time.time()
 
             if self.running_scenes == []:
                 raise NoActiveSceneError
@@ -194,9 +196,6 @@ class Client:
 
             self.event_system.update()
             pygame.display.update()
-            self.pg_clock.tick(self.max_fps)
-            self.clock.speed = self.delta_time_modifier
-            self.ticks_elapsed += 1
 
             if self.debug_caption:
                 fps = round(self.pg_clock.get_fps(), 2)
