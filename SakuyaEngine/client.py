@@ -60,7 +60,7 @@ class Client:
         self.sound_manager = SoundManager(self)
 
         self.pg_clock = pygame.time.Clock()
-        self.max_fps = -1  # int
+        self.max_fps = 0
         self.delta_time = 0
         self.raw_delta_time = 0
         self.delta_time_modifier = 1
@@ -144,10 +144,11 @@ class Client:
         """
         Main game loop
         """
+        video_resize_event = None
+        
         while self.is_running:
             # Delta time
-            self.raw_delta_time = self.pg_clock.tick(self.max_fps) / 1000 * self.max_fps
-            print(self.raw_delta_time)
+            self.raw_delta_time = self.pg_clock.tick(self.max_fps) / 1000 * 60  
             self.clock.speed = self.delta_time_modifier
             self.delta_time = self.raw_delta_time * self.delta_time_modifier
 
@@ -157,6 +158,11 @@ class Client:
             self.events = pygame.event.get()
             for event in self.events:
                 if event.type == pygame.VIDEORESIZE:
+                    if video_resize_event == event:
+                        continue
+                    
+                    video_resize_event = event
+                    
                     if self.keep_aspect_ratio:
                         new_height = (
                             event.w
