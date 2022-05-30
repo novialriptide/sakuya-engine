@@ -143,10 +143,10 @@ class Client:
         Main game loop
         """
         video_resize_event = None
-        
+
         while self.is_running:
             # Delta time
-            self.raw_delta_time = self.pg_clock.tick(self.max_fps) / 1000 * 60  
+            self.raw_delta_time = self.pg_clock.tick(self.max_fps) / 1000 * 60
             self.clock.speed = self.delta_time_modifier
             self.delta_time = self.raw_delta_time * self.delta_time_modifier
 
@@ -158,9 +158,9 @@ class Client:
                 if event.type == pygame.VIDEORESIZE:
                     if video_resize_event == event:
                         continue
-                    
+
                     video_resize_event = event
-                    
+
                     if self.keep_aspect_ratio:
                         new_height = (
                             event.w

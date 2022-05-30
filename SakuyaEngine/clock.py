@@ -40,8 +40,7 @@ class Clock:
             self._running = False
 
     def get_time(self) -> float:
-        """Returns time in milliseconds
-        """
+        """Returns time in milliseconds"""
         if self._running:
             return (
                 (self._accum + time.time() - self._started_running_at)
@@ -52,6 +51,5 @@ class Clock:
             return self._accum * 1000
 
     def set_time(self, val: int) -> None:
-        """val must be milliseconds
-        """
+        """val must be milliseconds"""
         self._accum = val / 1000

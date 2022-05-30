@@ -4,6 +4,7 @@ from .clock import Clock
 
 __all__ = ["Sound"]
 
+
 class Sound:
     def __init__(self, source: str, cooldown: int = 0) -> None:
         self.source = source
