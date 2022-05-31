@@ -1,11 +1,13 @@
-<div align="left">
+<div align="center">
     <h1>SakuyaEngine</h1>
-    <img src="https://img.shields.io/github/workflow/status/novialriptide/SakuyaEngine/Lint" alt="Lint">
-    <img src="https://img.shields.io/github/license/novialriptide/SakuyaEngine" alt="License">
-    <img src="https://img.shields.io/lgtm/alerts/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18" alt="Total Alerts">
-    <img src="https://img.shields.io/lgtm/grade/python/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18" alt="Code Quality">
-    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code Style">
-    <img src="https://img.shields.io/tokei/lines/github/novialriptide/SakuyaEngine" alt="Lines">
+    <p>a game engine for python</p>
+    <img src="https://img.shields.io/github/workflow/status/novialriptide/SakuyaEngine/Lint?style=for-the-badge" alt="Lint">
+    <img src="https://img.shields.io/github/license/novialriptide/SakuyaEngine?style=for-the-badge" alt="License">
+    <img src="https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge" alt="Code Style">
+    <img src="https://img.shields.io/tokei/lines/github/novialriptide/SakuyaEngine?style=for-the-badge" alt="Lines">
+    <br>
+    <img src="https://img.shields.io/lgtm/alerts/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18&style=for-the-badge" alt="Total Alerts">
+    <img src="https://img.shields.io/lgtm/grade/python/g/novialriptide/SakuyaEngine.svg?logo=lgtm&logoWidth=18&style=for-the-badge" alt="Code Quality">
 </div>
 
 ## About
