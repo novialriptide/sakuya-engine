@@ -277,6 +277,9 @@ class Client:
                     self.set_caption(
                         f"fps: {fps}, entities: {entities + bullets}, effects: {effects}, scene_time: {scene_time}, client_time: {client_time}, scene: {scene}"
                     )
+            except SystemExit:
+                logging.info("Closing game")
+                break
             except:
                 import tkinter
                 from tkinter import messagebox
