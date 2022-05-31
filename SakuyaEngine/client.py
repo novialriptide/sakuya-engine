@@ -28,6 +28,7 @@ class Client:
         debug_caption: bool = True,
         keep_aspect_ratio: bool = True,
         mouse_image: pygame.Surface = None,
+        sound_channels: int = 64,
     ) -> None:
         """The game's main client.
 
@@ -87,6 +88,9 @@ class Client:
 
         self.events = []
 
+        pygame.mixer.init()
+        pygame.mixer.set_num_channels(sound_channels)
+
     @property
     def window_name(self) -> str:
         return self._window_name
@@ -137,6 +141,10 @@ class Client:
     @property
     def current_fps(self) -> float:
         return self.pg_clock.get_fps()
+
+    @property
+    def get_num_channels(self) -> int:
+        return pygame.mixer.get_num_channels()
 
     def main(self) -> None:
         """
