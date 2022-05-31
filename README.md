@@ -12,15 +12,14 @@
 
 ## About
 Named after the iconic Touhou character, Sakuya Izayoi (十六夜　咲夜),
-SakuyaEngine is an object-oriented game engine for Python3 & pygame 2.1.3.
+SakuyaEngine is an object-oriented game engine that supports scene, sound, and entity management.
 It inherits a lot of features from its predecessor, 
 [GameDen](https://github.com/novialriptide/GameDen), but has been improved in
 many ways.
 
 ## Installation
-```
-pip install .
-```
+1. Install Python3.9
+2. Run `pip install .`
 
 ## Official SakuyaEngine Projects
  - https://github.com/novialriptide/Helix (v2.5.0)
@@ -43,7 +42,3 @@ No, and it never will.
 4. Will SakuyaEngine be uploaded to PyPi?
 
 I don't think it belongs on PyPi, as this engine is completely built ontop of pygame. I'll have to think about it.
-
-
-
-
