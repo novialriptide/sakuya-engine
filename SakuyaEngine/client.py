@@ -201,81 +201,94 @@ class Client:
         video_resize_event = None
 
         while self.is_running:
-            # Delta time
-            self.raw_delta_time = self.pg_clock.tick(self.max_fps) / 1000 * 60
-            self.clock.speed = self.delta_time_modifier
-            self.delta_time = self.raw_delta_time * self.delta_time_modifier
+            try:
+                # Delta time
+                self.raw_delta_time = self.pg_clock.tick(self.max_fps) / 1000 * 60
+                self.clock.speed = self.delta_time_modifier
+                self.delta_time = self.raw_delta_time * self.delta_time_modifier
 
-            if self.running_scenes == []:
-                raise NoActiveSceneError
+                if self.running_scenes == []:
+                    raise NoActiveSceneError
 
-            self.events = pygame.event.get()
-            for event in self.events:
-                if event.type == pygame.VIDEORESIZE:
-                    if video_resize_event == event:
-                        continue
+                self.events = pygame.event.get()
+                for event in self.events:
+                    if event.type == pygame.VIDEORESIZE:
+                        if video_resize_event == event:
+                            continue
 
-                    video_resize_event = event
+                        video_resize_event = event
 
-                    if self.keep_aspect_ratio:
-                        logging.info(f"Resizing window to correct aspect ratio")
-                        new_height = (
-                            event.w
-                            * self.original_window_size.y
-                            / self.original_window_size.x
+                        if self.keep_aspect_ratio:
+                            logging.info(f"Resizing window to correct aspect ratio")
+                            new_height = (
+                                event.w
+                                * self.original_window_size.y
+                                / self.original_window_size.x
+                            )
+                            self.window = pygame.display.set_mode(
+                                (event.w, new_height), self.pg_flag
+                            )
+                        window_rect = self.window.get_rect()
+                        screen_rect = self._screen.get_rect()
+                        self._screen_pos = pygame.Vector2(
+                            window_rect.centerx - screen_rect.centerx,
+                            window_rect.centery - screen_rect.centery,
                         )
-                        self.window = pygame.display.set_mode(
-                            (event.w, new_height), self.pg_flag
-                        )
-                    window_rect = self.window.get_rect()
-                    screen_rect = self._screen.get_rect()
-                    self._screen_pos = pygame.Vector2(
-                        window_rect.centerx - screen_rect.centerx,
-                        window_rect.centery - screen_rect.centery,
-                    )
 
-            # Update all scenes
-            for s in copy(self.running_scenes):
-                s = self.running_scenes[s]["scene"]
-                if not s.paused:
-                    s.update()
-                    s.clock.speed = self.delta_time_modifier
-                    self.screen.fill((191, 64, 191))
-                    self.screen.blit(s.screen, s.screen_pos)
-
-            # Delete scenes in queue
-            for s in self.deleted_scenes_queue[:]:
-                try:
-                    self.deleted_scenes_queue.remove(s)
-                    del self.running_scenes[s]
-                except KeyError:
-                    print(f'Tried deleting scene that does not exist: "{s}"')
-
-            if self.mouse_image is not None and self.mouse_pos:
-                self.screen.blit(self.mouse_image, self.mouse_pos)
-
-            self.window.blit(self._screen, self._screen_pos)
-
-            self.event_system.update()
-            pygame.display.update()
-
-            if self.debug_caption:
-                fps = round(self.pg_clock.get_fps(), 2)
-                bullets = 0
-                entities = 0
-                effects = 0
-                scene_time = 0
-                client_time = round(self.clock.get_time(), 2)
-                for s in self.running_scenes:
+                # Update all scenes
+                for s in copy(self.running_scenes):
                     s = self.running_scenes[s]["scene"]
-                    bullets += len(s.bullets)
-                    entities += len(s.entities)
-                    effects += len(s.effects)
-                    scene_time = round(s.clock.get_time(), 2)
-                scene = ", ".join(self.running_scenes)
-                self.set_caption(
-                    f"fps: {fps}, entities: {entities + bullets}, effects: {effects}, scene_time: {scene_time}, client_time: {client_time}, scene: {scene}"
-                )
+                    if not s.paused:
+                        s.update()
+                        s.clock.speed = self.delta_time_modifier
+                        self.screen.fill((191, 64, 191))
+                        self.screen.blit(s.screen, s.screen_pos)
+
+                # Delete scenes in queue
+                for s in self.deleted_scenes_queue[:]:
+                    try:
+                        self.deleted_scenes_queue.remove(s)
+                        del self.running_scenes[s]
+                    except KeyError:
+                        print(f'Tried deleting scene that does not exist: "{s}"')
+
+                if self.mouse_image is not None and self.mouse_pos:
+                    self.screen.blit(self.mouse_image, self.mouse_pos)
+
+                self.window.blit(self._screen, self._screen_pos)
+
+                self.event_system.update()
+                pygame.display.update()
+
+                if self.debug_caption:
+                    fps = round(self.pg_clock.get_fps(), 2)
+                    bullets = 0
+                    entities = 0
+                    effects = 0
+                    scene_time = 0
+                    client_time = round(self.clock.get_time(), 2)
+                    for s in self.running_scenes:
+                        s = self.running_scenes[s]["scene"]
+                        bullets += len(s.bullets)
+                        entities += len(s.entities)
+                        effects += len(s.effects)
+                        scene_time = round(s.clock.get_time(), 2)
+                    scene = ", ".join(self.running_scenes)
+                    self.set_caption(
+                        f"fps: {fps}, entities: {entities + bullets}, effects: {effects}, scene_time: {scene_time}, client_time: {client_time}, scene: {scene}"
+                    )
+            except:
+                import tkinter
+                from tkinter import messagebox
+
+                crash_msg = "Fatal error in main loop"
+                logging.critical(crash_msg, exc_info=True)
+
+                root = tkinter.Tk()
+                root.withdraw()
+                messagebox.showinfo("SakuyaEngine", crash_msg)
+
+                break
 
     def add_scene(self, scene_name: str, **kwargs) -> None:
         """Adds scene to running scene
