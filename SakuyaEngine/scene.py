@@ -5,6 +5,10 @@ This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for d
 from typing import List
 
 import pygame
+import os
+import sys
+import inspect
+import importlib
 
 from .camera import Camera
 from .entity import Entity
@@ -255,3 +259,15 @@ class SceneManager:
 
     def get_scene(self, scene_name: str) -> Scene:
         return self.registered_scenes[scene_name]
+
+    def auto_find_scenes(self, path: str) -> List[Scene]:
+        for scene in os.listdir(path):
+            if scene.endswith(".py"):
+                scene_name = scene.removesuffix(".py")
+                import_name = f"data.scenes.{scene_name}"
+                importlib.import_module(import_name)
+                for member in inspect.getmembers(
+                    sys.modules[import_name], inspect.isclass
+                ):
+                    if issubclass(member[1], Scene):
+                        self.register_scene(member[1])
