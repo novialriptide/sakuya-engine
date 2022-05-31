@@ -1,4 +1,5 @@
 import pygame
+import logging
 
 from .clock import Clock
 
@@ -15,16 +16,22 @@ class Sound:
 
     def play(self, repeat: bool = False) -> None:
         if repeat and self.cooldown == 0:
+            logging.info(f'Playing sound "{self.source}" on repeat')
             self._pg_source.play(loops=-1)
 
         elif repeat and self.cooldown > 0:
             self._cooldown_clock.resume()
             if self.cooldown < self._cooldown_clock.get_time():
+                logging.warning(
+                    f'Tried playing sound "{self.source}" on repeat with a cooldown'
+                )
                 self._cooldown_clock.reset()
             if self._cooldown_clock.get_time() == 0:
+                logging.info(f'Playing sound "{self.source}" on repeat with a cooldown')
                 self._pg_source.play()
 
         if not repeat:
+            logging.info(f'Playing sound "{self.source}"')
             self._pg_source.play()
 
     def stop(self) -> None:

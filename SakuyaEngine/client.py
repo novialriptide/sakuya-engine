@@ -3,9 +3,13 @@ SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
 from copy import copy
-from typing import TypeVar, Callable
+from typing import TypeVar, Callable, Union
 
 import pygame
+import logging
+import pathlib
+import os
+import time
 
 from .clock import Clock
 from .errors import NoActiveSceneError, SceneNotActiveError
@@ -15,6 +19,16 @@ from .scene import SceneManager
 pygame_vector2 = TypeVar("pygame_vector2", Callable, pygame.Vector2)
 
 __all__ = ["Client"]
+
+
+def _get_time() -> str:
+    month = time.strftime("%m")
+    day = time.strftime("%d")
+    year = time.strftime("%Y")
+    hour = time.strftime("%H")
+    minute = time.strftime("%M")
+    second = time.strftime("%S")
+    return f"{month}-{day}-{year} {hour}-{minute}-{second}"
 
 
 class Client:
@@ -29,6 +43,7 @@ class Client:
         keep_aspect_ratio: bool = True,
         mouse_image: pygame.Surface = None,
         sound_channels: int = 64,
+        log_dir: Union[str, None] = None,
     ) -> None:
         """The game's main client.
 
@@ -40,6 +55,22 @@ class Client:
             window_name: the window's name
             window_size: the window size
         """
+
+        if log_dir is not None:
+            self.local_dir_path = pathlib.Path.home() / log_dir
+            self.local_log_path = self.local_dir_path / f"{_get_time()}.log"
+            if not os.path.exists(str(self.local_dir_path)):
+                os.makedirs(self.local_dir_path)
+
+            os.chmod(self.local_dir_path, 0o777)
+            logging.basicConfig(
+                filename=self.local_log_path,
+                format="%(asctime)s %(levelname)s: %(message)s",
+                datefmt="%m/%d/%Y %I:%M:%S %p",
+                level=logging.DEBUG,
+            )
+
+        logging.info("Initializing SakuyaEngine client")
         self.debug_caption = debug_caption
         self.is_running = True  # bool
         self.clock = Clock()
@@ -68,12 +99,17 @@ class Client:
         if resizeable_window:
             self.pg_flag = pygame.RESIZABLE
 
+        logging.info("Creating client pg_surface")
         self.screen = pygame.Surface(window_size)  # lgtm [py/call/wrong-arguments]
+        logging.info("Scaling window_size")
         self.window_size = window_size * scale_upon_startup
 
-        pygame.display.set_caption(self._window_name)
+        self.set_caption(self._window_name)
 
         if self.mouse_image is not None:
+            logging.info(
+                "Default mouse icon is disabled, overriding with custom mouse image"
+            )
             pygame.mouse.set_cursor(
                 (8, 8), (0, 0), (0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0)
             )
@@ -84,12 +120,18 @@ class Client:
         if self.window_icon is not None:
             # if you run the program from source, the icon
             # won't show up until you compile the program.
+            logging.info("Setting custom windows icon")
             pygame.display.set_icon(self.window_icon)
 
         self.events = []
 
+        logging.info("Initializing pygame mixer")
         pygame.mixer.init()
+
+        logging.info(f"Setting number of channels to {sound_channels}")
         pygame.mixer.set_num_channels(sound_channels)
+
+        logging.info("Successfully initialized SakuyaEngine client")
 
     @property
     def window_name(self) -> str:
@@ -97,8 +139,9 @@ class Client:
 
     @window_name.setter
     def window_name(self, value: str) -> None:
+        logging.info("Setting window_name")
         self._window_name = value
-        pygame.display.set_caption(self._window_name)
+        self.set_caption(self._window_name)
 
     @property
     def window_size(self) -> pygame.Vector2:
@@ -106,6 +149,7 @@ class Client:
 
     @window_size.setter
     def window_size(self, value) -> None:
+        logging.info("Setting window_size")
         self.window = pygame.display.set_mode((value.x, value.y), self.pg_flag)
 
     @property
@@ -144,7 +188,11 @@ class Client:
 
     @property
     def get_num_channels(self) -> int:
+        logging.info("Getting number of sound channels")
         return pygame.mixer.get_num_channels()
+
+    def set_caption(self, val: str) -> None:
+        pygame.display.set_caption(val)
 
     def main(self) -> None:
         """
@@ -170,6 +218,7 @@ class Client:
                     video_resize_event = event
 
                     if self.keep_aspect_ratio:
+                        logging.info(f"Resizing window to correct aspect ratio")
                         new_height = (
                             event.w
                             * self.original_window_size.y
@@ -224,7 +273,7 @@ class Client:
                     effects += len(s.effects)
                     scene_time = round(s.clock.get_time(), 2)
                 scene = ", ".join(self.running_scenes)
-                pygame.display.set_caption(
+                self.set_caption(
                     f"fps: {fps}, entities: {entities + bullets}, effects: {effects}, scene_time: {scene_time}, client_time: {client_time}, scene: {scene}"
                 )
 
@@ -235,6 +284,7 @@ class Client:
             scene_name: str to be added
 
         """
+        logging.info(f'Adding scene "{scene_name}" with kwargs: {kwargs}')
         scene = copy(self.scene_manager.get_scene(scene_name))(self)
         scene.on_awake(**kwargs)
         self.running_scenes[scene.name] = {"scene": scene, "kwargs": kwargs}
@@ -247,11 +297,14 @@ class Client:
 
         """
         try:
+            logging.info(f'Removing scene "{scene_name}" with kwargs: {kwargs}')
             scene = self.running_scenes[scene_name]["scene"]
             scene.on_delete(**kwargs)
             self.deleted_scenes_queue.append(scene.name)
         except KeyError:
-            raise SceneNotActiveError
+            logging.error(
+                f'Tried removing a non-active scene "{scene_name}". Ignoring...'
+            )
 
     def replace_scene(self, old_scene_name: str, new_scene_name: str, **kwargs) -> None:
         """Removes and adds a scene
@@ -261,7 +314,12 @@ class Client:
 
         """
         try:
+            logging.info(
+                f'Replacing a non-active scene "{old_scene_name}" with "{new_scene_name}"'
+            )
             self.remove_scene(old_scene_name)
             self.add_scene(new_scene_name, **kwargs)
         except KeyError:
-            raise SceneNotActiveError
+            logging.error(
+                f'Tried replacing a non-active scene "{old_scene_name}" with "{new_scene_name}". Ignoring...'
+            )

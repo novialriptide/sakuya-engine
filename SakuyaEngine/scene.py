@@ -9,6 +9,7 @@ import os
 import sys
 import inspect
 import importlib
+import logging
 
 from .camera import Camera
 from .entity import Entity
@@ -28,6 +29,8 @@ class Scene:
         Parameters:
             client: game client
         """
+        logging.info(f'Initializing scene "{self.name}"')
+
         self.paused = False
         self.client = client
         self.entities = []
@@ -37,13 +40,20 @@ class Scene:
         self.scroll_bgs = []
         self.collision_rects = []
         self.kwargs = kwargs
+        logging.info("Creating clock")
         self.clock = Clock()
+
+        logging.info("Creating camera")
         self.camera = Camera(clock=self.clock)
+        logging.info("Creating eventsystem")
         self.event_system = EventSystem(self.clock)
 
+        logging.info("Creating surface")
         self.screen_pos = pygame.Vector2(0, 0)
         self.screen = self.client.screen.copy()
         self.screen.fill((0, 0, 0))
+
+        logging.info(f'Successfully initialized scene "{self.name}"')
 
     @property
     def name(self) -> str:
@@ -55,6 +65,7 @@ class Scene:
         return self.client.events
 
     def add_entity(self, entity: Entity) -> None:
+        logging.info(f"Adding entity {entity}")
         self.entities.append(entity)
         entity.on_awake(self)
 
@@ -254,6 +265,7 @@ class SceneManager:
             scene: scene to be registered
 
         """
+        logging.info(f"Registering scene: {scene}")
         instance = scene
         self.registered_scenes[scene.__name__] = instance
 
@@ -261,6 +273,7 @@ class SceneManager:
         return self.registered_scenes[scene_name]
 
     def auto_find_scenes(self, path: str) -> List[Scene]:
+        logging.info("Auto-searching scenes")
         for scene in os.listdir(path):
             if scene.endswith(".py"):
                 scene_name = scene.removesuffix(".py")
@@ -271,3 +284,4 @@ class SceneManager:
                 ):
                     if issubclass(member[1], Scene):
                         self.register_scene(member[1])
+        logging.info("Auto-search complete")
