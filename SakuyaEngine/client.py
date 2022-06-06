@@ -10,9 +10,10 @@ import logging
 import pathlib
 import os
 import time
+import traceback
 
 from .clock import Clock
-from .errors import NoActiveSceneError, SceneNotActiveError
+from .errors import NoActiveSceneError
 from .events import EventSystem
 from .scene import SceneManager
 
@@ -280,7 +281,8 @@ class Client:
             except SystemExit:
                 logging.info("Closing game")
                 break
-            except:
+            except Exception as e:
+                print(traceback.format_exc())
                 import tkinter
                 from tkinter import messagebox
 
