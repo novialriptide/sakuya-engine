@@ -1,7 +1,6 @@
 <div align="center">
     <h1>SakuyaEngine</h1>
     <p>a game engine for python</p>
-    <img src="https://img.shields.io/github/workflow/status/novialriptide/SakuyaEngine/Lint?style=for-the-badge" alt="Lint">
     <img src="https://img.shields.io/github/license/novialriptide/SakuyaEngine?style=for-the-badge" alt="License">
     <img src="https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge" alt="Code Style">
     <img src="https://img.shields.io/tokei/lines/github/novialriptide/SakuyaEngine?style=for-the-badge" alt="Lines">
@@ -16,6 +15,11 @@ SakuyaEngine is an object-oriented game engine that supports scene, sound, and e
 It inherits a lot of features from its predecessor, 
 [GameDen](https://github.com/novialriptide/GameDen), but has been improved in
 many ways.
+
+## Tests
+| Name | Status |
+| ---- | ------ |
+| Lint | ![](https://img.shields.io/github/workflow/status/novialriptide/SakuyaEngine/Lint?style=for-the-badge)
 
 ## Installation
 1. Install Python3.9
