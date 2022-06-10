@@ -19,6 +19,7 @@ from .effects import *
 from .entity import *
 from .errors import *
 from .events import *
+from .exe_helper import *
 from .lights import *
 from .locals import *
 from .math import *

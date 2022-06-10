@@ -277,7 +277,11 @@ class SceneManager:
         for scene in os.listdir(path):
             if scene.endswith(".py"):
                 scene_name = scene.removesuffix(".py")
-                import_name = f"data.scenes.{scene_name}"
+                scene_dir = path.removesuffix("/")
+                scene_dir = scene.removeprefix("/")
+                scene_dir = scene_dir.replace("/", ".")
+
+                import_name = scene_dir + f".{scene_name}"
                 importlib.import_module(import_name)
                 for member in inspect.getmembers(
                     sys.modules[import_name], inspect.isclass
