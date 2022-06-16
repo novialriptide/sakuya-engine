@@ -26,10 +26,12 @@ class Sound:
         self._volume_modifier = value
         self._pg_source.set_volume(self._volume * self._volume_modifier)
 
-    def play(self, repeat: bool = False) -> None:
+    def play(self, repeat: bool = False) -> bool:
+        """Returns True if played a sound"""
         if repeat and self.cooldown == 0:
             logging.info(f'Playing sound "{self.source}" on repeat')
             self._pg_source.play(loops=-1)
+            return True
 
         elif repeat and self.cooldown > 0:
             self._cooldown_clock.resume()
@@ -41,10 +43,14 @@ class Sound:
             if self._cooldown_clock.get_time() == 0:
                 logging.info(f'Playing sound "{self.source}" on repeat with a cooldown')
                 self._pg_source.play()
+                return True
 
         if not repeat:
             logging.info(f'Playing sound "{self.source}"')
             self._pg_source.play()
+            return True
+
+        return False
 
     def stop(self) -> None:
         self._pg_source.stop()
