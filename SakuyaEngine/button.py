@@ -2,9 +2,12 @@
 SakuyaEngine (c) 2020-2021 Andrew Hong
 This code is licensed under GNU LESSER GENERAL PUBLIC LICENSE (see LICENSE for details)
 """
-from typing import List, Tuple
-import pygame
+from typing import Tuple
 from math import *
+
+import pygame
+
+from .client import Client
 
 __all__ = ["Button"]
 
@@ -35,7 +38,7 @@ class Button:
         else:
             return False
 
-    def is_hovering(self, point: pygame.Vector2) -> bool:
+    def collidepoint(self, point: pygame.Vector2) -> bool:
         return self.rect.collidepoint(point)
 
     def draw(self, surface):
@@ -50,10 +53,10 @@ class Button:
     def execute(self) -> None:
         self.method()
 
-    def update(self):
+    def update(self, client: Client):
         """Must be called every frame."""
         if (
-            self.rect.collidepoint(pygame.mouse.get_pos())
+            self.rect.collidepoint(client.mouse_pos)
             and pygame.mouse.get_pressed()[0]
             and not self._is_pressed
         ):
@@ -61,7 +64,7 @@ class Button:
             self._is_pressed = True
 
         elif (
-            self.rect.collidepoint(pygame.mouse.get_pos())
+            self.rect.collidepoint(client.mouse_pos)
             and not pygame.mouse.get_pressed()[0]
             and self._is_pressed
         ):
