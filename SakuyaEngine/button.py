@@ -13,7 +13,7 @@ class Button:
     def __init__(
         self,
         rect: pygame.Rect,
-        methods: List[dict] = [{"func": None, "args": [], "kwargs": {}}, ...],
+        method: callable = lambda: None,
         rect_color: Tuple[int, int, int] = (255, 255, 255),
         text_color: Tuple[int, int, int] = (0, 0, 0),
         text: str = "",
@@ -23,7 +23,7 @@ class Button:
         self.text_surf = self.font.render(text, False, text_color)
         self.rect = rect
         self.key = key
-        self.methods = methods
+        self.method = method
         self.rect_color = rect_color
 
         self._is_pressed = False
@@ -48,8 +48,7 @@ class Button:
         )
 
     def execute(self) -> None:
-        for f in self.methods:
-            f["func"](*f["args"], **f["kwargs"])
+        self.method()
 
     def update(self):
         """Must be called every frame."""
